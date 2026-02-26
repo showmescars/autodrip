@@ -1614,7 +1614,6 @@ function buildCaseReadyView(caseData) {
 }
 
 function doRoulette(caseData) {
-  // Draw result
   const resultKey = weightedDraw(caseData.pool);
   const resultItem = ITEMS[resultKey];
   if (!resultItem) return;
@@ -1624,35 +1623,93 @@ function doRoulette(caseData) {
   const center = document.getElementById('openingCenter');
   center.innerHTML = '';
 
-  // Roulette wrapper
-  const rWrap = document.createElement('div');
-  rWrap.className = 'roulette-wrap';
+  const ITEM_W = 110; // item width
+  const ITEM_GAP = 8;
+  const CELL = ITEM_W + ITEM_GAP; // 118px per cell
+  const WIN_IDX = 35;
 
-  const rOuter = document.createElement('div');
-  rOuter.className = 'roulette-track-outer';
-  rOuter.style.cssText = 'height:150px; position:relative;';
+  // ── Build DOM ──
+  const wrapper = document.createElement('div');
+  wrapper.style.cssText = `
+    width: 100%;
+    position: relative;
+    flex-shrink: 0;
+  `;
 
-  const indicator = document.createElement('div');
-  indicator.className = 'roulette-indicator';
-  rOuter.appendChild(indicator);
-
+  // Top arrow
   const arrowTop = document.createElement('div');
-  arrowTop.className = 'roulette-arrow-top';
-  rOuter.appendChild(arrowTop);
+  arrowTop.style.cssText = `
+    position: absolute;
+    left: 50%; top: -4px;
+    transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 18px solid transparent;
+    border-right: 18px solid transparent;
+    border-top: 24px solid #c8a84b;
+    filter: drop-shadow(0 0 8px #c8a84b);
+    z-index: 10;
+    pointer-events: none;
+  `;
 
+  // Bottom arrow
   const arrowBottom = document.createElement('div');
-  arrowBottom.className = 'roulette-arrow-bottom';
-  rOuter.appendChild(arrowBottom);
+  arrowBottom.style.cssText = `
+    position: absolute;
+    left: 50%; bottom: -4px;
+    transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 18px solid transparent;
+    border-right: 18px solid transparent;
+    border-bottom: 24px solid #c8a84b;
+    filter: drop-shadow(0 0 8px #c8a84b);
+    z-index: 10;
+    pointer-events: none;
+  `;
 
-  const selectorBox = document.createElement('div');
-  selectorBox.className = 'roulette-selector-box';
-  rOuter.appendChild(selectorBox);
+  // Outer clip container
+  const outer = document.createElement('div');
+  outer.style.cssText = `
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    height: 150px;
+  `;
 
+  // Gold side lines at center
+  const lineLeft = document.createElement('div');
+  lineLeft.style.cssText = `
+    position: absolute;
+    left: calc(50% - ${ITEM_W/2 + 2}px);
+    top: 0; bottom: 0; width: 3px;
+    background: #c8a84b;
+    box-shadow: 0 0 12px #c8a84b;
+    z-index: 5; pointer-events: none;
+  `;
+  const lineRight = document.createElement('div');
+  lineRight.style.cssText = `
+    position: absolute;
+    left: calc(50% + ${ITEM_W/2 - 1}px);
+    top: 0; bottom: 0; width: 3px;
+    background: #c8a84b;
+    box-shadow: 0 0 12px #c8a84b;
+    z-index: 5; pointer-events: none;
+  `;
+
+  // Fade edges
+  const fadeLeft = document.createElement('div');
+  fadeLeft.style.cssText = `position:absolute;left:0;top:0;bottom:0;width:90px;background:linear-gradient(90deg,#0a0a0f,transparent);z-index:4;pointer-events:none;`;
+  const fadeRight = document.createElement('div');
+  fadeRight.style.cssText = `position:absolute;right:0;top:0;bottom:0;width:90px;background:linear-gradient(-90deg,#0a0a0f,transparent);z-index:4;pointer-events:none;`;
+
+  // Track
   const track = document.createElement('div');
-  track.className = 'roulette-track';
-
-  const ITEM_W = 108; // 100px + 8px gap
-  const START_X = 0;
+  track.style.cssText = `
+    display: flex;
+    gap: ${ITEM_GAP}px;
+    padding: 10px 0;
+    will-change: transform;
+    position: relative;
+  `;
 
   rouletteKeys.forEach(k => {
     const item = ITEMS[k];
@@ -1660,6 +1717,7 @@ function doRoulette(caseData) {
     const rs = RARITY_STYLE[item.rarity] || RARITY_STYLE.common;
     const el = document.createElement('div');
     el.className = 'roulette-item ' + rs.bg;
+    el.style.width = ITEM_W + 'px';
     el.innerHTML = `
       <div class="ri-emoji">${item.emoji}</div>
       <div class="ri-name">${item.name}</div>
@@ -1668,39 +1726,60 @@ function doRoulette(caseData) {
     track.appendChild(el);
   });
 
-  rOuter.appendChild(track);
-  rWrap.appendChild(rOuter);
-  center.appendChild(rWrap);
+  outer.appendChild(fadeLeft);
+  outer.appendChild(fadeRight);
+  outer.appendChild(lineLeft);
+  outer.appendChild(lineRight);
+  outer.appendChild(track);
 
-  // Center result at index 35
-  // Container visible = full width, center = width/2
-  // We want item[35] center at viewport center
-  const containerW = window.innerWidth;
-  const centerX = containerW / 2;
-  const targetItemCenter = 35 * ITEM_W + 50; // 50 = half item width
-  const scrollTo = targetItemCenter - centerX;
+  wrapper.appendChild(arrowTop);
+  wrapper.appendChild(outer);
+  wrapper.appendChild(arrowBottom);
+  center.appendChild(wrapper);
 
-  // Start offset: show from beginning
-  track.style.transform = `translateX(${-scrollTo + 800}px)`;
-  track.style.transition = 'none';
+  // ── Centering math ──
+  // After layout, get the actual container width
+  requestAnimationFrame(() => {
+    const containerW = outer.getBoundingClientRect().width || window.innerWidth;
+    const screenCenter = containerW / 2;
 
-  // Trigger reflow
-  track.getBoundingClientRect();
+    // Center of winning item within track
+    // Track starts at translateX offset, item[WIN_IDX] left edge = WIN_IDX * CELL
+    // Item center = WIN_IDX * CELL + ITEM_W/2
+    const itemCenter = WIN_IDX * CELL + ITEM_W / 2;
 
-  // Animate
-  track.style.transition = 'transform 7s cubic-bezier(0.05, 0.8, 0.3, 1)';
-  track.style.transform = `translateX(${-scrollTo}px)`;
+    // We want itemCenter to land at screenCenter
+    // translateX = screenCenter - itemCenter  (but we scroll negatively)
+    const finalX = screenCenter - itemCenter;
 
-  // After spin — highlight winner then show result
-  setTimeout(() => {
-    // Highlight the winning item (index 35)
-    const items = track.querySelectorAll('.roulette-item');
-    if (items[35]) items[35].classList.add('winner');
-  }, 7100);
+    // Start further right so it spins left visually
+    const startX = finalX + CELL * 18;
 
-  setTimeout(() => {
-    showResult(resultItem, resultKey, caseData);
-  }, 7200);
+    track.style.transition = 'none';
+    track.style.transform = `translateX(${startX}px)`;
+
+    // Force reflow
+    track.getBoundingClientRect();
+
+    // Spin!
+    track.style.transition = 'transform 7s cubic-bezier(0.02, 0.8, 0.2, 1)';
+    track.style.transform = `translateX(${finalX}px)`;
+
+    // Highlight winner
+    setTimeout(() => {
+      const items = track.querySelectorAll('.roulette-item');
+      if (items[WIN_IDX]) {
+        items[WIN_IDX].classList.add('winner');
+        // Flash arrows gold
+        arrowTop.style.filter = 'drop-shadow(0 0 16px #e8c96a) brightness(1.4)';
+        arrowBottom.style.filter = 'drop-shadow(0 0 16px #e8c96a) brightness(1.4)';
+      }
+    }, 7050);
+
+    setTimeout(() => {
+      showResult(resultItem, resultKey, caseData);
+    }, 7600);
+  });
 }
 
 function showResult(item, itemKey, caseData) {
