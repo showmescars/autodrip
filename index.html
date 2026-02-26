@@ -1,118 +1,128 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>PowderBox v2</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: #1a1a1a;
-    color: #fff;
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    user-select: none;
-    -webkit-user-select: none;
-  }
-  #topBar {
-    background: #2a2a2a;
-    padding: 8px 12px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid #444;
-    flex-shrink: 0;
-  }
-  #fpsDisplay { font-size: 11px; color: #888; font-weight: 600; letter-spacing: 0.5px; }
-  #topBar h1 { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: 1px; }
-  #clearBtn {
-    background: #3a3a3a; border: 1px solid #555; color: #fff;
-    border-radius: 8px; padding: 5px 14px; font-size: 12px; font-weight: 600;
-    cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.15s;
-  }
-  #clearBtn:hover { background: #4a4a4a; }
-  #clearBtn svg { width: 13px; height: 13px; }
-  #simCanvas { flex: 1; display: block; width: 100%; cursor: crosshair; touch-action: none; }
-  #statsOverlay {
-    position: absolute; bottom: 220px; left: 14px; pointer-events: none;
-  }
-  #statsOverlay .stat-label {
-    font-size: 9px; font-weight: 700; letter-spacing: 1.5px;
-    color: rgba(255,255,255,0.4); margin-bottom: 1px;
-  }
-  #statsOverlay .stat-val {
-    font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.7); margin-bottom: 8px;
-  }
-  #settingsBtn {
-    position: absolute; bottom: 224px; right: 14px;
-    width: 44px; height: 44px; border-radius: 50%;
-    background: #fff; border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.4); transition: transform 0.2s; color: #333;
-  }
-  #settingsBtn:hover { transform: rotate(45deg); }
-  #settingsBtn svg { width: 22px; height: 22px; }
-  #bottomPanel { background: #2a2a2a; border-top: 1px solid #444; flex-shrink: 0; }
-  #panelToggle {
-    display: flex; align-items: center; justify-content: center;
-    gap: 8px; padding: 8px; cursor: pointer; color: #ccc;
-    font-size: 13px; font-weight: 600; letter-spacing: 0.5px;
-    border-bottom: 1px solid #3a3a3a; transition: background 0.15s; background: #252525;
-  }
-  #panelToggle:hover { background: #333; }
-  #panelToggle .arrow { font-size: 12px; transition: transform 0.3s; }
-  #panelToggle.collapsed .arrow { transform: rotate(180deg); }
-  #elementPanel {
-    padding: 10px 10px 14px; overflow-y: auto;
-    max-height: 210px; transition: max-height 0.3s ease;
-  }
-  #elementPanel.hidden { max-height: 0; overflow: hidden; padding: 0 10px; }
-  #elementPanel .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-  #elementPanel .panel-title { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: #888; text-transform: uppercase; }
-  .brush-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .brush-row label { font-size: 11px; color: #888; font-weight: 600; letter-spacing: 1px; min-width: 36px; }
-  #brushSlider { flex: 1; -webkit-appearance: none; height: 4px; border-radius: 2px; background: #555; outline: none; }
-  #brushSlider::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #fff; cursor: pointer; }
-  #brushVal { font-size: 11px; color: #ccc; font-weight: 700; min-width: 20px; text-align: right; }
-  #elementGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-  .elem-btn {
-    border: none; border-radius: 8px; padding: 10px 4px; font-size: 12px; font-weight: 700;
-    cursor: pointer; text-align: center; transition: transform 0.1s, box-shadow 0.1s;
-    letter-spacing: 0.3px; outline: none; position: relative;
-  }
-  .elem-btn:active { transform: scale(0.93); }
-  .elem-btn.selected { box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(255,255,255,0.3); transform: scale(1.04); z-index: 1; }
-  .elem-btn.dark-text { color: rgba(0,0,0,0.8); }
-  .elem-btn.light-text { color: rgba(255,255,255,0.92); }
-  #settingsPanel {
-    position: absolute; bottom: 210px; right: 14px;
-    background: #2a2a2a; border: 1px solid #444; border-radius: 14px;
-    padding: 14px; width: 200px; display: none;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.5); z-index: 10;
-  }
-  #settingsPanel.open { display: block; }
-  #settingsPanel h3 { font-size: 13px; font-weight: 700; color: #ccc; margin-bottom: 12px; letter-spacing: 1px; }
-  .setting-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-  .setting-row label { font-size: 12px; color: #aaa; }
-  .toggle-btn { width: 40px; height: 22px; border-radius: 11px; background: #555; border: none; cursor: pointer; position: relative; transition: background 0.2s; }
-  .toggle-btn.on { background: #4CAF50; }
-  .toggle-btn::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: left 0.2s; }
-  .toggle-btn.on::after { left: 21px; }
-  .setting-slider { width: 100%; margin-top: 6px; -webkit-appearance: none; height: 4px; border-radius: 2px; background: #555; outline: none; }
-  .setting-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #fff; cursor: pointer; }
-
-/* EXPLOSION FLASH */
-#flashOverlay {
-position: absolute; inset: 0; background: rgba(255,200,50,0.0);
-pointer-events: none; z-index: 5; transition: background 0.05s;
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{
+  width:100%;height:100%;
+  background:#1a1a1a;color:#fff;
+  font-family:'Segoe UI',system-ui,sans-serif;
+  overflow:hidden;user-select:none;-webkit-user-select:none;
 }
-#flashOverlay.flash { background: rgba(255,200,50,0.25); }
-</style>
 
+/* ── TOP BAR ── */
+#topBar{
+  position:fixed;top:0;left:0;right:0;
+  height:44px;
+  background:#2a2a2a;
+  border-bottom:1px solid #444;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 12px;z-index:100;
+}
+#fpsDisplay{font-size:11px;color:#888;font-weight:600;min-width:58px;}
+#topBar h1{font-size:15px;font-weight:700;letter-spacing:1px;}
+#clearBtn{
+  background:#3a3a3a;border:1px solid #555;color:#fff;
+  border-radius:8px;padding:4px 12px;font-size:12px;font-weight:600;
+  cursor:pointer;display:flex;align-items:center;gap:5px;
+}
+#clearBtn svg{width:12px;height:12px;}
+
+/* ── CANVAS fills space between top bar and bottom/side panel ── */
+#simCanvas{
+  position:fixed;top:44px;left:0;
+  display:block;cursor:crosshair;touch-action:none;
+  background:#1a1a1a;
+}
+
+/* ── FLASH ── */
+#flashOverlay{
+  position:fixed;top:44px;left:0;
+  background:rgba(255,200,50,0);pointer-events:none;z-index:50;
+  transition:background 0.05s;
+}
+#flashOverlay.flash{background:rgba(255,200,50,0.22);}
+
+/* ── STATS OVERLAY ── */
+#statsOverlay{
+  position:fixed;left:10px;pointer-events:none;z-index:60;
+}
+#statsOverlay .sl{font-size:8px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.35);margin-bottom:1px;}
+#statsOverlay .sv{font-size:12px;font-weight:600;color:rgba(255,255,255,0.6);margin-bottom:6px;}
+
+/* ── SETTINGS BUTTON ── */
+#settingsBtn{
+  position:fixed;
+  width:40px;height:40px;border-radius:50%;
+  background:#fff;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 10px rgba(0,0,0,0.5);
+  transition:transform 0.2s;color:#333;z-index:60;
+}
+#settingsBtn svg{width:20px;height:20px;}
+
+/* ── SETTINGS PANEL ── */
+#settingsPanel{
+  position:fixed;
+  background:#2a2a2a;border:1px solid #444;border-radius:14px;
+  padding:12px;width:188px;display:none;
+  box-shadow:0 8px 24px rgba(0,0,0,0.6);z-index:200;
+}
+#settingsPanel.open{display:block;}
+#settingsPanel h3{font-size:12px;font-weight:700;color:#ccc;margin-bottom:10px;letter-spacing:1px;}
+.srow{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.srow label{font-size:11px;color:#aaa;}
+.tog{width:38px;height:20px;border-radius:10px;background:#555;border:none;cursor:pointer;position:relative;transition:background 0.2s;}
+.tog.on{background:#4CAF50;}
+.tog::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left 0.2s;}
+.tog.on::after{left:20px;}
+.sslider{width:100%;margin-top:5px;-webkit-appearance:none;height:4px;border-radius:2px;background:#555;outline:none;}
+.sslider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#fff;cursor:pointer;}
+
+/* ── ELEMENT PANEL (portrait=bottom, landscape=right) ── */
+#elemPanel{
+  position:fixed;
+  background:#2a2a2a;
+  z-index:80;overflow:hidden;
+}
+
+#panelToggle{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:7px;cursor:pointer;color:#ccc;font-size:12px;font-weight:600;
+  background:#252525;border-color:#3a3a3a;border-style:solid;
+  flex-shrink:0;
+}
+.arrow{font-size:11px;transition:transform 0.25s;}
+
+#panelScroll{overflow-y:auto;overflow-x:hidden;}
+#panelScroll.hidden{display:none;}
+.panel-inner{padding:8px;}
+
+.brush-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.brush-row label{font-size:10px;color:#888;font-weight:600;min-width:32px;}
+#brushSlider{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:#555;outline:none;}
+#brushSlider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#fff;cursor:pointer;}
+#brushVal{font-size:10px;color:#ccc;font-weight:700;min-width:16px;text-align:right;}
+
+#elementGrid{display:grid;gap:5px;}
+.eb{
+  border:none;border-radius:7px;padding:8px 2px;font-size:11px;font-weight:700;
+  cursor:pointer;text-align:center;outline:none;
+  transition:transform 0.1s,box-shadow 0.1s;
+}
+.eb:active{transform:scale(0.91);}
+.eb.sel{box-shadow:0 0 0 2px #fff,0 0 0 4px rgba(255,255,255,0.25);transform:scale(1.05);z-index:1;}
+.eb.dk{color:rgba(0,0,0,0.8);}
+.eb.lt{color:rgba(255,255,255,0.92);}
+
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-thumb{background:#555;border-radius:3px;}
+</style>
 </head>
 <body>
 
@@ -120,22 +130,23 @@ pointer-events: none; z-index: 5; transition: background 0.05s;
   <span id="fpsDisplay">FPS: 60</span>
   <h1>PowderBox v2</h1>
   <button id="clearBtn" onclick="clearCanvas()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <polyline points="3 6 5 6 21 6"/>
+      <path d="M19 6l-1 14H6L5 6"/>
+      <path d="M10 11v6M14 11v6"/>
+      <path d="M9 6V4h6v2"/>
+    </svg>
     Clear
   </button>
 </div>
 
 <canvas id="simCanvas"></canvas>
-
 <div id="flashOverlay"></div>
 
 <div id="statsOverlay">
-  <div class="stat-label">TEMPERATURE</div>
-  <div class="stat-val" id="tempDisplay">20.0°C</div>
-  <div class="stat-label">PRESSURE</div>
-  <div class="stat-val" id="pressDisplay">1.0 atm</div>
-  <div class="stat-label">PARTICLES</div>
-  <div class="stat-val" id="particleDisplay">0</div>
+  <div class="sl">TEMPERATURE</div><div class="sv" id="tempDisplay">20.0°C</div>
+  <div class="sl">PRESSURE</div><div class="sv" id="pressDisplay">1.0 atm</div>
+  <div class="sl">PARTICLES</div><div class="sv" id="particleDisplay">0</div>
 </div>
 
 <button id="settingsBtn" onclick="toggleSettings()">
@@ -147,699 +158,484 @@ pointer-events: none; z-index: 5; transition: background 0.05s;
 
 <div id="settingsPanel">
   <h3>SETTINGS</h3>
-  <div class="setting-row"><label>Gravity</label><button class="toggle-btn on" id="gravityToggle" onclick="toggleSetting('gravity',this)"></button></div>
-  <div class="setting-row"><label>Wind</label><button class="toggle-btn" id="windToggle" onclick="toggleSetting('wind',this)"></button></div>
-  <div class="setting-row"><label>Heat</label><button class="toggle-btn" id="heatToggle" onclick="toggleSetting('heat',this)"></button></div>
-  <div class="setting-row"><label>Speed</label></div>
-  <input class="setting-slider" type="range" min="1" max="5" value="3" id="speedSlider" oninput="simSpeed=parseInt(this.value)">
+  <div class="srow"><label>Gravity</label><button class="tog on" id="gravityToggle" onclick="toggleSetting('gravity',this)"></button></div>
+  <div class="srow"><label>Wind</label><button class="tog" id="windToggle" onclick="toggleSetting('wind',this)"></button></div>
+  <div class="srow"><label>Heat</label><button class="tog" id="heatToggle" onclick="toggleSetting('heat',this)"></button></div>
+  <div class="srow"><label>Speed</label></div>
+  <input class="sslider" type="range" min="1" max="5" value="3" oninput="simSpeed=+this.value">
 </div>
 
-<div id="bottomPanel">
+<div id="elemPanel">
   <div id="panelToggle" onclick="togglePanel()">
-    <span class="arrow">∧</span>
+    <span class="arrow" id="arrowIcon">&#x2227;</span>
     <span>Elements</span>
   </div>
-  <div id="elementPanel">
-    <div class="panel-header"><span class="panel-title">Select Element</span></div>
-    <div class="brush-row">
-      <label>BRUSH</label>
-      <input type="range" id="brushSlider" min="1" max="10" value="3" oninput="brushSize=parseInt(this.value);document.getElementById('brushVal').textContent=this.value">
-      <span id="brushVal">3</span>
+  <div id="panelScroll">
+    <div class="panel-inner">
+      <div class="brush-row">
+        <label>BRUSH</label>
+        <input type="range" id="brushSlider" min="1" max="10" value="3"
+          oninput="brushSize=+this.value;document.getElementById('brushVal').textContent=this.value">
+        <span id="brushVal">3</span>
+      </div>
+      <div id="elementGrid"></div>
     </div>
-    <div id="elementGrid"></div>
   </div>
 </div>
 
 <script>
-// ════════════════════════════════════════
+// ══════════════════════════════════════════════
 // ELEMENTS
-// ════════════════════════════════════════
-const ELEMENTS = {
-  // ORIGINAL 16
-  SAND:      { color:[194,154,76],  density:1.5, type:'powder',  gravity:true,  flammable:false, label:'Sand' },
-  WATER:     { color:[70,130,220],  density:1.0, type:'liquid',  gravity:true,  flammable:false, label:'Water' },
-  STONE:     { color:[120,120,125], density:3.0, type:'solid',   gravity:false, flammable:false, label:'Stone' },
-  FIRE:      { color:[230,60,10],   density:0.1, type:'gas',     gravity:false, flammable:false, label:'Fire',   hot:true },
-  STEAM:     { color:[190,200,210], density:0.2, type:'gas',     gravity:false, flammable:false, label:'Steam' },
-  LAVA:      { color:[210,80,10],   density:2.0, type:'liquid',  gravity:true,  flammable:false, label:'Lava',   hot:true },
-  ICE:       { color:[170,210,240], density:0.9, type:'solid',   gravity:false, flammable:false, label:'Ice' },
-  OIL:       { color:[160,145,80],  density:0.8, type:'liquid',  gravity:true,  flammable:true,  label:'Oil' },
-  WOOD:      { color:[140,80,30],   density:2.5, type:'solid',   gravity:false, flammable:true,  label:'Wood' },
-  SMOKE:     { color:[100,100,110], density:0.05,type:'gas',     gravity:false, flammable:false, label:'Smoke' },
-  ACID:      { color:[50,220,30],   density:1.1, type:'liquid',  gravity:true,  flammable:false, label:'Acid',   corrosive:true },
-  SALT:      { color:[230,230,230], density:1.4, type:'powder',  gravity:true,  flammable:false, label:'Salt' },
-  GUNPOWDER: { color:[80,75,80],    density:1.2, type:'powder',  gravity:true,  flammable:true,  label:'Powder', explosive:true },
-  PLANT:     { color:[30,160,40],   density:1.0, type:'solid',   gravity:false, flammable:true,  label:'Plant' },
-  GLASS:     { color:[160,210,230], density:2.8, type:'solid',   gravity:false, flammable:false, label:'Glass' },
-
-  // NEW 7
-  TNT:       { color:[220,30,30],   density:2.0, type:'solid',   gravity:false, flammable:false, label:'TNT',    explosive:true, tnt:true },
-  VIRUS:     { color:[180,0,220],   density:1.3, type:'powder',  gravity:true,  flammable:false, label:'Virus',  virus:true },
-  ANTIMATTER:{ color:[20,20,40],    density:0.5, type:'gas',     gravity:false, flammable:false, label:'Anti',   antimatter:true },
-  TORNADO:   { color:[180,180,200], density:0.3, type:'gas',     gravity:false, flammable:false, label:'Tornado',tornado:true },
-  MAGMAROCK: { color:[100,40,10],   density:3.5, type:'solid',   gravity:false, flammable:false, label:'Magma',  magmarock:true },
-  BUBBLE:    { color:[150,230,255], density:0.15,type:'gas',     gravity:false, flammable:false, label:'Bubble', bubble:true },
-  ELECTRIC:  { color:[255,255,50],  density:0.4, type:'gas',     gravity:false, flammable:false, label:'Electric',electric:true },
-
-  ERASER:    { color:[60,60,60],    density:0,   type:'eraser',  gravity:false, flammable:false, label:'Erase' },
+// ══════════════════════════════════════════════
+const ELEMENTS={
+  SAND:      {color:[194,154,76], density:1.5,type:'powder',flammable:false,label:'Sand'},
+  WATER:     {color:[70,130,220],density:1.0,type:'liquid',flammable:false,label:'Water'},
+  STONE:     {color:[120,120,125],density:3.0,type:'solid', flammable:false,label:'Stone'},
+  FIRE:      {color:[230,60,10], density:0.1,type:'gas',   flammable:false,label:'Fire'},
+  STEAM:     {color:[190,200,210],density:0.2,type:'gas',  flammable:false,label:'Steam'},
+  LAVA:      {color:[210,80,10], density:2.0,type:'liquid',flammable:false,label:'Lava'},
+  ICE:       {color:[170,210,240],density:0.9,type:'solid',flammable:false,label:'Ice'},
+  OIL:       {color:[160,145,80],density:0.8,type:'liquid',flammable:true, label:'Oil'},
+  WOOD:      {color:[140,80,30], density:2.5,type:'solid', flammable:true, label:'Wood'},
+  SMOKE:     {color:[100,100,110],density:0.05,type:'gas', flammable:false,label:'Smoke'},
+  ACID:      {color:[50,220,30], density:1.1,type:'liquid',flammable:false,label:'Acid'},
+  SALT:      {color:[230,230,230],density:1.4,type:'powder',flammable:false,label:'Salt'},
+  GUNPOWDER: {color:[80,75,80],  density:1.2,type:'powder',flammable:true, label:'Powder'},
+  PLANT:     {color:[30,160,40], density:1.0,type:'solid', flammable:true, label:'Plant'},
+  GLASS:     {color:[160,210,230],density:2.8,type:'solid',flammable:false,label:'Glass'},
+  TNT:       {color:[220,30,30], density:2.0,type:'solid', flammable:false,label:'TNT'},
+  VIRUS:     {color:[180,0,220], density:1.3,type:'powder',flammable:false,label:'Virus'},
+  ANTIMATTER:{color:[20,20,40],  density:0.5,type:'gas',   flammable:false,label:'Anti'},
+  TORNADO:   {color:[180,180,200],density:0.3,type:'gas',  flammable:false,label:'Tornado'},
+  MAGMAROCK: {color:[100,40,10], density:3.5,type:'solid', flammable:false,label:'Magma'},
+  BUBBLE:    {color:[150,230,255],density:0.15,type:'gas', flammable:false,label:'Bubble'},
+  ELECTRIC:  {color:[255,255,50],density:0.4,type:'gas',   flammable:false,label:'Elec'},
+  ERASER:    {color:[60,60,60],  density:0,  type:'eraser',flammable:false,label:'Erase'},
 };
+const CSS_COLORS={SAND:'#c29a4c',WATER:'#4682dc',STONE:'#787880',FIRE:'#e63c0a',STEAM:'#bec8d2',LAVA:'#d2500a',ICE:'#aad2f0',OIL:'#a09150',WOOD:'#8c501e',SMOKE:'#646468',ACID:'#32dc1e',SALT:'#e6e6e6',GUNPOWDER:'#504b50',PLANT:'#1ea028',GLASS:'#a0d2e6',TNT:'#dc1e1e',VIRUS:'#b400dc',ANTIMATTER:'#141428',TORNADO:'#b4b4c8',MAGMAROCK:'#641e0a',BUBBLE:'#96e6ff',ELECTRIC:'#d4d400',ERASER:'#3c3c3c'};
+const DARK_TEXT=new Set(['SAND','WATER','ICE','OIL','SALT','GLASS','STEAM','SMOKE','BUBBLE','TORNADO']);
 
-const ELEM_COLORS_CSS = {
-  SAND:'#c29a4c', WATER:'#4682dc', STONE:'#787880', FIRE:'#e63c0a',
-  STEAM:'#bec8d2', LAVA:'#d2500a', ICE:'#aad2f0', OIL:'#a09150',
-  WOOD:'#8c501e', SMOKE:'#646468', ACID:'#32dc1e', SALT:'#e6e6e6',
-  GUNPOWDER:'#504b50', PLANT:'#1ea028', GLASS:'#a0d2e6',
-  TNT:'#dc1e1e', VIRUS:'#b400dc', ANTIMATTER:'#141428',
-  TORNADO:'#b4b4c8', MAGMAROCK:'#641e0a', BUBBLE:'#96e6ff',
-  ELECTRIC:'#ffff32', ERASER:'#3c3c3c',
-};
-const ELEM_TEXT_DARK = new Set(['SAND','WATER','ICE','OIL','SALT','GLASS','STEAM','SMOKE','BUBBLE','TORNADO']);
+const EKEYS=Object.keys(ELEMENTS);
+const EIDX={};
+EKEYS.forEach((k,i)=>EIDX[k]=i+1);
 
-// ════════════════════════════════════════
-// CANVAS + GRID
-// ════════════════════════════════════════
-const canvas = document.getElementById('simCanvas');
-const ctx = canvas.getContext('2d');
-const CELL = 4;
-let COLS, ROWS, grid, nextGrid, imageData, pixels;
-let selectedElement = 'SAND';
-let brushSize = 3;
-let isDrawing = false;
-let lastX = -1, lastY = -1;
-let simSpeed = 3;
-let frameCount = 0, lastFpsTime = performance.now();
-let settings = { gravity:true, wind:false, heat:false };
-let tornadoCenters = []; // track active tornado positions
+// ══════════════════════════════════════════════
+// CANVAS & GRID
+// ══════════════════════════════════════════════
+const canvas=document.getElementById('simCanvas');
+const ctx=canvas.getContext('2d');
+const CELL=4;
+let COLS=1,ROWS=1;
+let grid=new Uint16Array(3);
+let nextGrid=new Uint16Array(3);
+let imageData=ctx.createImageData(1,1);
+let pixels=imageData.data;
 
-const ELEM_KEYS = Object.keys(ELEMENTS);
-const ELEM_IDX = {};
-ELEM_KEYS.forEach((k,i) => ELEM_IDX[k] = i+1);
+let selElem='SAND',brushSize=3,drawing=false,lx=0,ly=0;
+let simSpeed=3,fc=0,fpsT=performance.now();
+let settings={gravity:true,wind:false};
+let tornadoes=[];
 
-function initGrid(){
-  COLS = Math.floor(canvas.width / CELL);
-  ROWS = Math.floor(canvas.height / CELL);
-  grid = new Uint16Array(COLS * ROWS * 3);
-  nextGrid = new Uint16Array(COLS * ROWS * 3);
-  imageData = ctx.createImageData(canvas.width, canvas.height);
-  pixels = imageData.data;
-  tornadoCenters = [];
+// ── grid helpers ──
+function gi(x,y){return(y*COLS+x)*3;}
+function gtype(x,y){if(x<0||x>=COLS||y<0||y>=ROWS)return-1;return grid[gi(x,y)];}
+function sc(arr,x,y,t,temp=20,f=0){const i=(y*COLS+x)*3;arr[i]=t;arr[i+1]=Math.min(Math.max(temp,0),255);arr[i+2]=f;}
+function cc(arr,x,y){const i=(y*COLS+x)*3;arr[i]=0;arr[i+1]=20;arr[i+2]=0;}
+
+// ── resize: measure from DOM, set canvas pixels, reinit grid ──
+function doResize(){
+  const isLandscape=window.innerWidth>window.innerHeight;
+  const PANEL_H=panelOpen?PORTRAIT_PANEL_H:34;
+  const PANEL_W=panelOpen?LANDSCAPE_PANEL_W:34;
+  const TOP=44;
+
+  let cw,ch;
+  if(isLandscape){
+    cw=window.innerWidth-PANEL_W;
+    ch=window.innerHeight-TOP;
+  } else {
+    cw=window.innerWidth;
+    ch=window.innerHeight-TOP-PANEL_H;
+  }
+  cw=Math.max(cw,10);ch=Math.max(ch,10);
+
+  canvas.width=cw;canvas.height=ch;
+  canvas.style.width=cw+'px';canvas.style.height=ch+'px';
+  canvas.style.top=TOP+'px';canvas.style.left='0px';
+
+  const fo=document.getElementById('flashOverlay');
+  fo.style.top=TOP+'px';fo.style.left='0px';
+  fo.style.width=cw+'px';fo.style.height=ch+'px';
+
+  COLS=Math.floor(cw/CELL);ROWS=Math.floor(ch/CELL);
+  grid=new Uint16Array(COLS*ROWS*3);
+  nextGrid=new Uint16Array(COLS*ROWS*3);
+  imageData=ctx.createImageData(cw,ch);
+  pixels=imageData.data;
+  tornadoes=[];
+  layoutUI(isLandscape,TOP,cw,ch,PANEL_W,PANEL_H);
 }
-function idx(x,y){ return (y*COLS+x)*3; }
-function getType(x,y){ if(x<0||x>=COLS||y<0||y>=ROWS)return -1; return grid[idx(x,y)]; }
-function setCell(arr,x,y,type,temp=20,flags=0){
-  const i=(y*COLS+x)*3; arr[i]=type; arr[i+1]=Math.min(Math.max(temp,0),255); arr[i+2]=flags;
-}
-function clearCell(arr,x,y){ const i=(y*COLS+x)*3; arr[i]=0; arr[i+1]=20; arr[i+2]=0; }
 
-function resizeCanvas(){
-  const rect = canvas.getBoundingClientRect();
-  canvas.width = rect.width; canvas.height = rect.height;
-  initGrid();
+const PORTRAIT_PANEL_H=210;
+const LANDSCAPE_PANEL_W=172;
+
+function layoutUI(landscape,TOP,cw,ch,pw,ph){
+  const ep=document.getElementById('elemPanel');
+  const ps=document.getElementById('panelScroll');
+  const arrow=document.getElementById('arrowIcon');
+  const tog=document.getElementById('panelToggle');
+
+  if(landscape){
+    // Right side panel
+    ep.style.top=TOP+'px';ep.style.right='0px';ep.style.bottom='0px';
+    ep.style.left='';ep.style.width=LANDSCAPE_PANEL_W+'px';ep.style.height='';
+    ep.style.borderTop='none';ep.style.borderLeft='1px solid #444';
+    ep.style.flexDirection='column';ep.style.display='flex';
+    tog.style.borderBottom='1px solid #3a3a3a';tog.style.borderRight='none';
+    if(panelOpen){ps.style.overflowY='auto';ps.style.height=(ch-34)+'px';}
+    document.getElementById('elementGrid').style.gridTemplateColumns='repeat(2,1fr)';
+    arrow.innerHTML='&#x25B6;';
+    if(!panelOpen) arrow.style.transform='rotate(180deg)';else arrow.style.transform='';
+    // Stats bottom-left
+    const so=document.getElementById('statsOverlay');
+    so.style.bottom='10px';so.style.top='auto';so.style.left='10px';
+    // Settings btn
+    const sb=document.getElementById('settingsBtn');
+    sb.style.bottom='10px';sb.style.top='auto';sb.style.right='10px';
+    // Settings panel
+    const sp=document.getElementById('settingsPanel');
+    sp.style.bottom='60px';sp.style.top='auto';sp.style.right=(LANDSCAPE_PANEL_W+6)+'px';
+  } else {
+    // Bottom panel
+    ep.style.left='0px';ep.style.right='0px';ep.style.bottom='0px';ep.style.top='';
+    ep.style.width='';ep.style.height=panelOpen?PORTRAIT_PANEL_H+'px':'34px';
+    ep.style.borderLeft='none';ep.style.borderTop='1px solid #444';
+    ep.style.flexDirection='column';ep.style.display='flex';
+    tog.style.borderBottom='1px solid #3a3a3a';
+    if(panelOpen){ps.style.overflowY='auto';ps.style.height=(PORTRAIT_PANEL_H-34)+'px';}
+    document.getElementById('elementGrid').style.gridTemplateColumns='repeat(4,1fr)';
+    arrow.innerHTML='&#x2227;';
+    if(!panelOpen) arrow.style.transform='rotate(180deg)';else arrow.style.transform='';
+    // Stats
+    const so=document.getElementById('statsOverlay');
+    so.style.bottom=(panelOpen?PORTRAIT_PANEL_H+10:44)+'px';so.style.top='auto';
+    // Settings btn
+    const sb=document.getElementById('settingsBtn');
+    sb.style.bottom=(panelOpen?PORTRAIT_PANEL_H+8:42)+'px';sb.style.top='auto';sb.style.right='10px';
+    // Settings panel
+    const sp=document.getElementById('settingsPanel');
+    sp.style.bottom=(panelOpen?PORTRAIT_PANEL_H+56:100)+'px';sp.style.top='auto';sp.style.right='10px';
+  }
 }
 
-// ════════════════════════════════════════
+// ══════════════════════════════════════════════
 // INPUT
-// ════════════════════════════════════════
-function getPos(e){
-  const rect = canvas.getBoundingClientRect();
-  const cx = e.touches ? e.touches[0].clientX : e.clientX;
-  const cy = e.touches ? e.touches[0].clientY : e.clientY;
-  return { x:Math.floor((cx-rect.left)/CELL), y:Math.floor((cy-rect.top)/CELL) };
+// ══════════════════════════════════════════════
+function gpos(e){
+  const r=canvas.getBoundingClientRect();
+  const s=e.touches?e.touches[0]:e;
+  return{x:Math.floor((s.clientX-r.left)/CELL),y:Math.floor((s.clientY-r.top)/CELL)};
 }
-function paintAt(cx,cy){
-  const r = brushSize;
-  for(let dy=-r;dy<=r;dy++){
-    for(let dx=-r;dx<=r;dx++){
-      if(dx*dx+dy*dy<=r*r){
-        const nx=cx+dx, ny=cy+dy;
-        if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-        if(selectedElement==='ERASER'){ clearCell(grid,nx,ny); continue; }
-        if(getType(nx,ny)===0){
-          const id=ELEM_IDX[selectedElement];
-          let temp=20;
-          if(selectedElement==='FIRE'||selectedElement==='LAVA') temp=200;
-          if(selectedElement==='ELECTRIC') temp=180;
-          if(selectedElement==='TORNADO') temp=150;
-          setCell(grid,nx,ny,id,temp);
-          // Track tornadoes
-          if(selectedElement==='TORNADO') tornadoCenters.push({x:nx,y:ny,life:200});
-        }
-      }
+function paint(cx,cy){
+  const r=brushSize;
+  for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){
+    if(dx*dx+dy*dy>r*r)continue;
+    const nx=cx+dx,ny=cy+dy;
+    if(nx<0||nx>=COLS||ny<0||ny>=ROWS)continue;
+    if(selElem==='ERASER'){cc(grid,nx,ny);continue;}
+    if(gtype(nx,ny)===0){
+      let temp=20;
+      if(selElem==='FIRE'||selElem==='LAVA')temp=200;
+      if(selElem==='ELECTRIC')temp=180;
+      if(selElem==='TORNADO')temp=150;
+      sc(grid,nx,ny,EIDX[selElem],temp);
+      if(selElem==='TORNADO')tornadoes.push({x:nx,y:ny,life:200});
     }
   }
 }
-function drawLine(x0,y0,x1,y1){
+function line(x0,y0,x1,y1){
   let dx=Math.abs(x1-x0),dy=Math.abs(y1-y0),sx=x0<x1?1:-1,sy=y0<y1?1:-1,err=dx-dy;
-  while(true){
-    paintAt(x0,y0);
-    if(x0===x1&&y0===y1) break;
-    const e2=2*err;
-    if(e2>-dy){err-=dy;x0+=sx;}
-    if(e2<dx){err+=dx;y0+=sy;}
-  }
+  while(true){paint(x0,y0);if(x0===x1&&y0===y1)break;const e2=2*err;if(e2>-dy){err-=dy;x0+=sx;}if(e2<dx){err+=dx;y0+=sy;}}
 }
-canvas.addEventListener('mousedown',e=>{isDrawing=true;const p=getPos(e);lastX=p.x;lastY=p.y;paintAt(p.x,p.y);});
-canvas.addEventListener('mousemove',e=>{if(!isDrawing)return;const p=getPos(e);drawLine(lastX,lastY,p.x,p.y);lastX=p.x;lastY=p.y;});
-canvas.addEventListener('mouseup',()=>isDrawing=false);
-canvas.addEventListener('mouseleave',()=>isDrawing=false);
-canvas.addEventListener('touchstart',e=>{e.preventDefault();isDrawing=true;const p=getPos(e);lastX=p.x;lastY=p.y;paintAt(p.x,p.y);},{passive:false});
-canvas.addEventListener('touchmove',e=>{e.preventDefault();if(!isDrawing)return;const p=getPos(e);drawLine(lastX,lastY,p.x,p.y);lastX=p.x;lastY=p.y;},{passive:false});
-canvas.addEventListener('touchend',()=>isDrawing=false);
+canvas.addEventListener('mousedown',e=>{drawing=true;const p=gpos(e);lx=p.x;ly=p.y;paint(p.x,p.y);});
+canvas.addEventListener('mousemove',e=>{if(!drawing)return;const p=gpos(e);line(lx,ly,p.x,p.y);lx=p.x;ly=p.y;});
+canvas.addEventListener('mouseup',()=>drawing=false);
+canvas.addEventListener('mouseleave',()=>drawing=false);
+canvas.addEventListener('touchstart',e=>{e.preventDefault();drawing=true;const p=gpos(e);lx=p.x;ly=p.y;paint(p.x,p.y);},{passive:false});
+canvas.addEventListener('touchmove',e=>{e.preventDefault();if(!drawing)return;const p=gpos(e);line(lx,ly,p.x,p.y);lx=p.x;ly=p.y;},{passive:false});
+canvas.addEventListener('touchend',e=>{e.preventDefault();drawing=false;},{passive:false});
 
-// ════════════════════════════════════════
+// ══════════════════════════════════════════════
 // SIMULATION
-// ════════════════════════════════════════
-let shuffled=[];
-function buildShuffled(){
-  if(shuffled.length!==COLS) shuffled=Array.from({length:COLS},(_,i)=>i);
-  for(let i=shuffled.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];
-  }
+// ══════════════════════════════════════════════
+let shuf=[];
+function buildShuf(){
+  if(shuf.length!==COLS)shuf=Array.from({length:COLS},(_,i)=>i);
+  for(let i=shuf.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuf[i],shuf[j]]=[shuf[j],shuf[i]];}
 }
+function step(){for(let s=0;s<simSpeed;s++)tick();}
 
-function step(){ for(let s=0;s<simSpeed;s++) doStep(); }
-
-function doStep(){
-  nextGrid.set(grid);
-  buildShuffled();
-
-  // Update tornado centers life & drift
-  tornadoCenters = tornadoCenters.filter(t=>{
-    t.life--;
-    t.x += Math.floor((Math.random()-0.5)*3);
-    t.x = Math.max(0,Math.min(COLS-1,t.x));
-    return t.life>0;
-  });
+function tick(){
+  nextGrid.set(grid);buildShuf();
+  tornadoes=tornadoes.filter(t=>{t.life--;t.x+=Math.floor((Math.random()-0.5)*3);t.x=Math.max(0,Math.min(COLS-1,t.x));return t.life>0;});
 
   for(let y=ROWS-1;y>=0;y--){
     const dir=Math.random()<0.5?1:-1;
     for(let xi=0;xi<COLS;xi++){
-      const x=shuffled[xi];
-      const i=idx(x,y);
-      const type=grid[i]; if(type===0) continue;
-      const temp=grid[i+1];
-      const flags=grid[i+2]; if(flags&1) continue;
-      const key=ELEM_KEYS[type-1];
-      const elem=ELEMENTS[key];
+      const x=shuf[xi];
+      const ii=gi(x,y);const type=grid[ii];if(!type)continue;
+      const temp=grid[ii+1];if(grid[ii+2]&1)continue;
+      const key=EKEYS[type-1];const elem=ELEMENTS[key];
 
-      // ── FIRE ──
+      // FIRE
       if(key==='FIRE'){
-        const nl=temp-2; if(nl<=0){ Math.random()<0.4?setCell(nextGrid,x,y,ELEM_IDX['SMOKE'],20,1):clearCell(nextGrid,x,y); continue; }
-        setCell(nextGrid,x,y,type,nl,1);
-        for(const [nx,ny] of [[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
-          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-          const nt=getType(nx,ny); if(nt===0) continue;
-          const nk=ELEM_KEYS[nt-1];
-          if(ELEMENTS[nk].flammable&&Math.random()<0.05) setCell(nextGrid,nx,ny,ELEM_IDX['FIRE'],180,0);
-          if(nk==='ICE'&&Math.random()<0.1) setCell(nextGrid,nx,ny,ELEM_IDX['WATER'],20,0);
-          if(nk==='WATER'&&Math.random()<0.03) setCell(nextGrid,nx,ny,ELEM_IDX['STEAM'],100,0);
-          if(nk==='GUNPOWDER'&&Math.random()<0.3) explode(nx,ny,5,false);
-          if(nk==='TNT'&&Math.random()<0.15) tntExplode(nx,ny);
-          if(nk==='BUBBLE'&&Math.random()<0.2) clearCell(nextGrid,nx,ny);
+        const nl=temp-2;if(nl<=0){Math.random()<0.4?sc(nextGrid,x,y,EIDX.SMOKE,20,1):cc(nextGrid,x,y);continue;}
+        sc(nextGrid,x,y,type,nl,1);
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS)continue;const nt=gtype(nx,ny);if(!nt)continue;const nk=EKEYS[nt-1];
+          if(ELEMENTS[nk].flammable&&Math.random()<0.05)sc(nextGrid,nx,ny,EIDX.FIRE,180,0);
+          if(nk==='ICE'&&Math.random()<0.1)sc(nextGrid,nx,ny,EIDX.WATER,20,0);
+          if(nk==='WATER'&&Math.random()<0.03)sc(nextGrid,nx,ny,EIDX.STEAM,100,0);
+          if(nk==='GUNPOWDER'&&Math.random()<0.3)explode(nx,ny,5,false);
+          if(nk==='TNT'&&Math.random()<0.15)bigExplode(nx,ny);
+          if(nk==='BUBBLE'&&Math.random()<0.2)cc(nextGrid,nx,ny);
         }
-        if(y>0&&getType(x,y-1)===0&&Math.random()<0.3){ setCell(nextGrid,x,y-1,ELEM_IDX['FIRE'],nl-10,1); clearCell(nextGrid,x,y); }
+        if(y>0&&gtype(x,y-1)===0&&Math.random()<0.3){sc(nextGrid,x,y-1,EIDX.FIRE,nl-10,1);cc(nextGrid,x,y);}
         continue;
       }
-
-      // ── SMOKE / STEAM ──
+      // SMOKE/STEAM
       if(key==='SMOKE'||key==='STEAM'){
-        const nt2=temp>0?temp-1:0;
-        if(key==='STEAM'&&nt2<=0&&Math.random()<0.02){ setCell(nextGrid,x,y,ELEM_IDX['WATER'],20,1); continue; }
-        if(y>0&&getType(x,y-1)===0){ setCell(nextGrid,x,y-1,type,nt2,1); clearCell(nextGrid,x,y); }
-        else{
-          const d2=Math.random()<0.5?-1:1;
-          if(y>0&&x+d2>=0&&x+d2<COLS&&getType(x+d2,y-1)===0){ setCell(nextGrid,x+d2,y-1,type,nt2,1); clearCell(nextGrid,x,y); }
-          else setCell(nextGrid,x,y,type,nt2,1);
-        }
+        const nl=temp>0?temp-1:0;
+        if(key==='STEAM'&&nl<=0&&Math.random()<0.02){sc(nextGrid,x,y,EIDX.WATER,20,1);continue;}
+        if(y>0&&gtype(x,y-1)===0){sc(nextGrid,x,y-1,type,nl,1);cc(nextGrid,x,y);}
+        else{const d=Math.random()<0.5?-1:1;if(y>0&&x+d>=0&&x+d<COLS&&gtype(x+d,y-1)===0){sc(nextGrid,x+d,y-1,type,nl,1);cc(nextGrid,x,y);}else sc(nextGrid,x,y,type,nl,1);}
         continue;
       }
-
-      // ── LAVA ──
+      // LAVA
       if(key==='LAVA'){
-        if(Math.random()<0.04){
-          const fx=x+(Math.random()<0.5?-1:1),fy=y-1;
-          if(fx>=0&&fx<COLS&&fy>=0&&fy<ROWS&&getType(fx,fy)===0) setCell(nextGrid,fx,fy,ELEM_IDX['FIRE'],180,0);
-        }
-        let nw=false;
-        for(const [nx,ny] of [[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
-          if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&ELEM_KEYS[getType(nx,ny)-1]==='WATER'){nw=true;break;}
-        }
-        if(nw&&Math.random()<0.1){ setCell(nextGrid,x,y,ELEM_IDX['STONE'],20,1); continue; }
+        if(Math.random()<0.04){const fx=x+(Math.random()<0.5?-1:1);if(fx>=0&&fx<COLS&&y-1>=0&&gtype(fx,y-1)===0)sc(nextGrid,fx,y-1,EIDX.FIRE,180,0);}
+        let nw=false;for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&EKEYS[gtype(nx,ny)-1]==='WATER'){nw=true;break;}}
+        if(nw&&Math.random()<0.1){sc(nextGrid,x,y,EIDX.STONE,20,1);continue;}
       }
-
-      // ── ACID ──
+      // ACID
       if(key==='ACID'){
-        for(const [nx,ny] of [[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
-          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-          const nt3=getType(nx,ny); if(nt3===0) continue;
-          const nk=ELEM_KEYS[nt3-1];
-          if(nk!=='ACID'&&nk!=='GLASS'&&nk!=='ANTIMATTER'&&Math.random()<0.02){
-            clearCell(nextGrid,nx,ny);
-            if(Math.random()<0.3) clearCell(nextGrid,x,y);
-          }
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS)continue;const nt=gtype(nx,ny);if(!nt)continue;const nk=EKEYS[nt-1];
+          if(nk!=='ACID'&&nk!=='GLASS'&&nk!=='ANTIMATTER'&&Math.random()<0.02){cc(nextGrid,nx,ny);if(Math.random()<0.3)cc(nextGrid,x,y);}
         }
       }
-
-      // ── PLANT ──
+      // PLANT
       if(key==='PLANT'){
-        if(Math.random()<0.005){
-          for(const [nx,ny] of [[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
-            if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&getType(nx,ny)===0&&Math.random()<0.3){ setCell(nextGrid,nx,ny,ELEM_IDX['PLANT'],20,0); break; }
-          }
-        }
-        for(const [nx,ny] of [[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
-          if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&ELEM_KEYS[getType(nx,ny)-1]==='WATER'&&Math.random()<0.01) clearCell(nextGrid,nx,ny);
-        }
+        if(Math.random()<0.005){for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&gtype(nx,ny)===0&&Math.random()<0.3){sc(nextGrid,nx,ny,EIDX.PLANT,20,0);break;}}}
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&EKEYS[gtype(nx,ny)-1]==='WATER'&&Math.random()<0.01)cc(nextGrid,nx,ny);}
         continue;
       }
-
-      // ── SALT ──
-      if(key==='SALT'){
-        let dis=false;
-        for(const [nx,ny] of [[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
-          if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&ELEM_KEYS[getType(nx,ny)-1]==='WATER'&&Math.random()<0.01){ clearCell(nextGrid,x,y); clearCell(nextGrid,nx,ny); dis=true; break; }
-        }
-        if(dis) continue;
-      }
-
-      // ── ICE ──
-      if(key==='ICE'){
-        for(const [nx,ny] of [[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
-          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-          const nk=ELEM_KEYS[getType(nx,ny)-1];
-          if((nk==='FIRE'||nk==='LAVA'||nk==='ELECTRIC')&&Math.random()<0.05){ setCell(nextGrid,x,y,ELEM_IDX['WATER'],20,1); break; }
-        }
-        continue;
-      }
-
-      // ── TNT ── (ignited by fire, chain explodes)
-      if(key==='TNT'){
-        for(const [nx,ny] of [[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
-          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-          const nk=ELEM_KEYS[getType(nx,ny)-1];
-          if((nk==='FIRE'||nk==='LAVA'||nk==='ELECTRIC')&&Math.random()<0.05) tntExplode(x,y);
-        }
-        continue;
-      }
-
-      // ── VIRUS ──
+      // SALT
+      if(key==='SALT'){let d=false;for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&EKEYS[gtype(nx,ny)-1]==='WATER'&&Math.random()<0.01){cc(nextGrid,x,y);cc(nextGrid,nx,ny);d=true;break;}}if(d)continue;}
+      // ICE
+      if(key==='ICE'){for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){if(nx<0||nx>=COLS||ny<0||ny>=ROWS)continue;const nk=EKEYS[gtype(nx,ny)-1];if((nk==='FIRE'||nk==='LAVA'||nk==='ELECTRIC')&&Math.random()<0.05){sc(nextGrid,x,y,EIDX.WATER,20,1);break;}}continue;}
+      // TNT
+      if(key==='TNT'){for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){if(nx<0||nx>=COLS||ny<0||ny>=ROWS)continue;const nk=EKEYS[gtype(nx,ny)-1];if((nk==='FIRE'||nk==='LAVA'||nk==='ELECTRIC')&&Math.random()<0.05)bigExplode(x,y);}continue;}
+      // VIRUS
       if(key==='VIRUS'){
-        const infect=[[x-1,y],[x+1,y],[x,y-1],[x,y+1],[x-1,y-1],[x+1,y-1],[x-1,y+1],[x+1,y+1]];
-        for(const [nx,ny] of infect){
-          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-          const nt=getType(nx,ny); if(nt===0) continue;
-          const nk=ELEM_KEYS[nt-1];
-          if(nk!=='VIRUS'&&nk!=='ANTIMATTER'&&nk!=='ELECTRIC'&&Math.random()<0.015){
-            setCell(nextGrid,nx,ny,ELEM_IDX['VIRUS'],20,0);
-          }
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1],[x-1,y-1],[x+1,y-1],[x-1,y+1],[x+1,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS)continue;const nt=gtype(nx,ny);if(!nt)continue;const nk=EKEYS[nt-1];
+          if(nk!=='VIRUS'&&nk!=='ANTIMATTER'&&nk!=='ELECTRIC'&&Math.random()<0.015)sc(nextGrid,nx,ny,EIDX.VIRUS,20,0);
         }
-        // Virus also falls like powder
-        if(settings.gravity){
-          if(tryMove(x,y,x,y+1,type,temp)) continue;
-          const d2=Math.random()<0.5?-1:1;
-          if(tryMove(x,y,x+d2,y+1,type,temp)) continue;
-          if(tryMove(x,y,x-d2,y+1,type,temp)) continue;
-        }
-        setCell(nextGrid,x,y,type,temp,1);
-        continue;
+        if(settings.gravity){if(mv(x,y,x,y+1,type,temp))continue;const d=Math.random()<0.5?-1:1;if(mv(x,y,x+d,y+1,type,temp))continue;if(mv(x,y,x-d,y+1,type,temp))continue;}
+        sc(nextGrid,x,y,type,temp,1);continue;
       }
-
-      // ── ANTIMATTER ── (destroys everything it touches, then disappears)
+      // ANTIMATTER
       if(key==='ANTIMATTER'){
-        let destroyed=false;
-        for(const [nx,ny] of [[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
-          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-          const nt=getType(nx,ny); if(nt===0) continue;
-          const nk=ELEM_KEYS[nt-1];
-          if(nk!=='ANTIMATTER'){
-            clearCell(nextGrid,nx,ny);
-            if(Math.random()<0.15){ clearCell(nextGrid,x,y); destroyed=true; break; }
-          }
-        }
-        if(destroyed) continue;
-        // Drifts upward slowly
-        if(y>0&&getType(x,y-1)===0&&Math.random()<0.2){ setCell(nextGrid,x,y-1,type,temp,1); clearCell(nextGrid,x,y); }
-        else{
-          const d2=Math.random()<0.5?-1:1;
-          if(y>0&&x+d2>=0&&x+d2<COLS&&getType(x+d2,y-1)===0&&Math.random()<0.3){ setCell(nextGrid,x+d2,y-1,type,temp,1); clearCell(nextGrid,x,y); }
-          else setCell(nextGrid,x,y,type,temp,1);
-        }
+        let dead=false;
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){if(nx<0||nx>=COLS||ny<0||ny>=ROWS)continue;const nt=gtype(nx,ny);if(!nt)continue;const nk=EKEYS[nt-1];if(nk!=='ANTIMATTER'){cc(nextGrid,nx,ny);if(Math.random()<0.15){cc(nextGrid,x,y);dead=true;break;}}}
+        if(dead)continue;
+        if(y>0&&gtype(x,y-1)===0&&Math.random()<0.2){sc(nextGrid,x,y-1,type,temp,1);cc(nextGrid,x,y);}
+        else{const d=Math.random()<0.5?-1:1;if(y>0&&x+d>=0&&x+d<COLS&&gtype(x+d,y-1)===0&&Math.random()<0.3){sc(nextGrid,x+d,y-1,type,temp,1);cc(nextGrid,x,y);}else sc(nextGrid,x,y,type,temp,1);}
         continue;
       }
-
-      // ── TORNADO ──
+      // TORNADO
       if(key==='TORNADO'){
-        const nl2=temp-1;
-        if(nl2<=0){ clearCell(nextGrid,x,y); continue; }
-        setCell(nextGrid,x,y,type,nl2,1);
-        // Suck in nearby particles
-        const radius=8;
-        for(let dy=-radius;dy<=radius;dy++){
-          for(let dx=-radius;dx<=radius;dx++){
-            const nx=x+dx,ny=y+dy;
-            if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-            if(Math.abs(dx)+Math.abs(dy)<2) continue;
-            const nt=getType(nx,ny); if(nt===0) continue;
-            const nk=ELEM_KEYS[nt-1];
-            if(nk==='TORNADO'||nk==='STONE'||nk==='GLASS'||nk==='TNT') continue;
-            if(Math.random()<0.06){
-              // Pull toward tornado center with swirl
-              const angle=Math.atan2(dy,dx)+Math.PI/4;
-              const mx=Math.round(Math.cos(angle));
-              const my=Math.round(Math.sin(angle));
-              const tx2=nx-mx,ty2=ny-my;
-              if(tx2>=0&&tx2<COLS&&ty2>=0&&ty2<ROWS&&getType(tx2,ty2)===0){
-                setCell(nextGrid,tx2,ty2,nt,grid[idx(nx,ny)+1],0);
-                clearCell(nextGrid,nx,ny);
-              }
-              // Occasionally launch particles upward
-              if(Math.abs(dx)<=2&&Math.abs(dy)<=2&&Math.random()<0.1){
-                const launchY=ny-Math.floor(Math.random()*5+1);
-                const launchX=nx+Math.floor(Math.random()*5-2);
-                if(launchX>=0&&launchX<COLS&&launchY>=0&&launchY<ROWS&&getType(launchX,launchY)===0){
-                  setCell(nextGrid,launchX,launchY,nt,grid[idx(nx,ny)+1],0);
-                  clearCell(nextGrid,nx,ny);
-                }
-              }
-            }
+        const nl=temp-1;if(nl<=0){cc(nextGrid,x,y);continue;}
+        sc(nextGrid,x,y,type,nl,1);
+        for(let dy=-8;dy<=8;dy++)for(let dx=-8;dx<=8;dx++){
+          const nx=x+dx,ny=y+dy;if(nx<0||nx>=COLS||ny<0||ny>=ROWS)continue;
+          if(Math.abs(dx)+Math.abs(dy)<2)continue;
+          const nt=gtype(nx,ny);if(!nt)continue;const nk=EKEYS[nt-1];
+          if(nk==='TORNADO'||nk==='STONE'||nk==='GLASS'||nk==='TNT')continue;
+          if(Math.random()<0.06){
+            const ang=Math.atan2(dy,dx)+Math.PI/4;
+            const tx=nx-Math.round(Math.cos(ang)),ty=ny-Math.round(Math.sin(ang));
+            if(tx>=0&&tx<COLS&&ty>=0&&ty<ROWS&&gtype(tx,ty)===0){sc(nextGrid,tx,ty,nt,grid[gi(nx,ny)+1],0);cc(nextGrid,nx,ny);}
           }
         }
-        // Tornado drifts slightly
-        if(Math.random()<0.1){
-          const d3=Math.random()<0.5?-1:1;
-          if(x+d3>=0&&x+d3<COLS&&getType(x+d3,y)===0){ setCell(nextGrid,x+d3,y,type,nl2,1); clearCell(nextGrid,x,y); }
-        }
+        if(Math.random()<0.1){const d=Math.random()<0.5?-1:1;if(x+d>=0&&x+d<COLS&&gtype(x+d,y)===0){sc(nextGrid,x+d,y,type,nl,1);cc(nextGrid,x,y);}}
         continue;
       }
-
-      // ── MAGMA ROCK ──
+      // MAGMAROCK
       if(key==='MAGMAROCK'){
-        // Periodically emit lava from surface
-        if(Math.random()<0.008){
-          const dirs=[[x,y-1],[x-1,y],[x+1,y]];
-          for(const [nx,ny] of dirs){
-            if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&getType(nx,ny)===0&&Math.random()<0.5){
-              setCell(nextGrid,nx,ny,ELEM_IDX['LAVA'],200,0); break;
-            }
-          }
-        }
-        // Glow — heats up neighbors
-        for(const [nx,ny] of [[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
-          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-          const nt=getType(nx,ny); if(nt===0) continue;
-          const nk=ELEM_KEYS[nt-1];
-          if(nk==='ICE'&&Math.random()<0.08) setCell(nextGrid,nx,ny,ELEM_IDX['WATER'],20,0);
-          if(nk==='WOOD'&&Math.random()<0.02) setCell(nextGrid,nx,ny,ELEM_IDX['FIRE'],180,0);
-        }
+        if(Math.random()<0.008){for(const[nx,ny]of[[x,y-1],[x-1,y],[x+1,y]]){if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&gtype(nx,ny)===0&&Math.random()<0.5){sc(nextGrid,nx,ny,EIDX.LAVA,200,0);break;}}}
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){if(nx<0||nx>=COLS||ny<0||ny>=ROWS)continue;const nt=gtype(nx,ny);if(!nt)continue;const nk=EKEYS[nt-1];if(nk==='ICE'&&Math.random()<0.08)sc(nextGrid,nx,ny,EIDX.WATER,20,0);if(nk==='WOOD'&&Math.random()<0.02)sc(nextGrid,nx,ny,EIDX.FIRE,180,0);}
         continue;
       }
-
-      // ── BUBBLE ──
+      // BUBBLE
       if(key==='BUBBLE'){
-        const nl3=temp-1;
-        if(nl3<=0){ clearCell(nextGrid,x,y); continue; }
-        // Rises through water and air
-        const below=y<ROWS-1?ELEM_KEYS[getType(x,y+1)-1]:'STONE';
-        const above=y>0?getType(x,y-1):1;
-        if(above===0){
-          setCell(nextGrid,x,y-1,type,nl3,1); clearCell(nextGrid,x,y);
-        } else if(y>0&&above>0&&ELEM_KEYS[above-1]==='WATER'){
-          // Displace water downward, bubble rises
-          const wt=nextGrid[idx(x,y-1)+1];
-          setCell(nextGrid,x,y-1,type,nl3,1);
-          setCell(nextGrid,x,y,ELEM_IDX['WATER'],wt,1);
-        } else {
-          const d2=Math.random()<0.5?-1:1;
-          if(y>0&&x+d2>=0&&x+d2<COLS&&getType(x+d2,y-1)===0){ setCell(nextGrid,x+d2,y-1,type,nl3,1); clearCell(nextGrid,x,y); }
-          else setCell(nextGrid,x,y,type,nl3,1);
-        }
+        const nl=temp-1;if(nl<=0){cc(nextGrid,x,y);continue;}
+        const above=y>0?gtype(x,y-1):1;
+        if(above===0){sc(nextGrid,x,y-1,type,nl,1);cc(nextGrid,x,y);}
+        else if(y>0&&above>0&&EKEYS[above-1]==='WATER'){sc(nextGrid,x,y-1,type,nl,1);sc(nextGrid,x,y,EIDX.WATER,nextGrid[gi(x,y-1)+1],1);}
+        else{const d=Math.random()<0.5?-1:1;if(y>0&&x+d>=0&&x+d<COLS&&gtype(x+d,y-1)===0){sc(nextGrid,x+d,y-1,type,nl,1);cc(nextGrid,x,y);}else sc(nextGrid,x,y,type,nl,1);}
         continue;
       }
-
-      // ── ELECTRIC ──
+      // ELECTRIC
       if(key==='ELECTRIC'){
-        const nl4=temp-3;
-        if(nl4<=0){ clearCell(nextGrid,x,y); continue; }
-        setCell(nextGrid,x,y,type,nl4,1);
-        // Zap to conductive neighbors (water, metal-like stone, ice)
-        const conduct=['WATER','STONE','GLASS','ICE','SALT'];
-        for(const [nx,ny] of [[x-1,y],[x+1,y],[x,y-1],[x,y+1],[x-1,y-1],[x+1,y-1],[x-1,y+1],[x+1,y+1]]){
-          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-          const nt=getType(nx,ny); if(nt===0) continue;
-          const nk=ELEM_KEYS[nt-1];
-          if(conduct.includes(nk)&&Math.random()<0.08){
-            setCell(nextGrid,nx,ny,ELEM_IDX['ELECTRIC'],nl4-10,0);
-            // Shock: boil water, crack ice, melt sand
-            if(nk==='WATER'&&Math.random()<0.1) setCell(nextGrid,nx,ny,ELEM_IDX['STEAM'],100,0);
-            if(nk==='ICE'&&Math.random()<0.15) setCell(nextGrid,nx,ny,ELEM_IDX['WATER'],20,0);
-            if(nk==='SAND'&&Math.random()<0.05) setCell(nextGrid,nx,ny,ELEM_IDX['GLASS'],20,0);
-          }
-          // Ignite flammables
-          if(ELEMENTS[nk]?.flammable&&Math.random()<0.1) setCell(nextGrid,nx,ny,ELEM_IDX['FIRE'],180,0);
-          // Explode TNT
-          if(nk==='TNT'&&Math.random()<0.2) tntExplode(nx,ny);
-          // Explode gunpowder
-          if(nk==='GUNPOWDER'&&Math.random()<0.4) explode(nx,ny,4,false);
-          // Kill virus
-          if(nk==='VIRUS'&&Math.random()<0.3) clearCell(nextGrid,nx,ny);
+        const nl=temp-3;if(nl<=0){cc(nextGrid,x,y);continue;}
+        sc(nextGrid,x,y,type,nl,1);
+        const cond=['WATER','STONE','GLASS','ICE','SALT'];
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1],[x-1,y-1],[x+1,y-1],[x-1,y+1],[x+1,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS)continue;const nt=gtype(nx,ny);if(!nt)continue;const nk=EKEYS[nt-1];
+          if(cond.includes(nk)&&Math.random()<0.08){sc(nextGrid,nx,ny,EIDX.ELECTRIC,nl-10,0);if(nk==='WATER'&&Math.random()<0.1)sc(nextGrid,nx,ny,EIDX.STEAM,100,0);if(nk==='ICE'&&Math.random()<0.15)sc(nextGrid,nx,ny,EIDX.WATER,20,0);if(nk==='SAND'&&Math.random()<0.05)sc(nextGrid,nx,ny,EIDX.GLASS,20,0);}
+          if(ELEMENTS[nk]?.flammable&&Math.random()<0.1)sc(nextGrid,nx,ny,EIDX.FIRE,180,0);
+          if(nk==='TNT'&&Math.random()<0.2)bigExplode(nx,ny);
+          if(nk==='GUNPOWDER'&&Math.random()<0.4)explode(nx,ny,4,false);
+          if(nk==='VIRUS'&&Math.random()<0.3)cc(nextGrid,nx,ny);
         }
-        // Electric arcs randomly
-        if(Math.random()<0.3){
-          const arcDirs=[[x-1,y],[x+1,y],[x,y-1],[x,y+1]];
-          const [ax,ay]=arcDirs[Math.floor(Math.random()*arcDirs.length)];
-          if(ax>=0&&ax<COLS&&ay>=0&&ay<ROWS&&getType(ax,ay)===0) setCell(nextGrid,ax,ay,ELEM_IDX['ELECTRIC'],nl4-20,1);
-        }
+        if(Math.random()<0.3){const ad=[[x-1,y],[x+1,y],[x,y-1],[x,y+1]][0|Math.random()*4];if(ad[0]>=0&&ad[0]<COLS&&ad[1]>=0&&ad[1]<ROWS&&gtype(ad[0],ad[1])===0)sc(nextGrid,ad[0],ad[1],EIDX.ELECTRIC,nl-20,1);}
         continue;
       }
-
-      // ── STATIC SOLIDS ──
-      if(key==='STONE'||key==='GLASS'||key==='PLANT'||key==='WOOD'||key==='MAGMAROCK') continue;
-
-      // ── POWDER ──
+      // Static solids
+      if(key==='STONE'||key==='GLASS'||key==='PLANT'||key==='WOOD'||key==='MAGMAROCK')continue;
+      // Powder
       if(elem.type==='powder'){
-        if(!settings.gravity){ setCell(nextGrid,x,y,type,temp,1); continue; }
-        if(tryMove(x,y,x,y+1,type,temp)) continue;
-        const d2=Math.random()<0.5?-1:1;
-        if(tryMove(x,y,x+d2,y+1,type,temp)) continue;
-        if(tryMove(x,y,x-d2,y+1,type,temp)) continue;
-        setCell(nextGrid,x,y,type,temp,1);
-        continue;
+        if(!settings.gravity){sc(nextGrid,x,y,type,temp,1);continue;}
+        if(mv(x,y,x,y+1,type,temp))continue;const d=Math.random()<0.5?-1:1;
+        if(mv(x,y,x+d,y+1,type,temp))continue;if(mv(x,y,x-d,y+1,type,temp))continue;
+        sc(nextGrid,x,y,type,temp,1);continue;
       }
-
-      // ── LIQUID ──
+      // Liquid
       if(elem.type==='liquid'){
-        if(!settings.gravity){ setCell(nextGrid,x,y,type,temp,1); continue; }
-        if(tryMove(x,y,x,y+1,type,temp)) continue;
-        if(tryMove(x,y,x+dir,y,type,temp)) continue;
-        if(tryMove(x,y,x-dir,y,type,temp)) continue;
-        if(tryMove(x,y,x+dir,y+1,type,temp)) continue;
-        if(tryMove(x,y,x-dir,y+1,type,temp)) continue;
-        setCell(nextGrid,x,y,type,temp,1);
-        continue;
+        if(!settings.gravity){sc(nextGrid,x,y,type,temp,1);continue;}
+        if(mv(x,y,x,y+1,type,temp))continue;if(mv(x,y,x+dir,y,type,temp))continue;if(mv(x,y,x-dir,y,type,temp))continue;
+        if(mv(x,y,x+dir,y+1,type,temp))continue;if(mv(x,y,x-dir,y+1,type,temp))continue;
+        sc(nextGrid,x,y,type,temp,1);continue;
       }
     }
   }
-
-  // Wind
-  if(settings.wind){
-    for(let y=0;y<ROWS;y++){
-      if(Math.random()<0.01){
-        for(let x=0;x<COLS-1;x++){
-          const t=grid[idx(x,y)];
-          if(t!==0&&grid[idx(x+1,y)]===0&&ELEMENTS[ELEM_KEYS[t-1]].type==='powder'&&Math.random()<0.3){
-            setCell(nextGrid,x+1,y,t,grid[idx(x,y)+1],0); clearCell(nextGrid,x,y);
-          }
-        }
-      }
-    }
-  }
-
-  grid.set(nextGrid);
-  for(let i=2;i<grid.length;i+=3) grid[i]=0;
+  if(settings.wind){for(let y=0;y<ROWS;y++){if(Math.random()<0.01){for(let x=0;x<COLS-1;x++){const t=grid[gi(x,y)];if(t&&!grid[gi(x+1,y)]&&ELEMENTS[EKEYS[t-1]].type==='powder'&&Math.random()<0.3){sc(nextGrid,x+1,y,t,grid[gi(x,y)+1],0);cc(nextGrid,x,y);}}}}}
+  grid.set(nextGrid);for(let i=2;i<grid.length;i+=3)grid[i]=0;
 }
 
-function tryMove(fx,fy,tx,ty,type,temp){
-  if(tx<0||tx>=COLS||ty<0||ty>=ROWS) return false;
-  const tt=getType(tx,ty);
-  if(tt===0){ setCell(nextGrid,tx,ty,type,temp,1); clearCell(nextGrid,fx,fy); return true; }
-  const se=ELEMENTS[ELEM_KEYS[type-1]];
-  if(tt>0){
-    const de=ELEMENTS[ELEM_KEYS[tt-1]];
-    if(se.density>de.density&&de.type==='liquid'&&se.type!=='solid'){
-      const dt=nextGrid[idx(tx,ty)+1];
-      setCell(nextGrid,tx,ty,type,temp,1); setCell(nextGrid,fx,fy,tt,dt,1); return true;
-    }
-  }
+function mv(fx,fy,tx,ty,type,temp){
+  if(tx<0||tx>=COLS||ty<0||ty>=ROWS)return false;
+  const tt=gtype(tx,ty);
+  if(tt===0){sc(nextGrid,tx,ty,type,temp,1);cc(nextGrid,fx,fy);return true;}
+  const se=ELEMENTS[EKEYS[type-1]];
+  if(tt>0){const de=ELEMENTS[EKEYS[tt-1]];if(se.density>de.density&&de.type==='liquid'&&se.type!=='solid'){sc(nextGrid,tx,ty,type,temp,1);sc(nextGrid,fx,fy,tt,nextGrid[gi(tx,ty)+1],1);return true;}}
   return false;
 }
-
 function explode(cx,cy,r,chain=true){
-  screenFlash();
-  for(let dy=-r;dy<=r;dy++){
-    for(let dx=-r;dx<=r;dx++){
-      if(dx*dx+dy*dy<=r*r){
-        const nx=cx+dx,ny=cy+dy;
-        if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-        const nt=getType(nx,ny);
-        if(nt>0&&chain){
-          const nk=ELEM_KEYS[nt-1];
-          if(nk==='TNT') setTimeout(()=>tntExplode(nx,ny),100+Math.random()*200);
-          if(nk==='GUNPOWDER') explode(nx,ny,3,false);
-        }
-        clearCell(nextGrid,nx,ny);
-        if(Math.random()<0.4) setCell(nextGrid,nx,ny,ELEM_IDX['FIRE'],200,0);
-        if(Math.random()<0.1) setCell(nextGrid,nx,ny,ELEM_IDX['SMOKE'],60,0);
-      }
-    }
+  flash();
+  for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){
+    if(dx*dx+dy*dy>r*r)continue;const nx=cx+dx,ny=cy+dy;
+    if(nx<0||nx>=COLS||ny<0||ny>=ROWS)continue;
+    const nt=gtype(nx,ny);
+    if(nt>0&&chain){const nk=EKEYS[nt-1];if(nk==='TNT')setTimeout(()=>bigExplode(nx,ny),100+Math.random()*200);if(nk==='GUNPOWDER')explode(nx,ny,3,false);}
+    cc(nextGrid,nx,ny);
+    if(Math.random()<0.4)sc(nextGrid,nx,ny,EIDX.FIRE,200,0);
+    if(Math.random()<0.1)sc(nextGrid,nx,ny,EIDX.SMOKE,60,0);
   }
 }
-
-function tntExplode(cx,cy){
+function bigExplode(cx,cy){
   explode(cx,cy,10,true);
-  // Extra shockwave ring of fire
-  for(let dy=-14;dy<=14;dy++){
-    for(let dx=-14;dx<=14;dx++){
-      const d2=dx*dx+dy*dy;
-      if(d2>=90&&d2<=196){
-        const nx=cx+dx,ny=cy+dy;
-        if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&getType(nx,ny)===0&&Math.random()<0.3){
-          setCell(nextGrid,nx,ny,ELEM_IDX['FIRE'],160,0);
-        }
-      }
-    }
-  }
+  for(let dy=-14;dy<=14;dy++)for(let dx=-14;dx<=14;dx++){const d=dx*dx+dy*dy;if(d>=90&&d<=196){const nx=cx+dx,ny=cy+dy;if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&gtype(nx,ny)===0&&Math.random()<0.3)sc(nextGrid,nx,ny,EIDX.FIRE,160,0);}}
 }
+function flash(){const f=document.getElementById('flashOverlay');f.classList.add('flash');setTimeout(()=>f.classList.remove('flash'),80);}
 
-function screenFlash(){
-  const f=document.getElementById('flashOverlay');
-  f.classList.add('flash');
-  setTimeout(()=>f.classList.remove('flash'),80);
-}
-
-// ════════════════════════════════════════
+// ══════════════════════════════════════════════
 // RENDER
-// ════════════════════════════════════════
-let tick=0;
+// ══════════════════════════════════════════════
+let tick2=0;
 function render(){
-  tick++;
+  tick2++;
   const w=canvas.width,h=canvas.height;
-  for(let i=0;i<pixels.length;i+=4){ pixels[i]=26;pixels[i+1]=26;pixels[i+2]=26;pixels[i+3]=255; }
-
-  for(let y=0;y<ROWS;y++){
-    for(let x=0;x<COLS;x++){
-      const type=grid[idx(x,y)]; if(type===0) continue;
-      const key=ELEM_KEYS[type-1];
-      const cellTemp=grid[idx(x,y)+1];
-      let [r,g,b]=ELEMENTS[key].color;
-      const v=(Math.random()-0.5)*10;
-      r=Math.max(0,Math.min(255,r+v));
-      g=Math.max(0,Math.min(255,g+v));
-      b=Math.max(0,Math.min(255,b+v));
-
-      // Custom per-element rendering
-      if(key==='FIRE'){ const t=cellTemp/200; r=255; g=Math.floor(t*130); b=0; }
-      if(key==='LAVA'){ r=200+Math.random()*55; g=50+Math.random()*40; b=0; }
-      if(key==='ELECTRIC'){ const fl=Math.random()<0.5; r=fl?255:200; g=fl?255:220; b=fl?100:0; }
-      if(key==='VIRUS'){ r=150+Math.random()*80; g=0; b=180+Math.random()*75; }
-      if(key==='ANTIMATTER'){ r=Math.random()*30; g=0; b=Math.random()*60; }
-      if(key==='TORNADO'){ const fl2=Math.random()<0.3; r=fl2?220:170; g=fl2?220:170; b=fl2?240:200; }
-      if(key==='MAGMAROCK'){ r=80+Math.random()*40; g=20+Math.random()*20; b=5; }
-      if(key==='BUBBLE'){ const a=Math.sin(tick*0.1+x*0.5)*20; r=120+a; g=200+a; b=240; }
-      if(key==='TNT'){ const fl3=Math.random()<0.05; r=fl3?255:200; g=fl3?200:20; b=fl3?50:20; }
-      if(key==='STEAM'){ const fade=cellTemp/100; r=g=b=180+fade*20; }
-      if(key==='SMOKE'){ r=g=b=90+Math.random()*20; }
-
-      for(let py=0;py<CELL;py++){
-        for(let px=0;px<CELL;px++){
-          const sx=x*CELL+px,sy=y*CELL+py;
-          if(sx>=w||sy>=h) continue;
-          const pi=(sy*w+sx)*4;
-          pixels[pi]=r;pixels[pi+1]=g;pixels[pi+2]=b;pixels[pi+3]=255;
-        }
-      }
+  for(let i=0;i<pixels.length;i+=4){pixels[i]=26;pixels[i+1]=26;pixels[i+2]=26;pixels[i+3]=255;}
+  for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){
+    const type=grid[gi(x,y)];if(!type)continue;
+    const key=EKEYS[type-1];const ct=grid[gi(x,y)+1];
+    let[r,g,b]=ELEMENTS[key].color;
+    const v=(Math.random()-0.5)*10;r=Math.max(0,Math.min(255,r+v));g=Math.max(0,Math.min(255,g+v));b=Math.max(0,Math.min(255,b+v));
+    if(key==='FIRE'){const t=ct/200;r=255;g=Math.floor(t*130);b=0;}
+    if(key==='LAVA'){r=200+Math.random()*55;g=50+Math.random()*40;b=0;}
+    if(key==='ELECTRIC'){const f=Math.random()<0.5;r=f?255:200;g=f?255:220;b=f?80:0;}
+    if(key==='VIRUS'){r=150+Math.random()*80;g=0;b=180+Math.random()*75;}
+    if(key==='ANTIMATTER'){r=Math.random()*30;g=0;b=Math.random()*60;}
+    if(key==='TORNADO'){const f=Math.random()<0.3;r=f?220:170;g=f?220:170;b=f?240:200;}
+    if(key==='MAGMAROCK'){r=80+Math.random()*40;g=20+Math.random()*20;b=5;}
+    if(key==='BUBBLE'){const a=Math.sin(tick2*0.1+x*0.5)*20;r=Math.max(0,Math.min(255,120+a));g=Math.max(0,Math.min(255,200+a));b=240;}
+    if(key==='TNT'){const f=Math.random()<0.05;r=f?255:200;g=f?200:20;b=f?50:20;}
+    if(key==='STEAM'){r=g=b=180+ct/100*20;}
+    if(key==='SMOKE'){r=g=b=90+Math.random()*20;}
+    for(let py=0;py<CELL;py++)for(let px=0;px<CELL;px++){
+      const sx=x*CELL+px,sy=y*CELL+py;if(sx>=w||sy>=h)continue;
+      const pi=(sy*w+sx)*4;pixels[pi]=r;pixels[pi+1]=g;pixels[pi+2]=b;pixels[pi+3]=255;
     }
   }
-
   ctx.putImageData(imageData,0,0);
-
-  // Tornado visual swirl overlay
-  for(const t of tornadoCenters){
-    ctx.save();
-    ctx.globalAlpha=0.12;
-    const grad=ctx.createRadialGradient(t.x*CELL,t.y*CELL,0,t.x*CELL,t.y*CELL,8*CELL);
-    grad.addColorStop(0,'rgba(200,200,220,0.8)');
-    grad.addColorStop(1,'rgba(200,200,220,0)');
-    ctx.fillStyle=grad;
-    ctx.beginPath();
-    ctx.arc(t.x*CELL,t.y*CELL,8*CELL,0,Math.PI*2);
-    ctx.fill();
-    ctx.restore();
+  for(const t of tornadoes){
+    ctx.save();ctx.globalAlpha=0.09;
+    const gr=ctx.createRadialGradient(t.x*CELL,t.y*CELL,0,t.x*CELL,t.y*CELL,8*CELL);
+    gr.addColorStop(0,'rgba(200,200,220,1)');gr.addColorStop(1,'rgba(200,200,220,0)');
+    ctx.fillStyle=gr;ctx.beginPath();ctx.arc(t.x*CELL,t.y*CELL,8*CELL,0,Math.PI*2);ctx.fill();ctx.restore();
   }
-
-  frameCount++;
-  const now=performance.now();
-  if(now-lastFpsTime>=500){
-    const fps=Math.round(frameCount/((now-lastFpsTime)/1000));
-    document.getElementById('fpsDisplay').textContent='FPS: '+fps;
-    frameCount=0; lastFpsTime=now;
-    updateStats();
-  }
+  fc++;const now=performance.now();
+  if(now-fpsT>=500){document.getElementById('fpsDisplay').textContent='FPS: '+Math.round(fc/((now-fpsT)/1000));fc=0;fpsT=now;updateStats();}
 }
-
 function updateStats(){
-  let count=0,totalTemp=0;
-  for(let i=0;i<grid.length;i+=3){ if(grid[i]>0){count++;totalTemp+=grid[i+1];} }
-  document.getElementById('tempDisplay').textContent=(count>0?(totalTemp/count).toFixed(1):'20.0')+'°C';
-  document.getElementById('pressDisplay').textContent=(1+count/5000).toFixed(2)+' atm';
-  document.getElementById('particleDisplay').textContent=count.toLocaleString();
+  let cnt=0,tot=0;for(let i=0;i<grid.length;i+=3){if(grid[i]){cnt++;tot+=grid[i+1];}}
+  document.getElementById('tempDisplay').textContent=(cnt>0?(tot/cnt).toFixed(1):'20.0')+'°C';
+  document.getElementById('pressDisplay').textContent=(1+cnt/5000).toFixed(2)+' atm';
+  document.getElementById('particleDisplay').textContent=cnt.toLocaleString();
 }
 
-// ════════════════════════════════════════
-// ELEMENT GRID UI
-// ════════════════════════════════════════
-function buildElementGrid(){
-  const g=document.getElementById('elementGrid');
-  g.innerHTML=Object.entries(ELEMENTS).map(([key,elem])=>{
-    const dark=ELEM_TEXT_DARK.has(key);
-    return `<button class="elem-btn ${dark?'dark-text':'light-text'} ${key===selectedElement?'selected':''}"
-      style="background:${ELEM_COLORS_CSS[key]}"
-      onclick="selectElem('${key}')" id="ebtn-${key}">${elem.label}</button>`;
-  }).join('');
+// ══════════════════════════════════════════════
+// UI
+// ══════════════════════════════════════════════
+function buildGrid(){
+  document.getElementById('elementGrid').innerHTML=Object.entries(ELEMENTS).map(([k,e])=>`<button class="eb ${DARK_TEXT.has(k)?'dk':'lt'} ${k===selElem?'sel':''}" style="background:${CSS_COLORS[k]}" onclick="pick('${k}')" id="eb-${k}">${e.label}</button>`).join('');
 }
-function selectElem(key){
-  document.getElementById('ebtn-'+selectedElement)?.classList.remove('selected');
-  selectedElement=key;
-  document.getElementById('ebtn-'+key)?.classList.add('selected');
-}
+function pick(k){document.getElementById('eb-'+selElem)?.classList.remove('sel');selElem=k;document.getElementById('eb-'+k)?.classList.add('sel');}
 
-// ════════════════════════════════════════
-// UI CONTROLS
-// ════════════════════════════════════════
 let panelOpen=true;
 function togglePanel(){
   panelOpen=!panelOpen;
-  document.getElementById('elementPanel').classList.toggle('hidden',!panelOpen);
-  document.getElementById('panelToggle').classList.toggle('collapsed',!panelOpen);
+  document.getElementById('panelScroll').classList.toggle('hidden',!panelOpen);
+  doResize();
 }
-function toggleSettings(){ document.getElementById('settingsPanel').classList.toggle('open'); }
-function toggleSetting(key,btn){ settings[key]=!settings[key]; btn.classList.toggle('on',settings[key]); }
-function clearCanvas(){ grid.fill(0); for(let i=1;i<grid.length;i+=3) grid[i]=20; tornadoCenters=[]; }
+function toggleSettings(){document.getElementById('settingsPanel').classList.toggle('open');}
+function toggleSetting(k,b){settings[k]=!settings[k];b.classList.toggle('on',settings[k]);}
+function clearCanvas(){grid.fill(0);for(let i=1;i<grid.length;i+=3)grid[i]=20;tornadoes=[];}
 
-document.addEventListener('click',e=>{
-  const p=document.getElementById('settingsPanel');
-  if(p.classList.contains('open')&&!p.contains(e.target)&&!e.target.closest('#settingsBtn')) p.classList.remove('open');
-});
-window.addEventListener('resize',resizeCanvas);
+document.addEventListener('click',e=>{const p=document.getElementById('settingsPanel');if(p.classList.contains('open')&&!p.contains(e.target)&&!e.target.closest('#settingsBtn'))p.classList.remove('open');});
 
-// ════════════════════════════════════════
-// LOOP
-// ════════════════════════════════════════
-function loop(){ step(); render(); requestAnimationFrame(loop); }
-resizeCanvas();
-buildElementGrid();
+// ══════════════════════════════════════════════
+// RESIZE / ORIENTATION
+// ══════════════════════════════════════════════
+let resizeTO=null;
+function scheduleResize(){
+  clearTimeout(resizeTO);
+  resizeTO=setTimeout(doResize,200);
+}
+window.addEventListener('resize',scheduleResize);
+window.addEventListener('orientationchange',()=>setTimeout(scheduleResize,300));
+if(screen.orientation)screen.orientation.addEventListener('change',()=>setTimeout(scheduleResize,300));
+
+// ══════════════════════════════════════════════
+// MAIN LOOP
+// ══════════════════════════════════════════════
+function loop(){step();render();requestAnimationFrame(loop);}
+doResize();
+buildGrid();
 loop();
 </script>
-
 </body>
 </html>
