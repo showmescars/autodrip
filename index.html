@@ -4,871 +4,1919 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Pokémon Pack Opener</title>
-<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<title>VAULT — Case Opener</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{
-  --red:#cc0000;--red2:#e53935;--yellow:#ffd700;--yellow2:#ffb300;
-  --blue:#1565c0;--blue2:#1e88e5;--purple:#7c3aed;--green:#16a34a;
+:root {
+  --bg: #0a0a0f;
+  --surface: #12121a;
+  --surface2: #1a1a28;
+  --border: rgba(255,255,255,0.07);
+  --accent: #c8a84b;
+  --accent2: #e8c96a;
+  --text: #e8e8f0;
+  --muted: #6b6b88;
+  --red: #e84040;
+  --blue: #4080e8;
+  --purple: #9040e8;
+  --gold: #c8a84b;
+  --green: #40c870;
+  --cyan: #40c8c8;
 }
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html,body{width:100%;height:100%;font-family:'Nunito',sans-serif;overflow:hidden;background:#1a0000;}
 
-.screen{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;overflow:hidden;}
-.screen.active{display:flex;}
+- { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-/* MAIN */
-#screen-main{background:radial-gradient(ellipse at 50% 30%,#e53935 0%,#b71c1c 55%,#7f0000 100%);}
-#screen-main::before{content:’’;position:absolute;inset:0;background:repeating-radial-gradient(circle at 50% 50%,transparent 0,transparent 30px,rgba(255,255,255,0.03) 30px,rgba(255,255,255,0.03) 31px);pointer-events:none;}
-.main-topbar{width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 16px 0;position:relative;z-index:2;}
-.btn-pill{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:999px;border:none;font-family:‘Nunito’,sans-serif;font-weight:800;font-size:14px;cursor:pointer;transition:transform 0.15s;}
-.btn-pill:active{transform:scale(0.93);}
-.btn-code{background:#fff;color:var(–blue);border:2.5px solid var(–blue2);}
-.btn-news{background:#fff;color:var(–green);border:2.5px solid var(–green);}
-.btn-coins{background:#fff;color:#1a1a1a;border:2.5px solid var(–yellow2);}
-.main-hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:2;gap:8px;margin-top:-20px;}
-.main-title{font-family:‘Bangers’,cursive;font-size:72px;color:#fff;text-shadow:4px 4px 0 #7f0000,0 0 40px rgba(255,200,0,0.5);letter-spacing:4px;line-height:1;text-align:center;animation:titlePop 0.6s cubic-bezier(0.34,1.56,0.64,1) both;}
-.main-subtitle{background:var(–yellow);color:var(–red);font-family:‘Bangers’,cursive;font-size:22px;letter-spacing:3px;padding:8px 24px;border-radius:999px;box-shadow:0 3px 12px rgba(0,0,0,0.3);}
-.main-pokeball{width:120px;height:120px;border-radius:50%;background:conic-gradient(#cc0000 0deg 180deg,#fff 180deg 360deg);border:6px solid #222;position:relative;box-shadow:0 6px 24px rgba(0,0,0,0.4);animation:spin 8s linear infinite;margin-bottom:8px;}
-.main-pokeball::after{content:’’;position:absolute;inset:0;border-radius:50%;background:linear-gradient(180deg,rgba(255,255,255,0.15) 0%,transparent 60%);}
-.main-pokeball::before{content:’’;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:32px;height:32px;border-radius:50%;background:#fff;border:5px solid #222;z-index:2;}
-.main-buttons{width:100%;padding:0 20px 40px;display:flex;flex-direction:column;gap:12px;position:relative;z-index:2;}
-.main-btn{width:100%;padding:18px;border-radius:16px;border:none;font-family:‘Nunito’,sans-serif;font-weight:900;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;transition:transform 0.15s;box-shadow:0 4px 16px rgba(0,0,0,0.25);}
-.main-btn:active{transform:scale(0.96) translateY(2px);}
-.btn-shop{background:#fff;color:var(–red);}
-.btn-index{background:#fff;color:var(–blue);border:3px solid var(–blue);}
-.btn-reset{background:transparent;border:2.5px solid rgba(255,255,255,0.7);color:#fff;font-size:15px;padding:12px 24px;border-radius:999px;align-self:flex-end;width:auto;}
+html, body {
+width: 100%; height: 100%;
+background: var(–bg);
+color: var(–text);
+font-family: ‘Rajdhani’, sans-serif;
+overflow: hidden;
+}
 
-/* MODALS */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:100;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(3px);}
-.modal-overlay.active{display:flex;}
-.modal{width:100%;max-width:500px;background:#f5f5f5;border-radius:28px 28px 0 0;overflow:hidden;animation:slideUp 0.35s cubic-bezier(0.34,1.3,0.64,1) both;max-height:88vh;display:flex;flex-direction:column;}
-.modal-header{background:var(–red2);color:#fff;padding:18px 20px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
-.modal-header h2{font-size:22px;font-weight:900;flex:1;}
-.modal-coins-badge{background:rgba(0,0,0,0.25);border-radius:999px;padding:6px 14px;font-size:15px;font-weight:800;}
-.modal-close{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.2);border:none;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;}
-.shop-tabs{display:flex;background:#fff;flex-shrink:0;border-bottom:1px solid #e0e0e0;}
-.shop-tab{flex:1;padding:14px;text-align:center;font-weight:800;font-size:15px;cursor:pointer;border:none;background:none;color:#999;border-bottom:3px solid transparent;transition:all 0.2s;}
-.shop-tab.active{color:var(–red);border-bottom-color:var(–red);}
-.modal-body{overflow-y:auto;flex:1;padding:16px;}
+/* ── SCREENS ── */
+.screen { position: absolute; inset: 0; display: none; flex-direction: column; overflow: hidden; }
+.screen.active { display: flex; }
 
-/* PACK CARDS */
-.section-header{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:900;margin-bottom:14px;margin-top:8px;}
-.pack-card{background:#fff;border-radius:16px;padding:16px;display:flex;gap:14px;align-items:center;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,0.08);border:2px solid transparent;transition:transform 0.15s;}
-.pack-card:active{transform:scale(0.98);}
-.pack-img{width:80px;height:110px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:36px;}
-.pack-info{flex:1;min-width:0;}
-.pack-name{font-size:17px;font-weight:900;margin-bottom:4px;}
-.pack-desc{font-size:13px;color:#666;margin-bottom:10px;}
-.pack-footer{display:flex;align-items:center;gap:10px;}
-.price-free{color:var(–green);font-size:16px;font-weight:900;}
-.price-cost{color:var(–purple);font-size:15px;font-weight:900;}
-.btn-open{background:var(–red2);color:#fff;border:none;border-radius:999px;padding:10px 20px;font-family:‘Nunito’,sans-serif;font-weight:800;font-size:14px;cursor:pointer;transition:transform 0.15s;white-space:nowrap;}
-.btn-open:active{transform:scale(0.94);}
-.pack-card.shiny-card{background:linear-gradient(135deg,#fef9c3,#fce7f3);border-color:var(–yellow2);}
-.pack-card.limited-card{background:linear-gradient(135deg,#f3e8ff,#fce7f3);border-color:var(–purple);}
-.badge{position:absolute;top:8px;right:8px;color:#fff;font-size:10px;font-weight:900;padding:3px 8px;border-radius:999px;z-index:1;}
+/* ── BACKGROUND GRID ── */
+body::before {
+content: ‘’;
+position: fixed; inset: 0;
+background-image:
+linear-gradient(rgba(200,168,75,0.03) 1px, transparent 1px),
+linear-gradient(90deg, rgba(200,168,75,0.03) 1px, transparent 1px);
+background-size: 40px 40px;
+pointer-events: none;
+z-index: 0;
+}
 
-/* INDEX */
-.index-header{background:linear-gradient(135deg,#e53935,#ff7043);color:#fff;padding:20px;flex-shrink:0;}
-.region-tabs{display:flex;gap:10px;padding:14px 16px;background:#f5f5f5;border-bottom:1px solid #ddd;flex-shrink:0;}
-.region-tab{padding:10px 22px;border-radius:999px;font-weight:800;font-size:13px;cursor:pointer;border:none;background:#d7ccc8;color:#795548;transition:all 0.2s;}
-.region-tab.active{background:var(–yellow);color:#7f3900;}
-.dex-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px;}
-.dex-card{aspect-ratio:1;border-radius:14px;background:#a1887f;display:flex;flex-direction:column;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);font-weight:700;cursor:pointer;transition:transform 0.15s;position:relative;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.15);}
-.dex-card.owned,.dex-card.limited-owned{background:#fff;color:#333;}
-.dex-card:active{transform:scale(0.93);}
-.dex-emoji{font-size:26px;line-height:1;}
-.dex-name{font-size:8px;font-weight:800;margin-top:2px;text-align:center;padding:0 2px;}
-.dex-num{font-size:8px;color:#aaa;}
-.dex-gem{font-size:13px;position:absolute;top:3px;right:3px;}
+/* ── MAIN MENU ── */
+#screen-main {
+align-items: center;
+justify-content: space-between;
+padding: 0;
+z-index: 1;
+}
 
-/* OPENING */
-#screen-opening{background:radial-gradient(ellipse at 50% 40%,#1a237e 0%,#0d0d0d 100%);z-index:200;}
-.opening-bg-stars{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
-.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle 2s ease-in-out infinite;}
-.opening-top{width:100%;padding:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:2;flex-shrink:0;}
-.btn-back{background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.3);color:#fff;border-radius:999px;padding:8px 18px;font-family:‘Nunito’,sans-serif;font-weight:800;cursor:pointer;font-size:14px;}
-.opening-center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;position:relative;z-index:2;padding:16px;overflow-y:auto;}
-.pack-3d{width:140px;height:200px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:64px;cursor:pointer;box-shadow:0 12px 40px rgba(0,0,0,0.6),inset 0 2px 8px rgba(255,255,255,0.2);animation:packFloat 2.5s ease-in-out infinite;position:relative;overflow:hidden;flex-shrink:0;border:none;}
-.pack-3d::before{content:’’;position:absolute;inset:0;border-radius:18px;background:linear-gradient(135deg,rgba(255,255,255,0.25) 0%,transparent 60%);}
-.pack-3d:active{transform:scale(0.94) !important;animation:none;}
-.tap-hint{color:rgba(255,255,255,0.7);font-size:15px;font-weight:700;animation:pulse 1.5s ease-in-out infinite;letter-spacing:1px;}
-.reveal-grid{width:100%;max-width:400px;display:flex;gap:10px;justify-content:center;}
-.reveal-card{flex:1;min-width:0;aspect-ratio:0.68;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;gap:3px;animation:cardFlip 0.5s cubic-bezier(0.34,1.4,0.64,1) both;box-shadow:0 6px 20px rgba(0,0,0,0.4);position:relative;overflow:hidden;cursor:pointer;border:none;}
-.reveal-card::before{content:’’;position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.3) 0%,transparent 60%);}
-.reveal-card:nth-child(1){animation-delay:0.1s;}
-.reveal-card:nth-child(2){animation-delay:0.25s;}
-.reveal-card:nth-child(3){animation-delay:0.4s;}
-.reveal-card:active{transform:scale(0.95);}
-.reveal-emoji{font-size:32px;position:relative;z-index:1;}
-.reveal-name{font-size:10px;font-weight:900;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.5);text-align:center;position:relative;z-index:1;}
-.reveal-type{font-size:8px;color:rgba(255,255,255,0.85);font-weight:700;background:rgba(0,0,0,0.25);padding:2px 5px;border-radius:99px;position:relative;z-index:1;}
-.reveal-rarity-icon{position:absolute;top:5px;right:5px;font-size:12px;z-index:2;}
-.reveal-coins{color:rgba(255,255,255,0.85);font-weight:800;font-size:15px;text-align:center;}
-.reveal-actions{display:flex;gap:12px;margin-top:4px;}
-.btn-again{background:var(–yellow);color:#7f3900;border:none;border-radius:999px;padding:14px 28px;font-family:‘Nunito’,sans-serif;font-weight:900;font-size:16px;cursor:pointer;box-shadow:0 4px 16px rgba(255,200,0,0.4);}
-.btn-again:active{transform:scale(0.94);}
-.btn-home2{background:rgba(255,255,255,0.15);color:#fff;border:2px solid rgba(255,255,255,0.4);border-radius:999px;padding:14px 24px;font-family:‘Nunito’,sans-serif;font-weight:800;font-size:15px;cursor:pointer;}
+.main-header {
+width: 100%;
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 16px 20px;
+border-bottom: 1px solid var(–border);
+background: rgba(18,18,26,0.9);
+backdrop-filter: blur(10px);
+flex-shrink: 0;
+z-index: 2;
+}
 
-/* SHINY FLASH */
-.shiny-flash{position:fixed;inset:0;background:radial-gradient(ellipse,rgba(255,255,255,0.7) 0%,transparent 70%);pointer-events:none;z-index:9999;animation:shinyFlash 1s ease-out forwards;}
-@keyframes shinyFlash{0%{opacity:1;}100%{opacity:0;}}
+.logo {
+font-family: ‘Orbitron’, monospace;
+font-weight: 900;
+font-size: 24px;
+letter-spacing: 8px;
+color: var(–accent);
+text-shadow: 0 0 30px rgba(200,168,75,0.4);
+}
 
-/* CODE */
-.code-input-wrap{padding:20px;}
-.code-input-wrap p{margin-bottom:12px;color:#555;font-size:14px;font-weight:600;}
-.code-input{width:100%;padding:14px;border-radius:12px;border:2px solid #ddd;font-family:‘Nunito’,sans-serif;font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:2px;outline:none;}
-.code-input:focus{border-color:var(–blue2);}
-.btn-redeem{width:100%;margin-top:12px;padding:14px;border-radius:12px;background:var(–blue);color:#fff;border:none;font-family:‘Nunito’,sans-serif;font-weight:900;font-size:16px;cursor:pointer;}
-.code-result{padding:12px;border-radius:10px;font-weight:700;font-size:14px;margin-top:10px;display:none;}
-.code-result.success{background:#dcfce7;color:#166534;display:block;}
-.code-result.error{background:#fee2e2;color:#991b1b;display:block;}
+.balance-chip {
+display: flex;
+align-items: center;
+gap: 8px;
+background: var(–surface2);
+border: 1px solid var(–accent);
+border-radius: 8px;
+padding: 8px 16px;
+font-family: ‘Orbitron’, monospace;
+font-size: 14px;
+font-weight: 700;
+color: var(–accent2);
+}
 
-/* DETAIL */
-.poke-detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
-.poke-detail-overlay.active{display:flex;}
-.poke-detail-card{width:85%;max-width:340px;border-radius:24px;padding:28px;display:flex;flex-direction:column;align-items:center;gap:12px;animation:titlePop 0.35s cubic-bezier(0.34,1.4,0.64,1) both;position:relative;}
-.poke-detail-close{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;border:none;background:rgba(0,0,0,0.2);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;}
-.poke-detail-emoji{font-size:80px;}
-.poke-detail-name{font-family:‘Bangers’,cursive;font-size:32px;letter-spacing:2px;color:#fff;}
-.poke-detail-num{color:rgba(255,255,255,0.7);font-weight:700;}
-.poke-detail-type{background:rgba(255,255,255,0.25);color:#fff;padding:6px 16px;border-radius:999px;font-weight:800;font-size:14px;}
-.poke-detail-stats{width:100%;background:rgba(255,255,255,0.15);border-radius:14px;padding:14px;}
-.stat-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-.stat-row:last-child{margin-bottom:0;}
-.stat-label{color:rgba(255,255,255,0.8);font-size:12px;font-weight:700;width:40px;}
-.stat-bar{flex:1;height:8px;background:rgba(255,255,255,0.2);border-radius:4px;overflow:hidden;}
-.stat-fill{height:100%;border-radius:4px;background:#fff;}
-.stat-val{color:#fff;font-size:12px;font-weight:800;min-width:28px;text-align:right;}
+.balance-chip::before {
+content: ‘$’;
+color: var(–muted);
+font-size: 11px;
+}
 
-/* TOAST */
-.toast{position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-80px);background:#222;color:#fff;padding:12px 24px;border-radius:999px;font-weight:800;font-size:14px;z-index:9999;transition:transform 0.4s cubic-bezier(0.34,1.4,0.64,1);white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,0.4);}
-.toast.show{transform:translateX(-50%) translateY(0);}
+.main-hero {
+flex: 1;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 8px;
+padding: 20px;
+position: relative;
+}
 
-/* ANIMATIONS */
-@keyframes titlePop{from{opacity:0;transform:scale(0.7);}to{opacity:1;transform:scale(1);}}
-@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
-@keyframes spin{to{transform:rotate(360deg);}}
-@keyframes packFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
-@keyframes pulse{0%,100%{opacity:0.5;}50%{opacity:1;}}
-@keyframes twinkle{0%,100%{opacity:0.2;}50%{opacity:1;}}
-@keyframes cardFlip{from{opacity:0;transform:rotateY(90deg) scale(0.8);}to{opacity:1;transform:rotateY(0) scale(1);}}
+.hero-glow {
+position: absolute;
+width: 300px; height: 300px;
+border-radius: 50%;
+background: radial-gradient(circle, rgba(200,168,75,0.08) 0%, transparent 70%);
+pointer-events: none;
+}
+
+.hero-title {
+font-family: ‘Orbitron’, monospace;
+font-size: 13px;
+letter-spacing: 6px;
+color: var(–muted);
+text-transform: uppercase;
+}
+
+.hero-sub {
+font-family: ‘Orbitron’, monospace;
+font-size: 36px;
+font-weight: 900;
+letter-spacing: 4px;
+color: var(–text);
+text-align: center;
+}
+
+.hero-sub span { color: var(–accent); }
+
+.hero-case-preview {
+width: 120px; height: 90px;
+margin: 24px 0 16px;
+position: relative;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.case-box {
+width: 100px; height: 75px;
+background: linear-gradient(145deg, #1e1e30, #12121a);
+border: 1px solid var(–accent);
+border-radius: 8px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 36px;
+box-shadow: 0 0 40px rgba(200,168,75,0.15), inset 0 1px 0 rgba(255,255,255,0.05);
+animation: caseFloat 3s ease-in-out infinite;
+position: relative;
+}
+
+.case-box::before {
+content: ‘’;
+position: absolute;
+top: -1px; left: 10%; right: 10%; height: 1px;
+background: linear-gradient(90deg, transparent, var(–accent2), transparent);
+}
+
+.case-box::after {
+content: ‘’;
+position: absolute;
+bottom: 0; left: 0; right: 0; height: 30%;
+background: linear-gradient(180deg, transparent, rgba(200,168,75,0.04));
+border-radius: 0 0 8px 8px;
+}
+
+@keyframes caseFloat {
+0%, 100% { transform: translateY(0) rotateX(0deg); }
+50% { transform: translateY(-8px) rotateX(3deg); }
+}
+
+.main-stats {
+display: flex;
+gap: 24px;
+margin-bottom: 16px;
+}
+
+.stat { text-align: center; }
+.stat-val {
+font-family: ‘Orbitron’, monospace;
+font-size: 20px;
+font-weight: 700;
+color: var(–accent2);
+}
+.stat-label {
+font-size: 11px;
+letter-spacing: 2px;
+color: var(–muted);
+text-transform: uppercase;
+}
+
+.main-actions {
+width: 100%;
+padding: 16px 20px 32px;
+display: flex;
+flex-direction: column;
+gap: 10px;
+flex-shrink: 0;
+}
+
+.btn-primary {
+width: 100%;
+padding: 18px;
+background: var(–accent);
+color: #0a0a0f;
+border: none;
+border-radius: 8px;
+font-family: ‘Orbitron’, monospace;
+font-weight: 700;
+font-size: 14px;
+letter-spacing: 3px;
+cursor: pointer;
+transition: all 0.15s;
+text-transform: uppercase;
+box-shadow: 0 4px 20px rgba(200,168,75,0.3);
+}
+
+.btn-primary:active { transform: scale(0.97); opacity: 0.9; }
+
+.btn-secondary {
+width: 100%;
+padding: 14px;
+background: transparent;
+color: var(–text);
+border: 1px solid var(–border);
+border-radius: 8px;
+font-family: ‘Rajdhani’, sans-serif;
+font-weight: 600;
+font-size: 15px;
+letter-spacing: 2px;
+cursor: pointer;
+transition: all 0.15s;
+text-transform: uppercase;
+}
+.btn-secondary:active { background: var(–surface2); }
+
+.btn-ghost {
+width: 100%;
+padding: 12px;
+background: transparent;
+color: var(–muted);
+border: 1px dashed rgba(255,255,255,0.1);
+border-radius: 8px;
+font-family: ‘Rajdhani’, sans-serif;
+font-weight: 600;
+font-size: 13px;
+letter-spacing: 2px;
+cursor: pointer;
+transition: all 0.15s;
+text-transform: uppercase;
+}
+.btn-ghost:active { color: var(–text); }
+
+/* ── CASE SELECT MODAL ── */
+.modal-overlay {
+position: fixed; inset: 0;
+background: rgba(0,0,0,0.75);
+z-index: 100;
+display: none;
+align-items: flex-end;
+justify-content: center;
+backdrop-filter: blur(4px);
+}
+.modal-overlay.active { display: flex; }
+
+.modal {
+width: 100%; max-width: 500px;
+background: var(–surface);
+border-radius: 20px 20px 0 0;
+border-top: 1px solid var(–border);
+max-height: 85vh;
+display: flex;
+flex-direction: column;
+animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes slideUp {
+from { transform: translateY(100%); }
+to { transform: translateY(0); }
+}
+
+.modal-handle {
+width: 40px; height: 4px;
+background: var(–border);
+border-radius: 2px;
+margin: 12px auto 0;
+flex-shrink: 0;
+}
+
+.modal-head {
+padding: 16px 20px 14px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+border-bottom: 1px solid var(–border);
+flex-shrink: 0;
+}
+
+.modal-title {
+font-family: ‘Orbitron’, monospace;
+font-size: 13px;
+letter-spacing: 4px;
+color: var(–muted);
+text-transform: uppercase;
+}
+
+.modal-close {
+width: 32px; height: 32px;
+background: var(–surface2);
+border: 1px solid var(–border);
+border-radius: 6px;
+color: var(–muted);
+font-size: 16px;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.modal-body { overflow-y: auto; padding: 16px; flex: 1; }
+
+/* ── CASE CARDS ── */
+.case-card {
+background: var(–surface2);
+border: 1px solid var(–border);
+border-radius: 12px;
+padding: 16px;
+display: flex;
+align-items: center;
+gap: 16px;
+margin-bottom: 10px;
+cursor: pointer;
+transition: all 0.2s;
+position: relative;
+overflow: hidden;
+}
+
+.case-card::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 0; right: 0; height: 1px;
+background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+}
+
+.case-card:active { transform: scale(0.98); border-color: var(–accent); }
+
+.case-card-icon {
+width: 64px; height: 50px;
+border-radius: 8px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 28px;
+flex-shrink: 0;
+position: relative;
+}
+
+.case-card-info { flex: 1; min-width: 0; }
+.case-card-name {
+font-family: ‘Orbitron’, monospace;
+font-size: 12px;
+font-weight: 700;
+letter-spacing: 2px;
+margin-bottom: 4px;
+text-transform: uppercase;
+}
+.case-card-desc {
+font-size: 13px;
+color: var(–muted);
+margin-bottom: 8px;
+}
+.case-card-footer {
+display: flex;
+align-items: center;
+gap: 10px;
+}
+
+.price-tag {
+font-family: ‘Orbitron’, monospace;
+font-size: 13px;
+font-weight: 700;
+}
+
+.price-free { color: var(–green); }
+.price-coins { color: var(–accent); }
+
+.rarity-dots {
+display: flex;
+gap: 4px;
+}
+
+.rdot {
+width: 6px; height: 6px;
+border-radius: 50%;
+}
+
+.tier-badge {
+position: absolute;
+top: 8px; right: 8px;
+font-size: 10px;
+font-weight: 700;
+letter-spacing: 1px;
+padding: 3px 8px;
+border-radius: 4px;
+text-transform: uppercase;
+}
+
+/* ── OPENING SCREEN ── */
+#screen-opening {
+background: var(–bg);
+z-index: 50;
+overflow: hidden;
+}
+
+.opening-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 16px 20px;
+border-bottom: 1px solid var(–border);
+flex-shrink: 0;
+}
+
+.opening-case-name {
+font-family: ‘Orbitron’, monospace;
+font-size: 11px;
+letter-spacing: 4px;
+color: var(–muted);
+text-transform: uppercase;
+}
+
+.btn-back {
+background: var(–surface2);
+border: 1px solid var(–border);
+color: var(–muted);
+border-radius: 6px;
+padding: 8px 14px;
+font-family: ‘Rajdhani’, sans-serif;
+font-weight: 700;
+font-size: 13px;
+letter-spacing: 2px;
+cursor: pointer;
+text-transform: uppercase;
+}
+
+/* ROULETTE */
+.roulette-wrap {
+width: 100%;
+flex-shrink: 0;
+position: relative;
+margin: 24px 0;
+overflow: hidden;
+}
+
+.roulette-track-outer {
+width: 100%;
+overflow: hidden;
+position: relative;
+}
+
+.roulette-track-outer::before,
+.roulette-track-outer::after {
+content: ‘’;
+position: absolute;
+top: 0; bottom: 0;
+width: 80px;
+z-index: 2;
+pointer-events: none;
+}
+.roulette-track-outer::before {
+left: 0;
+background: linear-gradient(90deg, var(–bg), transparent);
+}
+.roulette-track-outer::after {
+right: 0;
+background: linear-gradient(-90deg, var(–bg), transparent);
+}
+
+.roulette-indicator {
+position: absolute;
+left: 50%;
+top: 0; bottom: 0;
+width: 2px;
+background: var(–accent);
+transform: translateX(-50%);
+z-index: 3;
+box-shadow: 0 0 12px var(–accent);
+}
+
+.roulette-indicator::before,
+.roulette-indicator::after {
+content: ‘’;
+position: absolute;
+left: 50%;
+transform: translateX(-50%);
+border-left: 7px solid transparent;
+border-right: 7px solid transparent;
+}
+.roulette-indicator::before {
+top: 0;
+border-top: 10px solid var(–accent);
+}
+.roulette-indicator::after {
+bottom: 0;
+border-bottom: 10px solid var(–accent);
+}
+
+.roulette-track {
+display: flex;
+gap: 8px;
+padding: 12px 0;
+transition: transform 8s cubic-bezier(0.05, 0.8, 0.3, 1);
+will-change: transform;
+}
+
+.roulette-item {
+width: 100px;
+height: 110px;
+border-radius: 10px;
+flex-shrink: 0;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 4px;
+border: 1px solid rgba(255,255,255,0.06);
+position: relative;
+overflow: hidden;
+}
+
+.roulette-item::before {
+content: ‘’;
+position: absolute;
+inset: 0;
+background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 100%);
+}
+
+.ri-emoji { font-size: 34px; position: relative; z-index: 1; }
+.ri-name {
+font-size: 9px;
+font-weight: 700;
+letter-spacing: 1px;
+text-align: center;
+color: rgba(255,255,255,0.7);
+padding: 0 4px;
+text-transform: uppercase;
+position: relative; z-index: 1;
+}
+.ri-rarity {
+font-size: 8px;
+font-weight: 600;
+padding: 2px 6px;
+border-radius: 3px;
+text-transform: uppercase;
+letter-spacing: 1px;
+position: relative; z-index: 1;
+}
+
+/* Opening center */
+.opening-center {
+flex: 1;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+padding: 20px;
+gap: 16px;
+position: relative;
+}
+
+.big-case {
+width: 160px; height: 120px;
+background: linear-gradient(145deg, var(–surface2), var(–surface));
+border: 1px solid var(–accent);
+border-radius: 12px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 56px;
+box-shadow: 0 0 60px rgba(200,168,75,0.15), inset 0 1px 0 rgba(255,255,255,0.05);
+cursor: pointer;
+animation: caseFloat 3s ease-in-out infinite;
+transition: transform 0.15s;
+position: relative;
+overflow: hidden;
+}
+
+.big-case::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 10%; right: 10%; height: 1px;
+background: linear-gradient(90deg, transparent, var(–accent2), transparent);
+}
+
+.big-case:active { transform: scale(0.95) !important; animation: none; }
+
+.open-hint {
+font-family: ‘Orbitron’, monospace;
+font-size: 10px;
+letter-spacing: 4px;
+color: var(–muted);
+animation: blink 1.5s ease-in-out infinite;
+text-transform: uppercase;
+}
+
+@keyframes blink {
+0%, 100% { opacity: 0.4; }
+50% { opacity: 1; }
+}
+
+.opening-cost {
+font-size: 13px;
+color: var(–muted);
+letter-spacing: 1px;
+}
+
+/* Result */
+.result-card {
+width: 100%;
+max-width: 280px;
+border-radius: 16px;
+padding: 28px 20px;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 10px;
+position: relative;
+overflow: hidden;
+animation: resultPop 0.5s cubic-bezier(0.16, 1.3, 0.3, 1) both;
+}
+
+@keyframes resultPop {
+from { opacity: 0; transform: scale(0.5); }
+to { opacity: 1; transform: scale(1); }
+}
+
+.result-card::before {
+content: ‘’;
+position: absolute;
+inset: 0;
+background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 60%);
+}
+
+.result-emoji {
+font-size: 72px;
+position: relative;
+z-index: 1;
+filter: drop-shadow(0 4px 20px rgba(0,0,0,0.5));
+}
+
+.result-name {
+font-family: ‘Orbitron’, monospace;
+font-size: 16px;
+font-weight: 700;
+letter-spacing: 2px;
+color: #fff;
+text-align: center;
+position: relative; z-index: 1;
+text-transform: uppercase;
+}
+
+.result-rarity-badge {
+font-size: 11px;
+font-weight: 700;
+letter-spacing: 2px;
+padding: 4px 12px;
+border-radius: 4px;
+text-transform: uppercase;
+position: relative; z-index: 1;
+}
+
+.result-value {
+font-family: ‘Orbitron’, monospace;
+font-size: 18px;
+font-weight: 700;
+color: var(–accent2);
+position: relative; z-index: 1;
+}
+
+.result-desc {
+font-size: 13px;
+color: rgba(255,255,255,0.5);
+text-align: center;
+position: relative; z-index: 1;
+max-width: 200px;
+}
+
+.result-coins-earned {
+font-size: 14px;
+color: var(–green);
+font-weight: 700;
+letter-spacing: 1px;
+}
+
+.result-actions {
+display: flex;
+gap: 10px;
+width: 100%;
+max-width: 320px;
+}
+
+.btn-again {
+flex: 1;
+padding: 16px;
+background: var(–accent);
+color: #0a0a0f;
+border: none;
+border-radius: 8px;
+font-family: ‘Orbitron’, monospace;
+font-weight: 700;
+font-size: 11px;
+letter-spacing: 3px;
+cursor: pointer;
+transition: all 0.15s;
+text-transform: uppercase;
+box-shadow: 0 4px 20px rgba(200,168,75,0.3);
+}
+.btn-again:active { transform: scale(0.96); }
+
+.btn-menu {
+padding: 16px 20px;
+background: transparent;
+color: var(–muted);
+border: 1px solid var(–border);
+border-radius: 8px;
+font-family: ‘Rajdhani’, sans-serif;
+font-weight: 700;
+font-size: 13px;
+letter-spacing: 2px;
+cursor: pointer;
+transition: all 0.15s;
+text-transform: uppercase;
+}
+
+/* ── INVENTORY ── */
+#screen-inventory {
+z-index: 1;
+background: var(–bg);
+}
+
+.inv-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 16px 20px;
+border-bottom: 1px solid var(–border);
+flex-shrink: 0;
+}
+
+.inv-title {
+font-family: ‘Orbitron’, monospace;
+font-size: 13px;
+letter-spacing: 4px;
+color: var(–muted);
+text-transform: uppercase;
+}
+
+.filter-row {
+display: flex;
+gap: 8px;
+padding: 12px 16px;
+overflow-x: auto;
+flex-shrink: 0;
+border-bottom: 1px solid var(–border);
+scrollbar-width: none;
+}
+.filter-row::-webkit-scrollbar { display: none; }
+
+.filter-chip {
+padding: 6px 14px;
+border-radius: 4px;
+background: var(–surface2);
+border: 1px solid var(–border);
+color: var(–muted);
+font-family: ‘Rajdhani’, sans-serif;
+font-weight: 700;
+font-size: 12px;
+letter-spacing: 2px;
+cursor: pointer;
+text-transform: uppercase;
+flex-shrink: 0;
+transition: all 0.15s;
+}
+.filter-chip.active {
+border-color: var(–accent);
+color: var(–accent);
+background: rgba(200,168,75,0.08);
+}
+
+.inv-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 8px;
+padding: 12px;
+overflow-y: auto;
+flex: 1;
+}
+
+.inv-item {
+aspect-ratio: 0.8;
+border-radius: 10px;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 4px;
+border: 1px solid rgba(255,255,255,0.06);
+cursor: pointer;
+transition: transform 0.15s;
+position: relative;
+overflow: hidden;
+padding: 8px 4px;
+}
+.inv-item::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 40%;
+background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+}
+.inv-item:active { transform: scale(0.94); }
+
+.inv-emoji { font-size: 28px; position: relative; z-index: 1; }
+.inv-name {
+font-size: 9px;
+font-weight: 700;
+letter-spacing: 1px;
+text-align: center;
+color: rgba(255,255,255,0.8);
+text-transform: uppercase;
+position: relative; z-index: 1;
+padding: 0 2px;
+}
+.inv-count {
+font-family: ‘Orbitron’, monospace;
+font-size: 9px;
+color: rgba(255,255,255,0.4);
+position: relative; z-index: 1;
+}
+
+.inv-empty {
+grid-column: 1/-1;
+text-align: center;
+padding: 60px 20px;
+color: var(–muted);
+}
+.inv-empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.3; }
+.inv-empty-text { font-size: 14px; letter-spacing: 2px; text-transform: uppercase; }
+
+/* ── ITEM DETAIL ── */
+.detail-overlay {
+position: fixed; inset: 0;
+background: rgba(0,0,0,0.8);
+z-index: 500;
+display: none;
+align-items: center;
+justify-content: center;
+backdrop-filter: blur(8px);
+}
+.detail-overlay.active { display: flex; }
+
+.detail-card {
+width: 85%; max-width: 320px;
+border-radius: 20px;
+padding: 32px 24px;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 12px;
+animation: resultPop 0.3s cubic-bezier(0.16, 1.3, 0.3, 1) both;
+position: relative;
+overflow: hidden;
+}
+.detail-card::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 0; right: 0; height: 60%;
+background: linear-gradient(180deg, rgba(255,255,255,0.07) 0%, transparent 100%);
+}
+.detail-card::after {
+content: ‘’;
+position: absolute;
+top: 0; left: 10%; right: 10%; height: 1px;
+background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+}
+
+.detail-close {
+position: absolute;
+top: 14px; right: 14px;
+width: 30px; height: 30px;
+background: rgba(0,0,0,0.3);
+border: 1px solid rgba(255,255,255,0.1);
+border-radius: 6px;
+color: rgba(255,255,255,0.6);
+font-size: 14px;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.detail-emoji { font-size: 80px; position: relative; z-index: 1; }
+.detail-name {
+font-family: ‘Orbitron’, monospace;
+font-size: 15px;
+font-weight: 700;
+letter-spacing: 2px;
+color: #fff;
+text-align: center;
+text-transform: uppercase;
+position: relative; z-index: 1;
+}
+.detail-rarity-badge {
+font-size: 10px;
+font-weight: 700;
+letter-spacing: 2px;
+padding: 4px 12px;
+border-radius: 4px;
+text-transform: uppercase;
+position: relative; z-index: 1;
+}
+.detail-desc {
+font-size: 13px;
+color: rgba(255,255,255,0.5);
+text-align: center;
+line-height: 1.5;
+position: relative; z-index: 1;
+}
+.detail-value {
+font-family: ‘Orbitron’, monospace;
+font-size: 20px;
+font-weight: 700;
+color: var(–accent2);
+position: relative; z-index: 1;
+}
+.detail-owned {
+font-size: 12px;
+color: rgba(255,255,255,0.35);
+letter-spacing: 2px;
+text-transform: uppercase;
+position: relative; z-index: 1;
+}
+
+/* ── CODE MODAL ── */
+.code-section { padding: 16px; }
+.code-label {
+font-size: 12px;
+letter-spacing: 2px;
+color: var(–muted);
+text-transform: uppercase;
+margin-bottom: 10px;
+}
+.code-input {
+width: 100%;
+background: var(–surface2);
+border: 1px solid var(–border);
+border-radius: 8px;
+padding: 14px 16px;
+color: var(–text);
+font-family: ‘Orbitron’, monospace;
+font-size: 14px;
+font-weight: 700;
+letter-spacing: 3px;
+text-transform: uppercase;
+outline: none;
+transition: border-color 0.2s;
+}
+.code-input:focus { border-color: var(–accent); }
+.code-input::placeholder { color: var(–muted); letter-spacing: 2px; font-size: 11px; }
+
+.btn-redeem {
+width: 100%;
+margin-top: 10px;
+padding: 14px;
+background: var(–accent);
+color: #0a0a0f;
+border: none;
+border-radius: 8px;
+font-family: ‘Orbitron’, monospace;
+font-weight: 700;
+font-size: 12px;
+letter-spacing: 3px;
+cursor: pointer;
+text-transform: uppercase;
+}
+
+.code-result {
+margin-top: 10px;
+padding: 12px;
+border-radius: 8px;
+font-size: 13px;
+font-weight: 700;
+display: none;
+letter-spacing: 1px;
+}
+.code-result.success { background: rgba(64,200,112,0.1); border: 1px solid var(–green); color: var(–green); display: block; }
+.code-result.error { background: rgba(232,64,64,0.1); border: 1px solid var(–red); color: var(–red); display: block; }
+
+.codes-hint {
+margin-top: 16px;
+padding: 14px;
+background: var(–surface2);
+border: 1px solid var(–border);
+border-radius: 8px;
+font-size: 12px;
+color: var(–muted);
+line-height: 1.7;
+}
+.codes-hint strong { color: var(–accent); letter-spacing: 1px; }
+
+/* ── TOAST ── */
+.toast {
+position: fixed;
+bottom: 30px; left: 50%;
+transform: translateX(-50%) translateY(80px);
+background: var(–surface);
+border: 1px solid var(–accent);
+color: var(–text);
+padding: 12px 24px;
+border-radius: 8px;
+font-family: ‘Orbitron’, monospace;
+font-size: 11px;
+letter-spacing: 2px;
+z-index: 9999;
+transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+white-space: nowrap;
+box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+text-transform: uppercase;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ── SHINE FLASH ── */
+.shine-flash {
+position: fixed; inset: 0;
+z-index: 9998;
+pointer-events: none;
+animation: shineOut 1.2s ease-out forwards;
+}
+@keyframes shineOut {
+0% { opacity: 1; }
+100% { opacity: 0; }
+}
+
+/* RARITY COLOR UTILITY CLASSES */
+.r-common    { background: linear-gradient(135deg, #2a2a38, #1e1e2a); }
+.r-uncommon  { background: linear-gradient(135deg, #0e2a18, #1a3a28); }
+.r-rare      { background: linear-gradient(135deg, #0e1a38, #1a2a52); }
+.r-epic      { background: linear-gradient(135deg, #1e0e38, #2e1a52); }
+.r-legendary { background: linear-gradient(135deg, #281805, #3d2808); }
+.r-mythical  { background: linear-gradient(135deg, #280528, #3d0a3d); }
+.r-contraband{ background: linear-gradient(135deg, #280505, #500808); }
+
+.badge-common    { background: rgba(120,120,140,0.2); color: #8888a8; }
+.badge-uncommon  { background: rgba(64,200,112,0.15); color: var(–green); }
+.badge-rare      { background: rgba(64,128,232,0.15); color: var(–blue); }
+.badge-epic      { background: rgba(144,64,232,0.15); color: var(–purple); }
+.badge-legendary { background: rgba(200,168,75,0.15); color: var(–accent2); }
+.badge-mythical  { background: rgba(200,64,200,0.15); color: #e040e0; }
+.badge-contraband{ background: rgba(232,64,64,0.15); color: var(–red); }
+
+/* nav bar */
+.nav-bar {
+display: flex;
+border-top: 1px solid var(–border);
+flex-shrink: 0;
+background: var(–surface);
+}
+
+.nav-btn {
+flex: 1;
+padding: 14px 8px;
+background: none;
+border: none;
+color: var(–muted);
+cursor: pointer;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 4px;
+transition: color 0.15s;
+font-family: ‘Rajdhani’, sans-serif;
+font-weight: 700;
+font-size: 10px;
+letter-spacing: 1px;
+text-transform: uppercase;
+}
+.nav-btn.active { color: var(–accent); }
+.nav-icon { font-size: 20px; line-height: 1; }
+
+/* Particle effect */
+.particles { position: fixed; inset: 0; pointer-events: none; z-index: 9997; }
+.particle {
+position: absolute;
+border-radius: 50%;
+pointer-events: none;
+animation: particleFly 1.5s ease-out forwards;
+}
+@keyframes particleFly {
+0% { opacity: 1; transform: translate(0,0) scale(1); }
+100% { opacity: 0; transform: translate(var(–tx), var(–ty)) scale(0); }
+}
 </style>
 
 </head>
 <body>
 
-<!-- MAIN MENU -->
+<!-- ══════════════ MAIN MENU ══════════════ -->
 
 <div class="screen active" id="screen-main">
-  <div class="main-topbar">
-    <div style="display:flex;gap:8px;">
-      <button class="btn-pill btn-code" id="btnCode">&lt;/&gt; CODE</button>
-      <button class="btn-pill btn-news" id="btnNews">📰 NEWS</button>
-    </div>
-    <button class="btn-pill btn-coins">🪙 <span id="coinDisplay">$0</span></button>
+  <div class="main-header">
+    <div class="logo">VAULT</div>
+    <div class="balance-chip" id="balanceDisplay">0</div>
   </div>
+
   <div class="main-hero">
-    <div class="main-pokeball"></div>
-    <div class="main-title">POKÉMON</div>
-    <div class="main-subtitle">PACK OPENER</div>
+    <div class="hero-glow"></div>
+    <div class="hero-title">Premium</div>
+    <div class="hero-sub">CASE<br><span>OPENER</span></div>
+    <div class="hero-case-preview">
+      <div class="case-box">🎁</div>
+    </div>
+    <div class="main-stats">
+      <div class="stat">
+        <div class="stat-val" id="statOpened">0</div>
+        <div class="stat-label">Opened</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" id="statUnique">0</div>
+        <div class="stat-label">Unique</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" id="statRarest">—</div>
+        <div class="stat-label">Best Drop</div>
+      </div>
+    </div>
   </div>
-  <div class="main-buttons">
-    <button class="main-btn btn-shop" id="btnOpenShop">🛍️ SHOP</button>
-    <button class="main-btn btn-index" id="btnOpenIndex">📖 INDEX</button>
-    <button class="main-btn btn-reset" id="btnReset">🔄 RESET GAME</button>
+
+  <div class="main-actions">
+    <button class="btn-primary" id="btnOpenCase">OPEN A CASE</button>
+    <button class="btn-secondary" id="btnViewInventory">INVENTORY</button>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-ghost" style="flex:1;" id="btnCode">REDEEM CODE</button>
+      <button class="btn-ghost" style="flex:1;" id="btnReset">RESET</button>
+    </div>
   </div>
 </div>
 
-<!-- OPENING SCREEN -->
+<!-- ══════════════ OPENING SCREEN ══════════════ -->
 
 <div class="screen" id="screen-opening">
-  <div class="opening-bg-stars" id="starsContainer"></div>
-  <div class="opening-top">
-    <button class="btn-back" id="btnBackOpening">← Back</button>
-    <span id="openingPackName" style="color:rgba(255,255,255,0.85);font-weight:800;font-size:15px;">Pack</span>
+  <div class="opening-header">
+    <button class="btn-back" id="btnBackOpening">← BACK</button>
+    <div class="opening-case-name" id="openingCaseName">CASE</div>
+    <div style="font-family:'Orbitron',monospace;font-size:11px;color:var(--accent);" id="openingBalance">$0</div>
   </div>
   <div class="opening-center" id="openingCenter"></div>
 </div>
 
-<!-- SHOP MODAL -->
+<!-- ══════════════ INVENTORY SCREEN ══════════════ -->
 
-<div class="modal-overlay" id="modalShop">
+<div class="screen" id="screen-inventory">
+  <div class="inv-header">
+    <button class="btn-back" id="btnBackInventory">← BACK</button>
+    <div class="inv-title">INVENTORY</div>
+    <div style="font-family:'Orbitron',monospace;font-size:11px;color:var(--accent);" id="invBalance">$0</div>
+  </div>
+
+  <div class="filter-row" id="filterRow">
+    <button class="filter-chip active" data-filter="all">ALL</button>
+    <button class="filter-chip" data-filter="contraband">CONTRABAND</button>
+    <button class="filter-chip" data-filter="mythical">MYTHICAL</button>
+    <button class="filter-chip" data-filter="legendary">LEGENDARY</button>
+    <button class="filter-chip" data-filter="epic">EPIC</button>
+    <button class="filter-chip" data-filter="rare">RARE</button>
+    <button class="filter-chip" data-filter="uncommon">UNCOMMON</button>
+    <button class="filter-chip" data-filter="common">COMMON</button>
+  </div>
+
+  <div class="inv-grid" id="invGrid"></div>
+</div>
+
+<!-- ══════════════ CASE SELECT MODAL ══════════════ -->
+
+<div class="modal-overlay" id="modalCases">
   <div class="modal">
-    <div class="modal-header">
-      <span style="font-size:22px;">🛍️</span>
-      <h2>Poké Shop</h2>
-      <div class="modal-coins-badge">🪙 <span id="shopCoins">$0</span></div>
-      <button class="modal-close" id="btnCloseShop">✕</button>
+    <div class="modal-handle"></div>
+    <div class="modal-head">
+      <div class="modal-title">SELECT CASE</div>
+      <button class="modal-close" id="btnCloseCases">✕</button>
     </div>
-    <div class="shop-tabs">
-      <button class="shop-tab active" id="tabBtnPacks">PACKS</button>
-      <button class="shop-tab" id="tabBtnItems">SHOP</button>
-    </div>
-    <div class="modal-body">
-      <div id="tabPacks">
-        <div class="section-header">🔴 Kanto</div>
-        <div class="pack-card">
-          <div class="pack-img" style="background:linear-gradient(135deg,#ff9800,#f44336);">📦</div>
-          <div class="pack-info">
-            <div class="pack-name">Kanto Pack</div>
-            <div class="pack-desc">Contains 3 random Kanto Pokémon</div>
-            <div class="pack-footer">
-              <span class="price-free">FREE</span>
-              <button class="btn-open" data-pack="kanto">Open Pack</button>
-            </div>
-          </div>
-        </div>
-        <div class="pack-card shiny-card" style="position:relative;">
-          <div class="badge" style="background:var(--yellow2);">NEW ✨</div>
-          <div class="pack-img" style="background:linear-gradient(135deg,#a855f7,#ec4899);">⭐</div>
-          <div class="pack-info">
-            <div class="pack-name" style="color:var(--purple);">Shiny Kanto Pack</div>
-            <div class="pack-desc">Contains 3 random Shiny Pokémon</div>
-            <div class="pack-footer">
-              <span class="price-cost">🪙 $500</span>
-              <button class="btn-open" data-pack="shiny-kanto">Open Pack</button>
-            </div>
-          </div>
-        </div>
-        <div class="section-header" style="margin-top:8px;">🟡 Johto</div>
-        <div class="pack-card">
-          <div class="pack-img" style="background:linear-gradient(135deg,#4db6ac,#26a69a);">🌿</div>
-          <div class="pack-info">
-            <div class="pack-name">Johto Pack</div>
-            <div class="pack-desc">Contains 3 random Johto Pokémon</div>
-            <div class="pack-footer">
-              <span class="price-cost">🪙 $200</span>
-              <button class="btn-open" data-pack="johto">Open Pack</button>
-            </div>
-          </div>
-        </div>
-        <div class="section-header" style="margin-top:8px;">🔵 Hoenn</div>
-        <div class="pack-card">
-          <div class="pack-img" style="background:linear-gradient(135deg,#42a5f5,#7e57c2);">🌊</div>
-          <div class="pack-info">
-            <div class="pack-name">Hoenn Pack</div>
-            <div class="pack-desc">Contains 3 random Hoenn Pokémon</div>
-            <div class="pack-footer">
-              <span class="price-cost">🪙 $350</span>
-              <button class="btn-open" data-pack="hoenn">Open Pack</button>
-            </div>
-          </div>
-        </div>
-        <div class="section-header" style="margin-top:8px;">👑 Legendary</div>
-        <div class="pack-card limited-card" style="position:relative;">
-          <div class="badge" style="background:var(--purple);">🎉 LIMITED</div>
-          <div class="pack-img" style="background:linear-gradient(135deg,#ffd700,#ff6b00);">⚡</div>
-          <div class="pack-info">
-            <div class="pack-name" style="color:var(--purple);">Legendary Pack</div>
-            <div class="pack-desc">Guaranteed rare or legendary Pokémon!</div>
-            <div class="pack-footer">
-              <span class="price-cost">🪙 $1000</span>
-              <button class="btn-open" data-pack="legendary">Open Pack</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id="tabItems" style="display:none;">
-        <div class="section-header">💎 Limited Edition</div>
-        <div class="pack-card limited-card" style="position:relative;">
-          <div class="badge" style="background:var(--purple);">🎉 LIMITED</div>
-          <div class="pack-img" style="background:linear-gradient(135deg,#c084fc,#f9a8d4);">🎩</div>
-          <div class="pack-info">
-            <div class="pack-name" style="color:var(--purple);">New Year's Pikachu</div>
-            <div class="pack-desc">Exclusive Edition • One-time purchase</div>
-            <div class="pack-footer">
-              <span class="price-cost">🪙 $4500</span>
-              <button class="btn-open" data-buy="newyear-pikachu" data-cost="4500">Buy</button>
-            </div>
-          </div>
-        </div>
-        <div class="pack-card limited-card" style="margin-top:4px;">
-          <div class="pack-img" style="background:linear-gradient(135deg,#67e8f9,#818cf8);">❄️</div>
-          <div class="pack-info">
-            <div class="pack-name" style="color:#1d4ed8;">Glaceon Special</div>
-            <div class="pack-desc">Winter Edition • Limited Run</div>
-            <div class="pack-footer">
-              <span class="price-cost">🪙 $3000</span>
-              <button class="btn-open" data-buy="glaceon-special" data-cost="3000">Buy</button>
-            </div>
-          </div>
-        </div>
-        <div class="section-header" style="margin-top:8px;">💡 Earn Coins</div>
-        <div style="background:#fff;border-radius:14px;padding:14px;font-size:13px;color:#555;font-weight:600;">
-          Open packs to earn coins! Rarer Pokémon earn more coins. Try codes for bonus coins!<br><br>
-          <strong>Codes:</strong> FREECOIN · WELCOME · SHINYPACK
-        </div>
-      </div>
-    </div>
+    <div class="modal-body" id="caseListBody"></div>
   </div>
 </div>
 
-<!-- INDEX MODAL -->
-
-<div class="modal-overlay" id="modalIndex">
-  <div class="modal">
-    <div class="index-header">
-      <div style="display:flex;align-items:center;justify-content:space-between;">
-        <h2 style="font-family:'Bangers',cursive;font-size:36px;letter-spacing:2px;">INDEX</h2>
-        <div style="display:flex;align-items:center;gap:12px;">
-          <span style="color:#ffd700;font-weight:900;font-size:18px;">🪙 <span id="idxCoins">$0</span></span>
-          <button class="modal-close" id="btnCloseIndex" style="background:rgba(255,255,255,0.2);">✕</button>
-        </div>
-      </div>
-      <div class="region-tabs" id="regionTabs">
-        <button class="region-tab active" data-region="kanto">KANTO</button>
-        <button class="region-tab" data-region="johto">JOHTO</button>
-        <button class="region-tab" data-region="hoenn">HOENN</button>
-      </div>
-    </div>
-    <div class="modal-body" style="padding:0;background:linear-gradient(180deg,#ff7043,#e53935);">
-      <div id="dexContent"></div>
-    </div>
-  </div>
-</div>
-
-<!-- CODE MODAL -->
+<!-- ══════════════ CODE MODAL ══════════════ -->
 
 <div class="modal-overlay" id="modalCode">
   <div class="modal">
-    <div class="modal-header">
-      <span style="font-size:22px;">&lt;/&gt;</span>
-      <h2>Redeem Code</h2>
+    <div class="modal-handle"></div>
+    <div class="modal-head">
+      <div class="modal-title">REDEEM CODE</div>
       <button class="modal-close" id="btnCloseCode">✕</button>
     </div>
-    <div class="code-input-wrap">
-      <p>Enter your promo code to get free coins!</p>
-      <input type="text" class="code-input" id="codeInput" placeholder="ENTER CODE" maxlength="20">
+    <div class="code-section">
+      <div class="code-label">Enter promo code</div>
+      <input type="text" class="code-input" id="codeInput" placeholder="TYPE CODE HERE" maxlength="20">
       <button class="btn-redeem" id="btnRedeem">REDEEM</button>
       <div class="code-result" id="codeResult"></div>
+      <div class="codes-hint">
+        💡 Hint — try these codes:<br>
+        <strong>VAULT100</strong> · <strong>WELCOME</strong> · <strong>FREECASE</strong> · <strong>GOLDKEY</strong>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- POKEMON DETAIL -->
+<!-- ══════════════ ITEM DETAIL ══════════════ -->
 
-<div class="poke-detail-overlay" id="pokeDetail">
-  <div class="poke-detail-card" id="pokeDetailCard">
-    <button class="poke-detail-close" id="btnCloseDetail">✕</button>
-    <div class="poke-detail-emoji" id="detailEmoji">❓</div>
-    <div class="poke-detail-name" id="detailName">POKEMON</div>
-    <div class="poke-detail-num" id="detailNum">#000</div>
-    <div class="poke-detail-type" id="detailType">Normal</div>
-    <div class="poke-detail-stats">
-      <div class="stat-row"><span class="stat-label">HP</span><div class="stat-bar"><div class="stat-fill" id="statHp"></div></div><span class="stat-val" id="svalHp">0</span></div>
-      <div class="stat-row"><span class="stat-label">ATK</span><div class="stat-bar"><div class="stat-fill" id="statAtk"></div></div><span class="stat-val" id="svalAtk">0</span></div>
-      <div class="stat-row"><span class="stat-label">DEF</span><div class="stat-bar"><div class="stat-fill" id="statDef"></div></div><span class="stat-val" id="svalDef">0</span></div>
-      <div class="stat-row"><span class="stat-label">SPD</span><div class="stat-bar"><div class="stat-fill" id="statSpd"></div></div><span class="stat-val" id="svalSpd">0</span></div>
-    </div>
+<div class="detail-overlay" id="detailOverlay">
+  <div class="detail-card" id="detailCard">
+    <button class="detail-close" id="btnCloseDetail">✕</button>
+    <div class="detail-emoji" id="detailEmoji">❓</div>
+    <div class="detail-name" id="detailName">ITEM</div>
+    <div class="detail-rarity-badge" id="detailBadge">COMMON</div>
+    <div class="detail-desc" id="detailDesc">Description</div>
+    <div class="detail-value" id="detailValue">$0</div>
+    <div class="detail-owned" id="detailOwned">×1 OWNED</div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════════════
-// POKEMON DATA
-// ═══════════════════════════════════
-const DB = {
-  kanto:[
-    {id:1,  name:'Bulbasaur', emoji:'🌿',type:'Grass/Poison',rarity:'common',   color:['#4caf50','#81c784'],hp:45, atk:49, def:49, spd:45},
-    {id:4,  name:'Charmander',emoji:'🔥',type:'Fire',        rarity:'common',   color:['#ff5722','#ff7043'],hp:39, atk:52, def:43, spd:65},
-    {id:7,  name:'Squirtle',  emoji:'💧',type:'Water',       rarity:'common',   color:['#2196f3','#64b5f6'],hp:44, atk:48, def:65, spd:43},
-    {id:25, name:'Pikachu',   emoji:'⚡',type:'Electric',    rarity:'uncommon', color:['#ffd700','#ffb300'],hp:35, atk:55, def:30, spd:90},
-    {id:39, name:'Jigglypuff',emoji:'🎤',type:'Normal/Fairy',rarity:'common',   color:['#f48fb1','#f06292'],hp:115,atk:45, def:20, spd:20},
-    {id:52, name:'Meowth',    emoji:'🐱',type:'Normal',      rarity:'common',   color:['#bdbdbd','#9e9e9e'],hp:40, atk:45, def:35, spd:90},
-    {id:54, name:'Psyduck',   emoji:'🦆',type:'Water',       rarity:'common',   color:['#fdd835','#f9a825'],hp:50, atk:52, def:48, spd:55},
-    {id:63, name:'Abra',      emoji:'🔮',type:'Psychic',     rarity:'uncommon', color:['#9c27b0','#ba68c8'],hp:25, atk:20, def:15, spd:90},
-    {id:94, name:'Gengar',    emoji:'👻',type:'Ghost/Poison',rarity:'rare',     color:['#673ab7','#9575cd'],hp:60, atk:65, def:60, spd:110},
-    {id:131,name:'Lapras',    emoji:'🐋',type:'Water/Ice',   rarity:'rare',     color:['#80cbc4','#4db6ac'],hp:130,atk:85, def:80, spd:60},
-    {id:133,name:'Eevee',     emoji:'🦊',type:'Normal',      rarity:'uncommon', color:['#a1887f','#8d6e63'],hp:55, atk:55, def:50, spd:55},
-    {id:143,name:'Snorlax',   emoji:'😴',type:'Normal',      rarity:'rare',     color:['#546e7a','#78909c'],hp:160,atk:110,def:65, spd:30},
-    {id:147,name:'Dratini',   emoji:'🐉',type:'Dragon',      rarity:'rare',     color:['#3f51b5','#7986cb'],hp:41, atk:64, def:45, spd:50},
-    {id:149,name:'Dragonite', emoji:'🐲',type:'Dragon/Fly',  rarity:'legendary',color:['#ff6f00','#ffa000'],hp:91, atk:134,def:95, spd:80},
-    {id:150,name:'Mewtwo',    emoji:'🧬',type:'Psychic',     rarity:'legendary',color:['#7b1fa2','#ab47bc'],hp:106,atk:110,def:90, spd:130},
-    {id:151,name:'Mew',       emoji:'🌸',type:'Psychic',     rarity:'legendary',color:['#f06292','#e91e63'],hp:100,atk:100,def:100,spd:100},
-  ],
-  johto:[
-    {id:152,name:'Chikorita', emoji:'🍃',type:'Grass',       rarity:'common',   color:['#66bb6a','#43a047'],hp:45, atk:49, def:65, spd:45},
-    {id:155,name:'Cyndaquil', emoji:'🔥',type:'Fire',        rarity:'common',   color:['#ef6c00','#e65100'],hp:39, atk:52, def:43, spd:65},
-    {id:158,name:'Totodile',  emoji:'🐊',type:'Water',       rarity:'common',   color:['#0288d1','#01579b'],hp:50, atk:65, def:64, spd:43},
-    {id:175,name:'Togepi',    emoji:'🥚',type:'Fairy',       rarity:'uncommon', color:['#fff9c4','#ffe082'],hp:35, atk:20, def:65, spd:20},
-    {id:179,name:'Mareep',    emoji:'🐑',type:'Electric',    rarity:'common',   color:['#fff176','#ffee58'],hp:55, atk:40, def:40, spd:35},
-    {id:196,name:'Espeon',    emoji:'☀️',type:'Psychic',     rarity:'rare',     color:['#ce93d8','#ab47bc'],hp:65, atk:65, def:60, spd:110},
-    {id:197,name:'Umbreon',   emoji:'🌙',type:'Dark',        rarity:'rare',     color:['#37474f','#263238'],hp:95, atk:65, def:110,spd:65},
-    {id:245,name:'Suicune',   emoji:'💙',type:'Water',       rarity:'legendary',color:['#0097a7','#00838f'],hp:100,atk:75, def:115,spd:85},
-    {id:249,name:'Lugia',     emoji:'🌊',type:'Psychic/Fly', rarity:'legendary',color:['#b0bec5','#90a4ae'],hp:106,atk:90, def:130,spd:110},
-    {id:250,name:'Ho-Oh',     emoji:'🦅',type:'Fire/Flying', rarity:'legendary',color:['#f44336','#ef5350'],hp:106,atk:130,def:90, spd:90},
-    {id:251,name:'Celebi',    emoji:'🌀',type:'Psychic/Grass',rarity:'legendary',color:['#69f0ae','#00e676'],hp:100,atk:100,def:100,spd:100},
-  ],
-  hoenn:[
-    {id:252,name:'Treecko',   emoji:'🦎',type:'Grass',       rarity:'common',   color:['#4caf50','#388e3c'],hp:40, atk:45, def:35, spd:70},
-    {id:255,name:'Torchic',   emoji:'🐣',type:'Fire',        rarity:'common',   color:['#ff7043','#f4511e'],hp:45, atk:60, def:40, spd:45},
-    {id:258,name:'Mudkip',    emoji:'💦',type:'Water',       rarity:'common',   color:['#2196f3','#1976d2'],hp:50, atk:70, def:50, spd:40},
-    {id:280,name:'Ralts',     emoji:'🤍',type:'Psychic/Fairy',rarity:'uncommon',color:['#f8bbd0','#f48fb1'],hp:28, atk:25, def:25, spd:40},
-    {id:302,name:'Sableye',   emoji:'💜',type:'Dark/Ghost',  rarity:'rare',     color:['#512da8','#673ab7'],hp:50, atk:75, def:75, spd:50},
-    {id:350,name:'Milotic',   emoji:'🐠',type:'Water',       rarity:'rare',     color:['#80deea','#4dd0e1'],hp:95, atk:60, def:79, spd:81},
-    {id:359,name:'Absol',     emoji:'🌑',type:'Dark',        rarity:'rare',     color:['#37474f','#455a64'],hp:65, atk:130,def:60, spd:75},
-    {id:373,name:'Salamence', emoji:'🦕',type:'Dragon/Fly',  rarity:'legendary',color:['#1565c0','#1976d2'],hp:95, atk:135,def:80, spd:100},
-    {id:376,name:'Metagross', emoji:'🤖',type:'Steel/Psychic',rarity:'legendary',color:['#455a64','#546e7a'],hp:80, atk:135,def:130,spd:70},
-    {id:384,name:'Rayquaza',  emoji:'🌪️',type:'Dragon/Fly',  rarity:'legendary',color:['#1b5e20','#2e7d32'],hp:105,atk:150,def:90, spd:95},
-    {id:385,name:'Jirachi',   emoji:'⭐',type:'Steel/Psychic',rarity:'legendary',color:['#ffd54f','#ffca28'],hp:100,atk:100,def:100,spd:100},
-  ],
+// ═══════════════════════════════════════
+// DATA — ITEMS
+// ═══════════════════════════════════════
+const ITEMS = {
+  // COMMON
+  c001: { name:'Worn Wrench',    emoji:'🔧', rarity:'common',    value:10,  desc:'A basic utility tool. Found everywhere.' },
+  c002: { name:'Cracked Mug',    emoji:'☕', rarity:'common',    value:8,   desc:'Still holds coffee. Mostly.' },
+  c003: { name:'Paperclip',      emoji:'📎', rarity:'common',    value:5,   desc:'One of millions. Nothing special.' },
+  c004: { name:'Rubber Duck',    emoji:'🦆', rarity:'common',    value:12,  desc:'Debug companion. Battle-tested.' },
+  c005: { name:'Sticky Note',    emoji:'📝', rarity:'common',    value:7,   desc:'Someone left a reminder: "don\'t forget".' },
+  c006: { name:'Lost Penny',     emoji:'🪙', rarity:'common',    value:6,   desc:'From 1987. Barely worth its weight.' },
+  c007: { name:'Tape Roll',      emoji:'🧻', rarity:'common',    value:9,   desc:'Fixes everything. Eventually.' },
+  c008: { name:'Bus Ticket',     emoji:'🎫', rarity:'common',    value:11,  desc:'Expired. Route unknown.' },
+
+  // UNCOMMON
+  u001: { name:'Vintage Lighter', emoji:'🔥', rarity:'uncommon',  value:50,  desc:'Brass finish. Still sparks.' },
+  u002: { name:'Jade Earring',    emoji:'💚', rarity:'uncommon',  value:65,  desc:'One of a pair. The other is missing.' },
+  u003: { name:'Lucky Coin',      emoji:'🥇', rarity:'uncommon',  value:80,  desc:'Worn smooth from years of rubbing.' },
+  u004: { name:'Compass',         emoji:'🧭', rarity:'uncommon',  value:70,  desc:'Always finds north. Occasionally.' },
+  u005: { name:'Glass Vial',      emoji:'🧪', rarity:'uncommon',  value:55,  desc:'Empty. But it glows faintly.' },
+  u006: { name:'Pocket Watch',    emoji:'⌚', rarity:'uncommon',  value:90,  desc:'Stopped at 3:47. Nobody knows why.' },
+
+  // RARE
+  r001: { name:'Obsidian Blade',  emoji:'🗡️', rarity:'rare',      value:250, desc:'Sharper than it looks. Ancient origin.' },
+  r002: { name:'Storm Lantern',   emoji:'🏮', rarity:'rare',      value:300, desc:'Burns without fuel. Somehow.' },
+  r003: { name:'Navigator\'s Map',emoji:'🗺️', rarity:'rare',      value:280, desc:'Shows places that shouldn\'t exist.' },
+  r004: { name:'Crystal Lens',    emoji:'🔭', rarity:'rare',      value:350, desc:'Reveals things hidden to the naked eye.' },
+  r005: { name:'Sealed Letter',   emoji:'📜', rarity:'rare',      value:220, desc:'From someone important. Unopened.' },
+  r006: { name:'Mechanical Heart',emoji:'⚙️', rarity:'rare',      value:400, desc:'Ticks on its own. No battery.' },
+
+  // EPIC
+  e001: { name:'Dragon Scale',    emoji:'🐉', rarity:'epic',      value:900, desc:'Shed willingly. Or taken. Hard to say.' },
+  e002: { name:'Void Prism',      emoji:'🔮', rarity:'epic',      value:850, desc:'Bends light in directions light doesn\'t go.' },
+  e003: { name:'Thunderstone',    emoji:'⚡', rarity:'epic',      value:1000,desc:'Crackling with contained energy.' },
+  e004: { name:'Silver Sigil',    emoji:'🌙', rarity:'epic',      value:950, desc:'Marks its owner. Can\'t be removed.' },
+
+  // LEGENDARY
+  l001: { name:'Crown Jewel',     emoji:'💎', rarity:'legendary', value:3000,desc:'One of seven. Six are unaccounted for.' },
+  l002: { name:'Phoenix Feather', emoji:'🦅', rarity:'legendary', value:2500,desc:'Still warm to the touch. Always.' },
+  l003: { name:'Temporal Key',    emoji:'🗝️', rarity:'legendary', value:4000,desc:'Opens a door that hasn\'t been built yet.' },
+
+  // MYTHICAL
+  m001: { name:'Starborn Core',   emoji:'⭐', rarity:'mythical',  value:8000,desc:'Collapsed from a dying star. Still alive.' },
+  m002: { name:'Infinity Loop',   emoji:'♾️', rarity:'mythical',  value:9500,desc:'Has no beginning. Has no end. Somehow weighs something.' },
+
+  // CONTRABAND
+  x001: { name:'The Artifact',    emoji:'🌑', rarity:'contraband',value:25000,desc:'No classification exists for this. It shouldn\'t be here.' },
 };
 
-const SHINY_POOL = [
-  {id:25, name:'✨ Pikachu',   emoji:'🌟',type:'Electric',    rarity:'shiny',color:['#fffde7','#ffe082'],hp:35, atk:55, def:30, spd:90},
-  {id:94, name:'✨ Gengar',    emoji:'💫',type:'Ghost/Poison',rarity:'shiny',color:['#e1bee7','#ce93d8'],hp:60, atk:65, def:60, spd:110},
-  {id:6,  name:'✨ Charizard', emoji:'🌈',type:'Fire/Flying', rarity:'shiny',color:['#111','#333'],      hp:78, atk:84, def:78, spd:100},
-  {id:150,name:'✨ Mewtwo',    emoji:'💠',type:'Psychic',     rarity:'shiny',color:['#81d4fa','#4fc3f7'],hp:106,atk:110,def:90, spd:130},
-  {id:149,name:'✨ Dragonite', emoji:'🔅',type:'Dragon/Fly',  rarity:'shiny',color:['#c5e1a5','#aed581'],hp:91, atk:134,def:95, spd:80},
-  {id:131,name:'✨ Lapras',    emoji:'🩵',type:'Water/Ice',   rarity:'shiny',color:['#b3e5fc','#81d4fa'],hp:130,atk:85, def:80, spd:60},
+const RARITY_ORDER = ['common','uncommon','rare','epic','legendary','mythical','contraband'];
+const RARITY_WEIGHT = { common:45, uncommon:25, rare:15, epic:8, legendary:4, mythical:2, contraband:0.5 };
+
+// ── CASES ──
+const CASES = [
+  {
+    id:'starter',
+    name:'STARTER CASE',
+    emoji:'📦',
+    desc:'Common & Uncommon drops only',
+    cost:0,
+    gradient:['#2a2a40','#1a1a2e'],
+    accentColor:'#8888aa',
+    tier:'FREE',
+    tierColor:'var(--green)',
+    pool: Object.entries(ITEMS).filter(([,v])=>['common','uncommon'].includes(v.rarity)).map(([k])=>k),
+    dotColors:['#8888a8','#40c870'],
+  },
+  {
+    id:'standard',
+    name:'STANDARD CASE',
+    emoji:'🎁',
+    desc:'Uncommon through Rare drops',
+    cost:100,
+    gradient:['#0e2040','#0a1828'],
+    accentColor:'var(--blue)',
+    tier:'STANDARD',
+    tierColor:'var(--blue)',
+    pool: Object.entries(ITEMS).filter(([,v])=>['uncommon','rare'].includes(v.rarity)).map(([k])=>k),
+    dotColors:['#40c870','#4080e8'],
+  },
+  {
+    id:'premium',
+    name:'PREMIUM CASE',
+    emoji:'💼',
+    desc:'Rare through Epic drops',
+    cost:350,
+    gradient:['#1e0e40','#160b30'],
+    accentColor:'var(--purple)',
+    tier:'PREMIUM',
+    tierColor:'var(--purple)',
+    pool: Object.entries(ITEMS).filter(([,v])=>['rare','epic'].includes(v.rarity)).map(([k])=>k),
+    dotColors:['#4080e8','#9040e8'],
+  },
+  {
+    id:'elite',
+    name:'ELITE CASE',
+    emoji:'👑',
+    desc:'Epic through Legendary drops',
+    cost:1000,
+    gradient:['#281800','#1e1000'],
+    accentColor:'var(--gold)',
+    tier:'ELITE',
+    tierColor:'var(--gold)',
+    pool: Object.entries(ITEMS).filter(([,v])=>['epic','legendary'].includes(v.rarity)).map(([k])=>k),
+    dotColors:['#9040e8','#c8a84b'],
+  },
+  {
+    id:'mythic',
+    name:'MYTHIC CASE',
+    emoji:'🌌',
+    desc:'Legendary through Mythical drops',
+    cost:3000,
+    gradient:['#1e0028','#130018'],
+    accentColor:'#e040e0',
+    tier:'MYTHIC',
+    tierColor:'#e040e0',
+    pool: Object.entries(ITEMS).filter(([,v])=>['legendary','mythical'].includes(v.rarity)).map(([k])=>k),
+    dotColors:['#c8a84b','#e040e0'],
+  },
+  {
+    id:'contraband',
+    name:'CONTRABAND CASE',
+    emoji:'⚠️',
+    desc:'All rarities — Contraband chance inside',
+    cost:5000,
+    gradient:['#280000','#1a0000'],
+    accentColor:'var(--red)',
+    tier:'CONTRABAND',
+    tierColor:'var(--red)',
+    pool: Object.keys(ITEMS),
+    dotColors:['#8888a8','#40c870','#4080e8','#9040e8','#c8a84b','#e040e0','#e84040'],
+  },
 ];
 
-const LIMITED_DB = {
-  'newyear-pikachu':{id:800,name:"New Year's Pikachu",emoji:'🎩',type:'Electric',rarity:'limited',color:['#9c27b0','#f48fb1'],hp:35,atk:55,def:30,spd:90},
-  'glaceon-special': {id:801,name:'Glaceon Special',   emoji:'❄️',type:'Ice',     rarity:'limited',color:['#4fc3f7','#81d4fa'],hp:65,atk:60,def:110,spd:65},
+// ── RARITY STYLES ──
+const RARITY_STYLE = {
+  common:     { bg:'r-common',    badge:'badge-common',    glow:'rgba(136,136,168,0.3)',  label:'COMMON' },
+  uncommon:   { bg:'r-uncommon',  badge:'badge-uncommon',  glow:'rgba(64,200,112,0.3)',   label:'UNCOMMON' },
+  rare:       { bg:'r-rare',      badge:'badge-rare',      glow:'rgba(64,128,232,0.3)',   label:'RARE' },
+  epic:       { bg:'r-epic',      badge:'badge-epic',      glow:'rgba(144,64,232,0.3)',   label:'EPIC' },
+  legendary:  { bg:'r-legendary', badge:'badge-legendary', glow:'rgba(200,168,75,0.3)',   label:'LEGENDARY' },
+  mythical:   { bg:'r-mythical',  badge:'badge-mythical',  glow:'rgba(200,64,200,0.35)',  label:'MYTHICAL' },
+  contraband: { bg:'r-contraband',badge:'badge-contraband',glow:'rgba(232,64,64,0.35)',   label:'CONTRABAND' },
 };
 
-const PACKS = {
-  'kanto':      {pool:()=>[...DB.kanto],                    cost:0,    emoji:'📦',g:['#ff9800','#f44336']},
-  'johto':      {pool:()=>[...DB.johto],                    cost:200,  emoji:'🌿',g:['#4db6ac','#26a69a']},
-  'hoenn':      {pool:()=>[...DB.hoenn],                    cost:350,  emoji:'🌊',g:['#42a5f5','#7e57c2']},
-  'shiny-kanto':{pool:()=>[...SHINY_POOL],                  cost:500,  emoji:'⭐',g:['#a855f7','#ec4899']},
-  'legendary':  {pool:()=>[...DB.kanto,...DB.johto,...DB.hoenn].filter(p=>p.rarity==='legendary'),cost:1000,emoji:'⚡',g:['#ffd700','#ff6b00']},
-};
-
-const RARITY_COLORS = {
-  common:   ['#757575','#9e9e9e'],
-  uncommon: ['#4caf50','#81c784'],
-  rare:     ['#2196f3','#64b5f6'],
-  legendary:['#ff9800','#ffd54f'],
-  shiny:    ['#9c27b0','#e1bee7'],
-  limited:  ['#6d28d9','#c084fc'],
-};
-const RARITY_COINS  = {common:10,uncommon:30,rare:100,legendary:400,shiny:250,limited:0};
-const RARITY_W      = {legendary:1,shiny:2,rare:5,uncommon:12,common:20};
-const RARITY_ICONS  = {legendary:'⭐',rare:'💎',shiny:'✨',uncommon:'🟢',limited:'💎'};
-
+// ═══════════════════════════════════════
+// CODES
+// ═══════════════════════════════════════
 const CODES_DB = {
-  'FREECOIN' :{type:'coins',amount:500},
-  'WELCOME'  :{type:'coins',amount:250},
-  'SHINYPACK':{type:'coins',amount:1000},
-  'POKE500'  :{type:'coins',amount:500},
+  'VAULT100':  { type:'coins', amount:100 },
+  'WELCOME':   { type:'coins', amount:250 },
+  'FREECASE':  { type:'coins', amount:500 },
+  'GOLDKEY':   { type:'coins', amount:1000 },
+  'MEGA2025':  { type:'coins', amount:2000 },
 };
 
-// ═══════════════════════════════════
+// ═══════════════════════════════════════
 // STATE
-// ═══════════════════════════════════
-let G = {coins:0, owned:{}, region:'kanto'};
-let activePack = null; // key of current pack being opened
-
-function saveG(){ try{localStorage.setItem('poke3',JSON.stringify(G));}catch(e){} }
-function loadG(){ try{const s=localStorage.getItem('poke3');if(s)G=JSON.parse(s);}catch(e){} }
-
+// ═══════════════════════════════════════
+let G = { coins:150, inventory:{}, casesOpened:0, region:'all' };
+let activeCaseId = null;
 const usedCodes = new Set();
-try{JSON.parse(localStorage.getItem('poke3codes')||'[]').forEach(c=>usedCodes.add(c));}catch(e){}
-function saveUsedCodes(){try{localStorage.setItem('poke3codes',JSON.stringify([...usedCodes]));}catch(e){}}
 
-function makeKey(name){ return name.replace(/[^a-z0-9]/gi,'').toLowerCase(); }
+function saveG() {
+  try { localStorage.setItem('vault_g', JSON.stringify(G)); } catch(e) {}
+}
+function loadG() {
+  try {
+    const s = localStorage.getItem('vault_g');
+    if (s) G = { ...G, ...JSON.parse(s) };
+    const c = localStorage.getItem('vault_codes');
+    if (c) JSON.parse(c).forEach(x => usedCodes.add(x));
+  } catch(e) {}
+}
+function saveCodes() {
+  try { localStorage.setItem('vault_codes', JSON.stringify([...usedCodes])); } catch(e) {}
+}
 
-// ═══════════════════════════════════
+// ═══════════════════════════════════════
 // UI UTILS
-// ═══════════════════════════════════
-function refreshCoins(){
-  const f='$'+G.coins.toLocaleString();
-  document.getElementById('coinDisplay').textContent=f;
-  document.getElementById('shopCoins').textContent=f;
-  document.getElementById('idxCoins').textContent=f;
+// ═══════════════════════════════════════
+function refreshBalance() {
+  const f = '$' + G.coins.toLocaleString();
+  document.getElementById('balanceDisplay').textContent = G.coins.toLocaleString();
+  document.getElementById('openingBalance').textContent = f;
+  document.getElementById('invBalance').textContent = f;
 }
 
-let toastTmr=null;
-function toast(msg){
-  clearTimeout(toastTmr);
-  const el=document.getElementById('toast');
-  el.textContent=msg; el.classList.add('show');
-  toastTmr=setTimeout(()=>el.classList.remove('show'),2500);
-}
+function refreshStats() {
+  const owned = Object.keys(G.inventory);
+  document.getElementById('statOpened').textContent = G.casesOpened || 0;
+  document.getElementById('statUnique').textContent = owned.length;
 
-function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-function openModal(id){
-  document.getElementById(id).classList.add('active');
-  refreshCoins();
-  if(id==='modalIndex') renderDex(G.region);
-}
-function closeModal(id){ document.getElementById(id).classList.remove('active'); }
-
-// ═══════════════════════════════════
-// PACK LOGIC
-// ═══════════════════════════════════
-function weightedDraw(pool){
-  // Draw without replacement
-  const arr=[...pool];
-  const drawn=[];
-  for(let i=0;i<3;i++){
-    if(!arr.length) break;
-    const total=arr.reduce((s,p)=>s+(RARITY_W[p.rarity]||10),0);
-    let r=Math.random()*total;
-    let idx=0;
-    for(;idx<arr.length;idx++){ r-=(RARITY_W[arr[idx].rarity]||10); if(r<=0) break; }
-    idx=Math.min(idx,arr.length-1);
-    drawn.push(arr.splice(idx,1)[0]);
-  }
-  // Pad if needed
-  while(drawn.length<3) drawn.push({...drawn[drawn.length-1]});
-  return drawn;
-}
-
-function startPack(packKey){
-  const pd=PACKS[packKey];
-  if(!pd){ toast('❌ Pack not found!'); return; }
-  if(pd.cost>0&&G.coins<pd.cost){ toast('🪙 Not enough coins! Need $'+pd.cost.toLocaleString()); return; }
-  if(pd.cost>0){ G.coins-=pd.cost; saveG(); refreshCoins(); }
-
-  activePack=packKey;
-  closeModal('modalShop');
-  showScreen('screen-opening');
-
-  document.getElementById('openingPackName').textContent =
-    packKey.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase())+' Pack';
-
-  buildPackVisual(pd);
-  generateStars();
-}
-
-function buildPackVisual(pd){
-  const center=document.getElementById('openingCenter');
-  center.innerHTML='';
-
-  const packBtn=document.createElement('button');
-  packBtn.className='pack-3d';
-  packBtn.textContent=pd.emoji;
-  packBtn.style.background=`linear-gradient(135deg,${pd.g[0]},${pd.g[1]})`;
-  packBtn.addEventListener('click',doReveal,{once:true}); // once:true prevents double-tap bugs
-
-  const hint=document.createElement('div');
-  hint.className='tap-hint';
-  hint.textContent='TAP TO OPEN!';
-
-  center.appendChild(packBtn);
-  center.appendChild(hint);
-}
-
-function doReveal(){
-  const pd=PACKS[activePack];
-  if(!pd) return;
-
-  const pool=pd.pool();
-  if(!pool||pool.length===0){ toast('❌ Empty pool!'); return; }
-
-  const drawn=weightedDraw(pool);
-
-  // Track ownership & earnings
-  let coins=0, special=false;
-  drawn.forEach(p=>{
-    const k=makeKey(p.name);
-    G.owned[k]=(G.owned[k]||0)+1;
-    coins+=RARITY_COINS[p.rarity]||10;
-    if(p.rarity==='shiny'||p.rarity==='legendary') special=true;
+  // Best rarity
+  let best = null;
+  owned.forEach(k => {
+    const item = ITEMS[k];
+    if (!item) return;
+    if (!best || RARITY_ORDER.indexOf(item.rarity) > RARITY_ORDER.indexOf(ITEMS[best]?.rarity)) best = k;
   });
-  G.coins+=coins;
-  saveG();
-  refreshCoins();
+  const bestEl = document.getElementById('statRarest');
+  bestEl.textContent = best ? RARITY_STYLE[ITEMS[best].rarity].label.slice(0,3) : '—';
+}
 
-  if(special){
-    const flash=document.createElement('div');
-    flash.className='shiny-flash';
-    document.body.appendChild(flash);
-    setTimeout(()=>{ try{document.body.removeChild(flash);}catch(e){} },1000);
-  }
+let toastTimer = null;
+function toast(msg) {
+  clearTimeout(toastTimer);
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
+}
 
-  const center=document.getElementById('openingCenter');
-  center.innerHTML='';
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-  const earnedEl=document.createElement('div');
-  earnedEl.className='reveal-coins';
-  earnedEl.textContent='+🪙 $'+coins+' earned!';
-  center.appendChild(earnedEl);
-
-  const grid=document.createElement('div');
-  grid.className='reveal-grid';
-
-  drawn.forEach(p=>{
-    const [c1,c2]=p.color||RARITY_COLORS[p.rarity]||['#666','#999'];
-    const icon=RARITY_ICONS[p.rarity]||'';
-
-    const card=document.createElement('button');
-    card.className='reveal-card';
-    card.style.background=`linear-gradient(160deg,${c1},${c2})`;
-    card.innerHTML=`
-      ${icon?`<div class="reveal-rarity-icon">${icon}</div>`:''}
-      <div class="reveal-emoji">${p.emoji}</div>
-      <div class="reveal-name">${p.name}</div>
-      <div class="reveal-type">${p.type}</div>
+// ═══════════════════════════════════════
+// CASE LIST
+// ═══════════════════════════════════════
+function buildCaseList() {
+  const body = document.getElementById('caseListBody');
+  body.innerHTML = '';
+  CASES.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'case-card';
+    card.innerHTML = `
+      <div class="tier-badge" style="background:rgba(0,0,0,0.4);color:${c.tierColor};border:1px solid ${c.tierColor};">${c.tier}</div>
+      <div class="case-card-icon" style="background:linear-gradient(135deg,${c.gradient[0]},${c.gradient[1]});border:1px solid ${c.accentColor}33;">
+        <span style="font-size:28px;">${c.emoji}</span>
+      </div>
+      <div class="case-card-info">
+        <div class="case-card-name" style="color:${c.accentColor};">${c.name}</div>
+        <div class="case-card-desc">${c.desc}</div>
+        <div class="case-card-footer">
+          <span class="${c.cost===0?'price-free':'price-coins'}" style="font-family:'Orbitron',monospace;font-size:12px;font-weight:700;">
+            ${c.cost===0?'FREE':'🔑 $'+c.cost.toLocaleString()}
+          </span>
+          <div class="rarity-dots">
+            ${c.dotColors.map(col=>`<div class="rdot" style="background:${col};"></div>`).join('')}
+          </div>
+        </div>
+      </div>
     `;
-    // Store reference to pokemon object safely in JS closure
-    card.addEventListener('click',(()=>{
-      const pokemon=p; // captured in closure
-      return ()=>showDetail(pokemon);
-    })());
-    grid.appendChild(card);
+    card.addEventListener('click', () => {
+      closeModal('modalCases');
+      startCase(c.id);
+    });
+    body.appendChild(card);
+  });
+}
+
+// ═══════════════════════════════════════
+// WEIGHTED DRAW
+// ═══════════════════════════════════════
+function weightedDraw(pool) {
+  const entries = pool.map(k => ({ key:k, item:ITEMS[k] })).filter(x => x.item);
+  const total = entries.reduce((s,e) => s + (RARITY_WEIGHT[e.item.rarity] || 1), 0);
+  let r = Math.random() * total;
+  for (const e of entries) {
+    r -= (RARITY_WEIGHT[e.item.rarity] || 1);
+    if (r <= 0) return e.key;
+  }
+  return entries[entries.length - 1].key;
+}
+
+// Build roulette pool (45 items, result at index 35)
+function buildRoulette(pool, resultKey) {
+  const items = [];
+  for (let i = 0; i < 45; i++) {
+    items.push(weightedDraw(pool));
+  }
+  items[35] = resultKey;
+  return items;
+}
+
+// ═══════════════════════════════════════
+// CASE OPENING
+// ═══════════════════════════════════════
+function startCase(caseId) {
+  const caseData = CASES.find(c => c.id === caseId);
+  if (!caseData) return;
+
+  if (caseData.cost > 0 && G.coins < caseData.cost) {
+    toast('⚠ NOT ENOUGH COINS');
+    return;
+  }
+  if (caseData.cost > 0) {
+    G.coins -= caseData.cost;
+    saveG();
+    refreshBalance();
+  }
+
+  activeCaseId = caseId;
+  document.getElementById('openingCaseName').textContent = caseData.name;
+  showScreen('screen-opening');
+  buildCaseReadyView(caseData);
+}
+
+function buildCaseReadyView(caseData) {
+  const center = document.getElementById('openingCenter');
+  center.innerHTML = '';
+
+  const caseBtn = document.createElement('button');
+  caseBtn.className = 'big-case';
+  caseBtn.innerHTML = caseData.emoji;
+  caseBtn.style.borderColor = caseData.accentColor;
+  caseBtn.style.boxShadow = `0 0 60px ${caseData.accentColor}22, inset 0 1px 0 rgba(255,255,255,0.05)`;
+
+  const hint = document.createElement('div');
+  hint.className = 'open-hint';
+  hint.textContent = 'TAP TO OPEN';
+
+  const costInfo = document.createElement('div');
+  costInfo.className = 'opening-cost';
+  costInfo.textContent = caseData.cost > 0 ? `Cost: $${caseData.cost.toLocaleString()}` : 'FREE CASE';
+
+  center.appendChild(caseBtn);
+  center.appendChild(hint);
+  center.appendChild(costInfo);
+
+  caseBtn.addEventListener('click', () => doRoulette(caseData), { once: true });
+}
+
+function doRoulette(caseData) {
+  // Draw result
+  const resultKey = weightedDraw(caseData.pool);
+  const resultItem = ITEMS[resultKey];
+  if (!resultItem) return;
+
+  const rouletteKeys = buildRoulette(caseData.pool, resultKey);
+
+  const center = document.getElementById('openingCenter');
+  center.innerHTML = '';
+
+  // Roulette wrapper
+  const rWrap = document.createElement('div');
+  rWrap.className = 'roulette-wrap';
+
+  const rOuter = document.createElement('div');
+  rOuter.className = 'roulette-track-outer';
+  rOuter.style.height = '134px';
+
+  const indicator = document.createElement('div');
+  indicator.className = 'roulette-indicator';
+  rOuter.appendChild(indicator);
+
+  const track = document.createElement('div');
+  track.className = 'roulette-track';
+
+  const ITEM_W = 108; // 100px + 8px gap
+  const START_X = 0;
+
+  rouletteKeys.forEach(k => {
+    const item = ITEMS[k];
+    if (!item) return;
+    const rs = RARITY_STYLE[item.rarity] || RARITY_STYLE.common;
+    const el = document.createElement('div');
+    el.className = 'roulette-item ' + rs.bg;
+    el.innerHTML = `
+      <div class="ri-emoji">${item.emoji}</div>
+      <div class="ri-name">${item.name}</div>
+      <div class="ri-rarity ${rs.badge}">${rs.label}</div>
+    `;
+    track.appendChild(el);
   });
 
-  center.appendChild(grid);
+  rOuter.appendChild(track);
+  rWrap.appendChild(rOuter);
+  center.appendChild(rWrap);
 
-  const actions=document.createElement('div');
-  actions.className='reveal-actions';
+  // Center result at index 35
+  // Container visible = full width, center = width/2
+  // We want item[35] center at viewport center
+  const containerW = window.innerWidth;
+  const centerX = containerW / 2;
+  const targetItemCenter = 35 * ITEM_W + 50; // 50 = half item width
+  const scrollTo = targetItemCenter - centerX;
 
-  const btnAgain=document.createElement('button');
-  btnAgain.className='btn-again';
-  btnAgain.textContent='Open Again';
-  btnAgain.addEventListener('click',()=>startPack(activePack));
+  // Start offset: show from beginning
+  track.style.transform = `translateX(${-scrollTo + 800}px)`;
+  track.style.transition = 'none';
 
-  const btnHome=document.createElement('button');
-  btnHome.className='btn-home2';
-  btnHome.textContent='← Home';
-  btnHome.addEventListener('click',()=>showScreen('screen-main'));
+  // Trigger reflow
+  track.getBoundingClientRect();
+
+  // Animate
+  track.style.transition = 'transform 7s cubic-bezier(0.05, 0.8, 0.3, 1)';
+  track.style.transform = `translateX(${-scrollTo}px)`;
+
+  // After spin
+  setTimeout(() => {
+    showResult(resultItem, resultKey, caseData);
+  }, 7200);
+}
+
+function showResult(item, itemKey, caseData) {
+  const rs = RARITY_STYLE[item.rarity] || RARITY_STYLE.common;
+
+  // Track ownership
+  G.inventory[itemKey] = (G.inventory[itemKey] || 0) + 1;
+  G.casesOpened = (G.casesOpened || 0) + 1;
+  G.coins += Math.floor(item.value * 0.05); // small sell value reward
+  saveG();
+  refreshBalance();
+  refreshStats();
+
+  // Special effects for rare+
+  if (['legendary','mythical','contraband'].includes(item.rarity)) {
+    spawnFlash(rs.glow);
+    spawnParticles();
+  }
+
+  const center = document.getElementById('openingCenter');
+  center.innerHTML = '';
+
+  // Result card
+  const card = document.createElement('div');
+  card.className = 'result-card ' + rs.bg;
+  card.style.boxShadow = `0 0 60px ${rs.glow}, 0 20px 40px rgba(0,0,0,0.5)`;
+
+  card.innerHTML = `
+    <div class="result-emoji">${item.emoji}</div>
+    <div class="result-name">${item.name}</div>
+    <div class="result-rarity-badge ${rs.badge}">${rs.label}</div>
+    <div class="result-desc">${item.desc}</div>
+    <div class="result-value">$${item.value.toLocaleString()}</div>
+    <div class="result-coins-earned">+$${Math.floor(item.value * 0.05)} BONUS</div>
+  `;
+
+  card.addEventListener('click', () => showItemDetail(item, itemKey));
+  center.appendChild(card);
+
+  const actions = document.createElement('div');
+  actions.className = 'result-actions';
+
+  const btnAgain = document.createElement('button');
+  btnAgain.className = 'btn-again';
+  btnAgain.textContent = 'OPEN AGAIN';
+  btnAgain.addEventListener('click', () => {
+    if (caseData.cost > 0 && G.coins < caseData.cost) {
+      toast('⚠ NOT ENOUGH COINS');
+      return;
+    }
+    if (caseData.cost > 0) {
+      G.coins -= caseData.cost;
+      saveG();
+      refreshBalance();
+    }
+    buildCaseReadyView(caseData);
+  });
+
+  const btnMenu = document.createElement('button');
+  btnMenu.className = 'btn-menu';
+  btnMenu.textContent = 'MENU';
+  btnMenu.addEventListener('click', () => showScreen('screen-main'));
 
   actions.appendChild(btnAgain);
-  actions.appendChild(btnHome);
+  actions.appendChild(btnMenu);
   center.appendChild(actions);
 }
 
-function generateStars(){
-  const c=document.getElementById('starsContainer');
-  c.innerHTML='';
-  for(let i=0;i<60;i++){
-    const s=document.createElement('div');
-    s.className='star';
-    s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;`+
-      `animation-delay:${Math.random()*3}s;animation-duration:${1.5+Math.random()*2}s;`+
-      `width:${1+Math.random()*3}px;height:${1+Math.random()*3}px;`;
-    c.appendChild(s);
+// ═══════════════════════════════════════
+// EFFECTS
+// ═══════════════════════════════════════
+function spawnFlash(color) {
+  const f = document.createElement('div');
+  f.className = 'shine-flash';
+  f.style.background = `radial-gradient(ellipse at center, ${color} 0%, transparent 70%)`;
+  document.body.appendChild(f);
+  setTimeout(() => { try { document.body.removeChild(f); } catch(e){} }, 1200);
+}
+
+function spawnParticles() {
+  const container = document.createElement('div');
+  container.className = 'particles';
+  document.body.appendChild(container);
+
+  const colors = ['#c8a84b','#e8c96a','#ffffff','#e040e0','#4080e8'];
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = 4 + Math.random() * 6;
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 100 + Math.random() * 200;
+    p.style.cssText = `
+      width:${size}px;height:${size}px;
+      left:50%;top:50%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      --tx:${Math.cos(angle)*dist}px;
+      --ty:${Math.sin(angle)*dist}px;
+      animation-delay:${Math.random()*0.3}s;
+      animation-duration:${1+Math.random()*0.5}s;
+    `;
+    container.appendChild(p);
   }
+  setTimeout(() => { try { document.body.removeChild(container); } catch(e){} }, 2000);
 }
 
-// ═══════════════════════════════════
-// BUY LIMITED
-// ═══════════════════════════════════
-function buyLimited(key,cost){
-  if(G.owned[key]>0){ toast('✅ Already owned!'); return; }
-  if(G.coins<cost){ toast('🪙 Not enough coins! Need $'+cost.toLocaleString()); return; }
-  G.coins-=cost;
-  G.owned[key]=(G.owned[key]||0)+1;
-  saveG(); refreshCoins();
-  toast('🎉 Purchased! Check your Index!');
-}
+// ═══════════════════════════════════════
+// INVENTORY
+// ═══════════════════════════════════════
+let currentFilter = 'all';
 
-// ═══════════════════════════════════
-// INDEX / POKÉDEX
-// ═══════════════════════════════════
-function renderDex(region){
-  const pool=DB[region]||[];
-  const ownedCount=pool.filter(p=>G.owned[makeKey(p.name)]>0).length;
-  const el=document.getElementById('dexContent');
-  const frag=document.createDocumentFragment();
+function renderInventory() {
+  const grid = document.getElementById('invGrid');
+  grid.innerHTML = '';
 
-  // Limited section (kanto only)
-  if(region==='kanto'){
-    const section=document.createElement('div');
-    section.style.cssText='padding:14px 14px 0;';
-    const hdr=document.createElement('div');
-    hdr.style.cssText='display:flex;align-items:center;gap:8px;font-size:16px;font-weight:900;color:#fff;margin-bottom:10px;';
-    hdr.textContent='💎 Limited';
-    const dgrid=document.createElement('div');
-    dgrid.className='dex-grid';
-    dgrid.style.cssText='padding:0;margin-bottom:4px;';
-    Object.entries(LIMITED_DB).forEach(([key,p])=>{
-      const isOwned=(G.owned[key]||0)>0;
-      const card=document.createElement('div');
-      card.className='dex-card'+(isOwned?' limited-owned':'');
-      if(isOwned){
-        const [c1,c2]=p.color;
-        card.style.background=`linear-gradient(135deg,${c1}44,${c2}44)`;
-        card.style.border=`2px solid ${c1}88`;
-        card.innerHTML=`<div class="dex-gem">💎</div><div class="dex-emoji">${p.emoji}</div><div class="dex-name">${p.name}</div>`;
-        card.addEventListener('click',()=>showDetail(p));
-      } else {
-        card.innerHTML='<div style="font-size:20px;color:rgba(255,255,255,0.2);">💎</div>';
-      }
-      dgrid.appendChild(card);
+  const owned = Object.entries(G.inventory)
+    .filter(([k, qty]) => qty > 0 && ITEMS[k])
+    .filter(([k]) => currentFilter === 'all' || ITEMS[k].rarity === currentFilter)
+    .sort(([ak],[bk]) => {
+      const ai = RARITY_ORDER.indexOf(ITEMS[ak]?.rarity);
+      const bi = RARITY_ORDER.indexOf(ITEMS[bk]?.rarity);
+      return bi - ai;
     });
-    section.appendChild(hdr);
-    section.appendChild(dgrid);
-    frag.appendChild(section);
+
+  if (owned.length === 0) {
+    grid.innerHTML = `
+      <div class="inv-empty">
+        <div class="inv-empty-icon">📦</div>
+        <div class="inv-empty-text">Nothing here yet</div>
+      </div>
+    `;
+    return;
   }
 
-  // Regular section
-  const section2=document.createElement('div');
-  section2.style.cssText='padding:14px;';
-  const hdr2=document.createElement('div');
-  hdr2.style.cssText='display:flex;align-items:center;gap:8px;font-size:16px;font-weight:900;color:#fff;margin-bottom:10px;';
-  const regionIcon={kanto:'🔴',johto:'🟡',hoenn:'🔵'}[region]||'⚪';
-  hdr2.innerHTML=`${regionIcon} ${region.charAt(0).toUpperCase()+region.slice(1)} <span style="font-size:12px;color:rgba(255,255,255,0.6);font-weight:700;margin-left:auto;">${ownedCount}/${pool.length}</span>`;
-  const dgrid2=document.createElement('div');
-  dgrid2.className='dex-grid';
-  dgrid2.style.cssText='padding:0;';
-
-  pool.forEach(p=>{
-    const key=makeKey(p.name);
-    const isOwned=(G.owned[key]||0)>0;
-    const card=document.createElement('div');
-    card.className='dex-card'+(isOwned?' owned':'');
-    if(isOwned){
-      const [c1,c2]=p.color||['#ccc','#aaa'];
-      card.style.background=`linear-gradient(135deg,${c1}33,${c2}33)`;
-      card.style.border=`2px solid ${c1}77`;
-      const icon=RARITY_ICONS[p.rarity]||'';
-      card.innerHTML=`${icon?`<div class="dex-gem">${icon}</div>`:''}<div class="dex-emoji">${p.emoji}</div><div class="dex-name">${p.name}</div><div class="dex-num">#${p.id}</div>`;
-      card.addEventListener('click',()=>showDetail(p));
-    } else {
-      card.innerHTML=`<div style="color:rgba(255,255,255,0.3);font-size:11px;font-weight:700;">#${p.id}</div>`;
-    }
-    dgrid2.appendChild(card);
+  owned.forEach(([key, qty]) => {
+    const item = ITEMS[key];
+    const rs = RARITY_STYLE[item.rarity] || RARITY_STYLE.common;
+    const card = document.createElement('div');
+    card.className = 'inv-item ' + rs.bg;
+    card.style.boxShadow = `0 2px 12px ${rs.glow}`;
+    card.innerHTML = `
+      <div class="inv-emoji">${item.emoji}</div>
+      <div class="inv-name">${item.name}</div>
+      <div class="inv-count">×${qty}</div>
+    `;
+    card.addEventListener('click', () => showItemDetail(item, key));
+    grid.appendChild(card);
   });
-
-  section2.appendChild(hdr2);
-  section2.appendChild(dgrid2);
-  frag.appendChild(section2);
-
-  el.innerHTML='';
-  el.appendChild(frag);
 }
 
-// ═══════════════════════════════════
-// POKEMON DETAIL
-// ═══════════════════════════════════
-function showDetail(p){
-  if(!p) return;
-  const [c1,c2]=p.color||RARITY_COLORS[p.rarity]||['#555','#777'];
-  document.getElementById('pokeDetailCard').style.background=`linear-gradient(160deg,${c1},${c2})`;
-  document.getElementById('detailEmoji').textContent=p.emoji||'❓';
-  document.getElementById('detailName').textContent=(p.name||'???').toUpperCase();
-  document.getElementById('detailNum').textContent=p.id?'#'+p.id:'';
-  document.getElementById('detailType').textContent=p.type||'Unknown';
-  const hp=p.hp||50,atk=p.atk||50,def=p.def||50,spd=p.spd||50;
-  document.getElementById('statHp').style.width =Math.min(hp /200*100,100)+'%';
-  document.getElementById('statAtk').style.width=Math.min(atk/200*100,100)+'%';
-  document.getElementById('statDef').style.width=Math.min(def/200*100,100)+'%';
-  document.getElementById('statSpd').style.width=Math.min(spd/200*100,100)+'%';
-  document.getElementById('svalHp').textContent =hp;
-  document.getElementById('svalAtk').textContent=atk;
-  document.getElementById('svalDef').textContent=def;
-  document.getElementById('svalSpd').textContent=spd;
-  document.getElementById('pokeDetail').classList.add('active');
+// ═══════════════════════════════════════
+// ITEM DETAIL
+// ═══════════════════════════════════════
+function showItemDetail(item, key) {
+  const rs = RARITY_STYLE[item.rarity] || RARITY_STYLE.common;
+  const card = document.getElementById('detailCard');
+  card.className = 'detail-card ' + rs.bg;
+  card.style.boxShadow = `0 0 60px ${rs.glow}, 0 20px 40px rgba(0,0,0,0.6)`;
+
+  document.getElementById('detailEmoji').textContent = item.emoji;
+  document.getElementById('detailName').textContent = item.name;
+  document.getElementById('detailBadge').className = 'detail-rarity-badge ' + rs.badge;
+  document.getElementById('detailBadge').textContent = rs.label;
+  document.getElementById('detailDesc').textContent = item.desc;
+  document.getElementById('detailValue').textContent = '$' + item.value.toLocaleString();
+  const qty = G.inventory[key] || 0;
+  document.getElementById('detailOwned').textContent = qty > 0 ? `×${qty} OWNED` : 'NOT OWNED';
+
+  document.getElementById('detailOverlay').classList.add('active');
 }
 
-// ═══════════════════════════════════
+// ═══════════════════════════════════════
 // CODE REDEMPTION
-// ═══════════════════════════════════
-function redeemCode(){
-  const inp=document.getElementById('codeInput');
-  const res=document.getElementById('codeResult');
-  const code=inp.value.trim().toUpperCase();
-  res.className='code-result';
-  if(!code) return;
-  if(usedCodes.has(code)){
-    res.className='code-result error'; res.textContent='❌ Code already used!'; return;
+// ═══════════════════════════════════════
+function redeemCode() {
+  const inp = document.getElementById('codeInput');
+  const res = document.getElementById('codeResult');
+  const code = inp.value.trim().toUpperCase();
+  res.className = 'code-result';
+
+  if (!code) return;
+  if (usedCodes.has(code)) {
+    res.className = 'code-result error';
+    res.textContent = '⚠ CODE ALREADY USED';
+    return;
   }
-  const data=CODES_DB[code];
-  if(!data){
-    res.className='code-result error'; res.textContent='❌ Invalid code!'; return;
+  const data = CODES_DB[code];
+  if (!data) {
+    res.className = 'code-result error';
+    res.textContent = '⚠ INVALID CODE';
+    return;
   }
-  usedCodes.add(code); saveUsedCodes();
-  if(data.type==='coins'){
-    G.coins+=data.amount; saveG(); refreshCoins();
-    res.className='code-result success'; res.textContent=`✅ +🪙 $${data.amount} coins added!`;
+  usedCodes.add(code);
+  saveCodes();
+  if (data.type === 'coins') {
+    G.coins += data.amount;
+    saveG();
+    refreshBalance();
+    res.className = 'code-result success';
+    res.textContent = `✓ +$${data.amount.toLocaleString()} COINS ADDED`;
   }
-  inp.value='';
+  inp.value = '';
 }
 
-// ═══════════════════════════════════
+// ═══════════════════════════════════════
 // RESET
-// ═══════════════════════════════════
-function resetGame(){
-  if(!confirm('Reset all progress? Cannot be undone!')) return;
-  G={coins:0,owned:{},region:'kanto'};
+// ═══════════════════════════════════════
+function resetGame() {
+  if (!confirm('Reset all progress? This cannot be undone.')) return;
+  G = { coins:150, inventory:{}, casesOpened:0, region:'all' };
   saveG();
-  usedCodes.clear(); saveUsedCodes();
-  refreshCoins();
-  toast('🔄 Game reset!');
+  usedCodes.clear();
+  saveCodes();
+  refreshBalance();
+  refreshStats();
+  toast('GAME RESET');
 }
 
-// ═══════════════════════════════════
-// EVENT LISTENERS — all in JS
-// ═══════════════════════════════════
-
-// Main menu
-document.getElementById('btnCode').addEventListener('click',()=>openModal('modalCode'));
-document.getElementById('btnNews').addEventListener('click',()=>toast('📰 No new news today!'));
-document.getElementById('btnOpenShop').addEventListener('click',()=>openModal('modalShop'));
-document.getElementById('btnOpenIndex').addEventListener('click',()=>openModal('modalIndex'));
-document.getElementById('btnReset').addEventListener('click',resetGame);
-document.getElementById('btnBackOpening').addEventListener('click',()=>showScreen('screen-main'));
-
-// Close buttons
-document.getElementById('btnCloseShop').addEventListener('click',()=>closeModal('modalShop'));
-document.getElementById('btnCloseIndex').addEventListener('click',()=>closeModal('modalIndex'));
-document.getElementById('btnCloseCode').addEventListener('click',()=>closeModal('modalCode'));
-document.getElementById('btnCloseDetail').addEventListener('click',()=>document.getElementById('pokeDetail').classList.remove('active'));
-
-// Shop tabs
-document.getElementById('tabBtnPacks').addEventListener('click',function(){
-  this.classList.add('active');
-  document.getElementById('tabBtnItems').classList.remove('active');
-  document.getElementById('tabPacks').style.display='block';
-  document.getElementById('tabItems').style.display='none';
-});
-document.getElementById('tabBtnItems').addEventListener('click',function(){
-  this.classList.add('active');
-  document.getElementById('tabBtnPacks').classList.remove('active');
-  document.getElementById('tabPacks').style.display='none';
-  document.getElementById('tabItems').style.display='block';
+// ═══════════════════════════════════════
+// EVENT LISTENERS
+// ═══════════════════════════════════════
+document.getElementById('btnOpenCase').addEventListener('click', () => {
+  buildCaseList();
+  openModal('modalCases');
 });
 
-// Shop pack/buy buttons — event delegation, no inline JS
-document.getElementById('modalShop').addEventListener('click',function(e){
-  const btn=e.target.closest('.btn-open');
-  if(!btn) return;
-  if(btn.dataset.pack){
-    startPack(btn.dataset.pack);
-  } else if(btn.dataset.buy){
-    buyLimited(btn.dataset.buy, parseInt(btn.dataset.cost,10));
-  }
+document.getElementById('btnViewInventory').addEventListener('click', () => {
+  renderInventory();
+  showScreen('screen-inventory');
 });
 
-// Region tabs in index
-document.getElementById('regionTabs').addEventListener('click',function(e){
-  const btn=e.target.closest('.region-tab');
-  if(!btn) return;
-  document.querySelectorAll('.region-tab').forEach(t=>t.classList.remove('active'));
-  btn.classList.add('active');
-  G.region=btn.dataset.region;
-  renderDex(G.region);
+document.getElementById('btnCode').addEventListener('click', () => {
+  document.getElementById('codeResult').className = 'code-result';
+  document.getElementById('codeInput').value = '';
+  openModal('modalCode');
 });
 
-// Code enter key
-document.getElementById('codeInput').addEventListener('keydown',e=>{ if(e.key==='Enter') redeemCode(); });
-document.getElementById('btnRedeem').addEventListener('click',redeemCode);
+document.getElementById('btnReset').addEventListener('click', resetGame);
 
-// Close modals on backdrop click
-document.querySelectorAll('.modal-overlay').forEach(o=>{
-  o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('active'); });
-});
-document.getElementById('pokeDetail').addEventListener('click',e=>{
-  if(e.target===document.getElementById('pokeDetail')) document.getElementById('pokeDetail').classList.remove('active');
+document.getElementById('btnBackOpening').addEventListener('click', () => showScreen('screen-main'));
+document.getElementById('btnBackInventory').addEventListener('click', () => {
+  refreshStats();
+  showScreen('screen-main');
 });
 
-// ═══════════════════════════════════
+document.getElementById('btnCloseCases').addEventListener('click', () => closeModal('modalCases'));
+document.getElementById('btnCloseCode').addEventListener('click', () => closeModal('modalCode'));
+document.getElementById('btnCloseDetail').addEventListener('click', () => closeModal('detailOverlay'));
+
+document.getElementById('detailOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('detailOverlay')) closeModal('detailOverlay');
+});
+
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('active'); });
+});
+
+document.getElementById('btnRedeem').addEventListener('click', redeemCode);
+document.getElementById('codeInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') redeemCode();
+});
+
+// Inventory filters
+document.getElementById('filterRow').addEventListener('click', e => {
+  const chip = e.target.closest('.filter-chip');
+  if (!chip) return;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  currentFilter = chip.dataset.filter;
+  renderInventory();
+});
+
+// ═══════════════════════════════════════
 // INIT
-// ═══════════════════════════════════
+// ═══════════════════════════════════════
 loadG();
-refreshCoins();
+refreshBalance();
+refreshStats();
 </script>
 
 </body>
