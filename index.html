@@ -4,2068 +4,2151 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#0a0a0f">
-<title>VAULT — Case Opener</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>PowderBox v3</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap');
-
-:root {
-–bg: #0a0a0f;
-–surface: #12121a;
-–surface2: #1a1a28;
-–border: rgba(255,255,255,0.07);
-–accent: #c8a84b;
-–accent2: #e8c96a;
-–text: #e8e8f0;
-–muted: #6b6b88;
-–red: #e84040;
-–blue: #4080e8;
-–purple: #9040e8;
-–gold: #c8a84b;
-–green: #40c870;
-–cyan: #40c8c8;
-}
-
-- { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
-html, body {
-width: 100%; height: 100%;
-background: #0a0a0f !important;
-background-color: #0a0a0f !important;
-color: #e8e8f0;
-color: var(–text);
-font-family: ‘Rajdhani’, ‘Trebuchet MS’, Arial, sans-serif;
-overflow: hidden;
--webkit-text-size-adjust: 100%;
-}
-
-/* ── SCREENS ── */
-.screen { position: absolute; inset: 0; display: none; flex-direction: column; overflow: hidden; }
-.screen.active { display: flex; }
-
-/* ── BACKGROUND GRID ── */
-body::before {
-content: ‘’;
-position: fixed; inset: 0;
-background-image:
-linear-gradient(rgba(200,168,75,0.03) 1px, transparent 1px),
-linear-gradient(90deg, rgba(200,168,75,0.03) 1px, transparent 1px);
-background-size: 40px 40px;
-pointer-events: none;
-z-index: 0;
-}
-
-/* ── MAIN MENU ── */
-#screen-main {
-align-items: center;
-justify-content: space-between;
-padding: 0;
-z-index: 1;
-}
-
-.main-header {
-width: 100%;
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 16px 20px;
-border-bottom: 1px solid var(–border);
-background: rgba(18,18,26,0.9);
-backdrop-filter: blur(10px);
-flex-shrink: 0;
-z-index: 2;
-}
-
-.logo {
-font-family: ‘Orbitron’, ‘Courier New’, monospace;
-font-weight: 900;
-font-size: 24px;
-letter-spacing: 8px;
-color: var(–accent);
-text-shadow: 0 0 30px rgba(200,168,75,0.4);
-}
-
-.balance-chip {
-display: flex;
-align-items: center;
-gap: 8px;
-background: var(–surface2);
-border: 1px solid var(–accent);
-border-radius: 8px;
-padding: 8px 16px;
-font-family: ‘Orbitron’, ‘Courier New’, monospace;
-font-size: 14px;
-font-weight: 700;
-color: var(–accent2);
-}
-
-.balance-chip::before {
-content: ‘$’;
-color: var(–muted);
-font-size: 11px;
-}
-
-.main-hero {
-flex: 1;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-gap: 8px;
-padding: 20px;
-position: relative;
-}
-
-.hero-glow {
-position: absolute;
-width: 300px; height: 300px;
-border-radius: 50%;
-background: radial-gradient(circle, rgba(200,168,75,0.08) 0%, transparent 70%);
-pointer-events: none;
-}
-
-.hero-title {
-font-family: ‘Orbitron’, ‘Courier New’, monospace;
-font-size: 13px;
-letter-spacing: 6px;
-color: var(–muted);
-text-transform: uppercase;
-}
-
-.hero-sub {
-font-family: ‘Orbitron’, ‘Courier New’, monospace;
-font-size: 36px;
-font-weight: 900;
-letter-spacing: 4px;
-color: var(–text);
-text-align: center;
-}
-
-.hero-sub span { color: var(–accent); }
-
-.hero-case-preview {
-width: 120px; height: 90px;
-margin: 24px 0 16px;
-position: relative;
-display: flex;
-align-items: center;
-justify-content: center;
-}
-
-.case-box {
-width: 100px; height: 75px;
-background: linear-gradient(145deg, #1e1e30, #12121a);
-border: 1px solid var(–accent);
-border-radius: 8px;
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 36px;
-box-shadow: 0 0 40px rgba(200,168,75,0.15), inset 0 1px 0 rgba(255,255,255,0.05);
-animation: caseFloat 3s ease-in-out infinite;
-position: relative;
-}
-
-.case-box::before {
-content: ‘’;
-position: absolute;
-top: -1px; left: 10%; right: 10%; height: 1px;
-background: linear-gradient(90deg, transparent, var(–accent2), transparent);
-}
-
-.case-box::after {
-content: ‘’;
-position: absolute;
-bottom: 0; left: 0; right: 0; height: 30%;
-background: linear-gradient(180deg, transparent, rgba(200,168,75,0.04));
-border-radius: 0 0 8px 8px;
-}
-
-@keyframes caseFloat {
-0%, 100% { transform: translateY(0) rotateX(0deg); }
-50% { transform: translateY(-8px) rotateX(3deg); }
-}
-
-.main-stats {
-display: flex;
-gap: 24px;
-margin-bottom: 16px;
-}
-
-.stat { text-align: center; }
-.stat-val {
-font-family: ‘Rajdhani’, ‘Trebuchet MS’, Arial, sans-serif;
-font-size: 26px;
-font-weight: 900;
-color: var(–accent2);
-line-height: 1;
-}
-.stat-label {
-font-size: 11px;
-letter-spacing: 2px;
-color: var(–muted);
-text-transform: uppercase;
-}
-
-.main-actions {
-width: 100%;
-padding: 16px 20px 32px;
-display: flex;
-flex-direction: column;
-gap: 10px;
-flex-shrink: 0;
-}
-
-.btn-primary {
-width: 100%;
-padding: 18px;
-background: var(–accent);
-color: #0a0a0f;
-border: none;
-border-radius: 8px;
-font-family: ‘Orbitron’, ‘Courier New’, monospace;
-font-weight: 700;
-font-size: 14px;
-letter-spacing: 3px;
-cursor: pointer;
-transition: all 0.15s;
-text-transform: uppercase;
-box-shadow: 0 4px 20px rgba(200,168,75,0.3);
-}
-
-.btn-primary:active { transform: scale(0.97); opacity: 0.9; }
-
-.btn-secondary {
-width: 100%;
-padding: 14px;
-background: transparent;
-color: var(–text);
-border: 1px solid var(–border);
-border-radius: 8px;
-font-family: ‘Rajdhani’, ‘Trebuchet MS’, Arial, sans-serif;
-font-weight: 600;
-font-size: 15px;
-letter-spacing: 2px;
-cursor: pointer;
-transition: all 0.15s;
-text-transform: uppercase;
-}
-.btn-secondary:active { background: var(–surface2); }
-
-.btn-ghost {
-width: 100%;
-padding: 12px;
-background: transparent;
-color: var(–muted);
-border: 1px dashed rgba(255,255,255,0.1);
-border-radius: 8px;
-font-family: ‘Rajdhani’, ‘Trebuchet MS’, Arial, sans-serif;
-font-weight: 600;
-font-size: 13px;
-letter-spacing: 2px;
-cursor: pointer;
-transition: all 0.15s;
-text-transform: uppercase;
-}
-.btn-ghost:active { color: var(–text); }
-
-/* ── CASE SELECT MODAL ── */
-.modal-overlay {
-position: fixed; inset: 0;
-background: rgba(0,0,0,0.75);
-z-index: 100;
-display: none;
-align-items: flex-end;
-justify-content: center;
-backdrop-filter: blur(4px);
-}
-.modal-overlay.active { display: flex; }
-
-.modal {
-width: 100%; max-width: 500px;
-background: var(–surface);
-border-radius: 20px 20px 0 0;
-border-top: 1px solid var(–border);
-max-height: 85vh;
-display: flex;
-flex-direction: column;
-animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-@keyframes slideUp {
-from { transform: translateY(100%); }
-to { transform: translateY(0); }
-}
-
-.modal-handle {
-width: 40px; height: 4px;
-background: var(–border);
-border-radius: 2px;
-margin: 12px auto 0;
-flex-shrink: 0;
-}
-
-.modal-head {
-padding: 16px 20px 14px;
-display: flex;
-align-items: center;
-justify-content: space-between;
-border-bottom: 1px solid var(–border);
-flex-shrink: 0;
-}
-
-.modal-title {
-font-family: ‘Orbitron’, ‘Courier New’, monospace;
-font-size: 13px;
-letter-spacing: 4px;
-color: var(–muted);
-text-transform: uppercase;
-}
-
-.modal-close {
-width: 32px; height: 32px;
-background: var(–surface2);
-border: 1px solid var(–border);
-border-radius: 6px;
-color: var(–muted);
-font-size: 16px;
-cursor: pointer;
-display: flex;
-align-items: center;
-justify-content: center;
-}
-
-.modal-body { overflow-y: auto; padding: 16px; flex: 1; }
-
-/* ── CASE CARDS ── */
-.case-card {
-background: var(–surface2);
-border: 1px solid var(–border);
-border-radius: 12px;
-padding: 16px;
-display: flex;
-align-items: center;
-gap: 16px;
-margin-bottom: 10px;
-cursor: pointer;
-transition: all 0.2s;
-position: relative;
-overflow: hidden;
-}
-
-.case-card::before {
-content: ‘’;
-position: absolute;
-top: 0; left: 0; right: 0; height: 1px;
-background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-}
-
-.case-card:active { transform: scale(0.98); border-color: var(–accent); }
-
-.case-card-icon {
-width: 64px; height: 50px;
-border-radius: 8px;
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 28px;
-flex-shrink: 0;
-position: relative;
-}
-
-.case-card-info { flex: 1; min-width: 0; }
-.case-card-name {
-font-family: ‘Orbitron’, ‘Courier New’, monospace;
-font-size: 12px;
-font-weight: 700;
-letter-spacing: 2px;
-margin-bottom: 4px;
-text-transform: uppercase;
-}
-.case-card-desc {
-font-size: 13px;
-color: var(–muted);
-margin-bottom: 8px;
-}
-.case-card-footer {
-display: flex;
-align-items: center;
-gap: 10px;
-}
-
-.price-tag {
-font-family: ‘Orbitron’, ‘Courier New’, monospace;
-font-size: 13px;
-font-weight: 700;
-}
-
-.price-free { color: var(–green); }
-.price-coins { color: var(–accent); }
-
-.rarity-dots {
-display: flex;
-gap: 4px;
-}
-
-.rdot {
-width: 6px; height: 6px;
-border-radius: 50%;
-}
-
-.tier-badge {
-position: absolute;
-top: 8px; right: 8px;
-font-size: 10px;
-font-weight: 700;
-letter-spacing: 1px;
-padding: 3px 8px;
-border-radius: 4px;
-text-transform: uppercase;
-}
-
-/* ── OPENING SCREEN ── */
-#screen-opening {
-background: var(–bg);
-z-index: 50;
-overflow: hidden;
-}
-
-.opening-header {
-display: flex;
-align-items: center;
-justify-content: space-between;
-padding: 16px 20px;
-border-bottom: 1px solid var(–border);
-flex-shrink: 0;
-}
-
-.opening-case-name {
-font-family: ‘Orbitron’, ‘Courier New’, monospace;
-font-size: 11px;
-letter-spacing: 4px;
-color: var(–muted);
-text-transform: uppercase;
-}
-
-.btn-back {
-background: var(–surface2);
-border: 1px solid var(–border);
-color: var(–muted);
-border-radius: 6px;
-padding: 8px 14px;
-font-family: ‘Rajdhani’, ‘Trebuchet MS’, Arial, sans-serif;
-font-weight: 700;
-font-size: 13px;
-letter-spacing: 2px;
-cursor: pointer;
-text-transform: uppercase;
-}
-
-/* ROULETTE */
-.roulette-wrap {
-width: 100%;
-flex-shrink: 0;
-position: relative;
-margin: 24px 0;
-overflow: hidden;
-}
-
-.roulette-track-outer {
-width: 100%;
-overflow: hidden;
-position: relative;
-}
-
-.roulette-track-outer::before,
-.roulette-track-outer::after {
-content: ‘’;
-position: absolute;
-top: 0; bottom: 0;
-width: 80px;
-z-index: 2;
-pointer-events: none;
-}
-.roulette-track-outer::before {
-left: 0;
-background: linear-gradient(90deg, var(–bg), transparent);
-}
-.roulette-track-outer::after {
-right: 0;
-background: linear-gradient(-90deg, var(–bg), transparent);
-}
-
-/* Center line */
-.roulette-indicator {
-position: absolute;
-left: 50%;
-top: 0; bottom: 0;
-width: 3px;
-background: linear-gradient(180deg, transparent 0%, var(–accent) 20%, var(–accent) 80%, transparent 100%);
-transform: translateX(-50%);
-z-index: 3;
-box-shadow: 0 0 16px var(–accent), 0 0 32px rgba(200,168,75,0.3);
-}
-
-/* Top arrow pointing DOWN */
-.roulette-arrow-top {
-position: absolute;
-left: 50%;
-top: -2px;
-transform: translateX(-50%);
-z-index: 10;
-width: 0; height: 0;
-border-left: 16px solid transparent;
-border-right: 16px solid transparent;
-border-top: 22px solid var(–accent);
-filter: drop-shadow(0 0 8px var(–accent));
-}
-
-/* Bottom arrow pointing UP */
-.roulette-arrow-bottom {
-position: absolute;
-left: 50%;
-bottom: -2px;
-transform: translateX(-50%);
-z-index: 10;
-width: 0; height: 0;
-border-left: 16px solid transparent;
-border-right: 16px solid transparent;
-border-bottom: 22px solid var(–accent);
-filter: drop-shadow(0 0 8px var(–accent));
-}
-
-/* Highlight box around selected item */
-.roulette-selector-box {
-position: absolute;
-left: 50%;
-top: 0; bottom: 0;
-width: 108px;
-transform: translateX(-50%);
-z-index: 2;
-border-left: 3px solid var(–accent);
-border-right: 3px solid var(–accent);
-background: rgba(200,168,75,0.05);
-pointer-events: none;
-}
-
-.roulette-track {
-display: flex;
-gap: 8px;
-padding: 12px 0;
-transition: transform 8s cubic-bezier(0.05, 0.8, 0.3, 1);
-will-change: transform;
-}
-
-.roulette-item {
-width: 100px;
-height: 110px;
-border-radius: 10px;
-flex-shrink: 0;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-gap: 4px;
-border: 1px solid rgba(255,255,255,0.06);
-position: relative;
-overflow: hidden;
-}
-
-.roulette-item::before {
-content: ‘’;
-position: absolute;
-inset: 0;
-background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 100%);
-}
-
-.ri-emoji { font-size: 34px; position: relative; z-index: 1; }
-
-/* Winning item highlight */
-.roulette-item.winner {
-border: 2px solid var(–accent) !important;
-box-shadow: 0 0 24px rgba(200,168,75,0.5), inset 0 0 20px rgba(200,168,75,0.08);
-animation: winnerPulse 0.5s ease-out forwards;
-}
-@keyframes winnerPulse {
-0%   { transform: scale(1); }
-50%  { transform: scale(1.1); }
-100% { transform: scale(1.05); }
-}
-.ri-name {
-font-size: 9px;
-font-weight: 700;
-letter-spacing: 1px;
-text-align: center;
-color: rgba(255,255,255,0.7);
-padding: 0 4px;
-text-transform: uppercase;
-position: relative; z-index: 1;
-}
-.ri-rarity {
-font-size: 8px;
-font-weight: 600;
-padding: 2px 6px;
-border-radius: 3px;
-text-transform: uppercase;
-letter-spacing: 1px;
-position: relative; z-index: 1;
-}
-
-/* Opening center */
-.opening-center {
-flex: 1;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-padding: 20px;
-gap: 16px;
-position: relative;
-}
-
-.big-case {
-width: 160px; height: 120px;
-background: linear-gradient(145deg, var(–surface2), var(–surface));
-border: 1px solid var(–accent);
-border-radius: 12px;
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 56px;
-box-shadow: 0 0 60px rgba(200,168,75,0.15), inset 0 1px 0 rgba(255,255,255,0.05);
-cursor: pointer;
-animation: caseFloat 3s ease-in-out infinite;
-transition: transform 0.15s;
-position: relative;
-overflow: hidden;
-}
-
-.big-case::before {
-content: ‘’;
-position: absolute;
-top: 0; left: 10%; right: 10%; height: 1px;
-background: linear-gradient(90deg, transparent, var(–accent2), transparent);
-}
-
-.big-case:active { transform: scale(0.95) !important; animation: none; }
-
-.open-hint {
-font-family: ‘Orbitron’, ‘Courier New’, monospace;
-font-size: 10px;
-letter-spacing: 4px;
-color: var(–muted);
-animation: blink 1.5s ease-in-out infinite;
-text-transform: uppercase;
-}
-
-@keyframes blink {
-0%, 100% { opacity: 0.4; }
-50% { opacity: 1; }
-}
-
-.opening-cost {
-font-size: 13px;
-color: var(–muted);
-letter-spacing: 1px;
-}
-
-/* Result */
-.result-card {
-width: 100%;
-max-width: 280px;
-border-radius: 16px;
-padding: 28px 20px;
-display: flex;
-flex-direction: column;
-align-items: center;
-gap: 10px;
-position: relative;
-overflow: hidden;
-animation: resultPop 0.5s cubic-bezier(0.16, 1.3, 0.3, 1) both;
-}
-
-@keyframes resultPop {
-from { opacity: 0; transform: scale(0.5); }
-to { opacity: 1; transform: scale(1); }
-}
-
-.result-card::before {
-content: ‘’;
-position: absolute;
-inset: 0;
-background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 60%);
-}
-
-.result-emoji {
-font-size: 72px;
-position: relative;
-z-index: 1;
-filter: drop-shadow(0 4px 20px rgba(0,0,0,0.5));
-}
-
-.result-name {
-font-family: ‘Orbitron’, ‘Courier New’, monospace;
-font-size: 16px;
-font-weight: 700;
-letter-spacing: 2px;
-color: #fff;
-text-align: center;
-position: relative; z-index: 1;
-text-transform: uppercase;
-}
-
-.result-rarity-badge {
-font-size: 11px;
-font-weight: 700;
-letter-spacing: 2px;
-padding: 4px 12px;
-border-radius: 4px;
-text-transform: uppercase;
-position: relative; z-index: 1;
-}
-
-.result-value {
-font-family: ‘Orbitron’, ‘Courier New’, monospace;
-font-size: 18px;
-font-weight: 700;
-color: var(–accent2);
-position: relative; z-index: 1;
-}
-
-.result-desc {
-font-size: 13px;
-color: rgba(255,255,255,0.5);
-text-align: center;
-position: relative; z-index: 1;
-max-width: 200px;
-}
-
-.result-coins-earned {
-font-size: 14px;
-color: var(–green);
-font-weight: 700;
-letter-spacing: 1px;
-}
-
-.result-actions {
-display: flex;
-gap: 10px;
-width: 100%;
-max-width: 320px;
-}
-
-.btn-again {
-flex: 1;
-padding: 16px;
-background: var(–accent);
-color: #0a0a0f;
-border: none;
-border-radius: 8px;
-font-family: ‘Orbitron’, ‘Courier New’, monospace;
-font-weight: 700;
-font-size: 11px;
-letter-spacing: 3px;
-cursor: pointer;
-transition: all 0.15s;
-text-transform: uppercase;
-box-shadow: 0 4px 20px rgba(200,168,75,0.3);
-}
-.btn-again:active { transform: scale(0.96); }
-
-.btn-menu {
-padding: 16px 20px;
-background: transparent;
-color: var(–muted);
-border: 1px solid var(–border);
-border-radius: 8px;
-font-family: ‘Rajdhani’, ‘Trebuchet MS’, Arial, sans-serif;
-font-weight: 700;
-font-size: 13px;
-letter-spacing: 2px;
-cursor: pointer;
-transition: all 0.15s;
-text-transform: uppercase;
-}
-
-/* ── INVENTORY ── */
-#screen-inventory {
-z-index: 1;
-background: var(–bg);
-}
-
-.inv-header {
-display: flex;
-align-items: center;
-justify-content: space-between;
-padding: 16px 20px;
-border-bottom: 1px solid var(–border);
-flex-shrink: 0;
-}
-
-.inv-title {
-font-family: ‘Orbitron’, ‘Courier New’, monospace;
-font-size: 13px;
-letter-spacing: 4px;
-color: var(–muted);
-text-transform: uppercase;
-}
-
-.filter-row {
-display: flex;
-gap: 8px;
-padding: 12px 16px;
-overflow-x: auto;
-flex-shrink: 0;
-border-bottom: 1px solid var(–border);
-scrollbar-width: none;
-}
-.filter-row::-webkit-scrollbar { display: none; }
-
-.filter-chip {
-padding: 6px 14px;
-border-radius: 4px;
-background: var(–surface2);
-border: 1px solid var(–border);
-color: var(–muted);
-font-family: ‘Rajdhani’, ‘Trebuchet MS’, Arial, sans-serif;
-font-weight: 700;
-font-size: 12px;
-letter-spacing: 2px;
-cursor: pointer;
-text-transform: uppercase;
-flex-shrink: 0;
-transition: all 0.15s;
-}
-.filter-chip.active {
-border-color: var(–accent);
-color: var(–accent);
-background: rgba(200,168,75,0.08);
-}
-
-.inv-grid {
-display: grid;
-grid-template-columns: repeat(3, 1fr);
-gap: 8px;
-padding: 12px;
-overflow-y: auto;
-flex: 1;
-}
-
-.inv-item {
-aspect-ratio: 0.8;
-border-radius: 10px;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-gap: 4px;
-border: 1px solid rgba(255,255,255,0.06);
-cursor: pointer;
-transition: transform 0.15s;
-position: relative;
-overflow: hidden;
-padding: 8px 4px;
-}
-.inv-item::before {
-content: ‘’;
-position: absolute;
-top: 0; left: 0; right: 0;
-height: 40%;
-background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 100%);
-}
-.inv-item:active { transform: scale(0.94); }
-
-.inv-emoji { font-size: 28px; position: relative; z-index: 1; }
-.inv-name {
-font-size: 9px;
-font-weight: 700;
-letter-spacing: 1px;
-text-align: center;
-color: rgba(255,255,255,0.8);
-text-transform: uppercase;
-position: relative; z-index: 1;
-padding: 0 2px;
-}
-.inv-count {
-font-family: ‘Orbitron’, ‘Courier New’, monospace;
-font-size: 9px;
-color: rgba(255,255,255,0.4);
-position: relative; z-index: 1;
-}
-
-.inv-empty {
-grid-column: 1/-1;
-text-align: center;
-padding: 60px 20px;
-color: var(–muted);
-}
-.inv-empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.3; }
-.inv-empty-text { font-size: 14px; letter-spacing: 2px; text-transform: uppercase; }
-
-/* ── ITEM DETAIL ── */
-.detail-overlay {
-position: fixed; inset: 0;
-background: rgba(0,0,0,0.8);
-z-index: 500;
-display: none;
-align-items: center;
-justify-content: center;
-backdrop-filter: blur(8px);
-}
-.detail-overlay.active { display: flex; }
-
-.detail-card {
-width: 85%; max-width: 320px;
-border-radius: 20px;
-padding: 32px 24px;
-display: flex;
-flex-direction: column;
-align-items: center;
-gap: 12px;
-animation: resultPop 0.3s cubic-bezier(0.16, 1.3, 0.3, 1) both;
-position: relative;
-overflow: hidden;
-}
-.detail-card::before {
-content: ‘’;
-position: absolute;
-top: 0; left: 0; right: 0; height: 60%;
-background: linear-gradient(180deg, rgba(255,255,255,0.07) 0%, transparent 100%);
-}
-.detail-card::after {
-content: ‘’;
-position: absolute;
-top: 0; left: 10%; right: 10%; height: 1px;
-background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-}
-
-.detail-close {
-position: absolute;
-top: 14px; right: 14px;
-width: 30px; height: 30px;
-background: rgba(0,0,0,0.3);
-border: 1px solid rgba(255,255,255,0.1);
-border-radius: 6px;
-color: rgba(255,255,255,0.6);
-font-size: 14px;
-cursor: pointer;
-display: flex;
-align-items: center;
-justify-content: center;
-}
-
-.detail-emoji { font-size: 80px; position: relative; z-index: 1; }
-.detail-name {
-font-family: ‘Orbitron’, ‘Courier New’, monospace;
-font-size: 15px;
-font-weight: 700;
-letter-spacing: 2px;
-color: #fff;
-text-align: center;
-text-transform: uppercase;
-position: relative; z-index: 1;
-}
-.detail-rarity-badge {
-font-size: 10px;
-font-weight: 700;
-letter-spacing: 2px;
-padding: 4px 12px;
-border-radius: 4px;
-text-transform: uppercase;
-position: relative; z-index: 1;
-}
-.detail-desc {
-font-size: 13px;
-color: rgba(255,255,255,0.5);
-text-align: center;
-line-height: 1.5;
-position: relative; z-index: 1;
-}
-.detail-value {
-font-family: ‘Orbitron’, ‘Courier New’, monospace;
-font-size: 20px;
-font-weight: 700;
-color: var(–accent2);
-position: relative; z-index: 1;
-}
-.detail-owned {
-font-size: 12px;
-color: rgba(255,255,255,0.35);
-letter-spacing: 2px;
-text-transform: uppercase;
-position: relative; z-index: 1;
-}
-
-/* ── CODE MODAL ── */
-.code-section { padding: 16px; }
-.code-label {
-font-size: 12px;
-letter-spacing: 2px;
-color: var(–muted);
-text-transform: uppercase;
-margin-bottom: 10px;
-}
-.code-input {
-width: 100%;
-background: var(–surface2);
-border: 1px solid var(–border);
-border-radius: 8px;
-padding: 14px 16px;
-color: var(–text);
-font-family: ‘Orbitron’, ‘Courier New’, monospace;
-font-size: 14px;
-font-weight: 700;
-letter-spacing: 3px;
-text-transform: uppercase;
-outline: none;
-transition: border-color 0.2s;
-}
-.code-input:focus { border-color: var(–accent); }
-.code-input::placeholder { color: var(–muted); letter-spacing: 2px; font-size: 11px; }
-
-.btn-redeem {
-width: 100%;
-margin-top: 10px;
-padding: 14px;
-background: var(–accent);
-color: #0a0a0f;
-border: none;
-border-radius: 8px;
-font-family: ‘Orbitron’, ‘Courier New’, monospace;
-font-weight: 700;
-font-size: 12px;
-letter-spacing: 3px;
-cursor: pointer;
-text-transform: uppercase;
-}
-
-.code-result {
-margin-top: 10px;
-padding: 12px;
-border-radius: 8px;
-font-size: 13px;
-font-weight: 700;
-display: none;
-letter-spacing: 1px;
-}
-.code-result.success { background: rgba(64,200,112,0.1); border: 1px solid var(–green); color: var(–green); display: block; }
-.code-result.error { background: rgba(232,64,64,0.1); border: 1px solid var(–red); color: var(–red); display: block; }
-
-.codes-hint {
-margin-top: 16px;
-padding: 14px;
-background: var(–surface2);
-border: 1px solid var(–border);
-border-radius: 8px;
-font-size: 12px;
-color: var(–muted);
-line-height: 1.7;
-}
-.codes-hint strong { color: var(–accent); letter-spacing: 1px; }
-
-/* ── TOAST ── */
-.toast {
-position: fixed;
-bottom: 30px; left: 50%;
-transform: translateX(-50%) translateY(80px);
-background: var(–surface);
-border: 1px solid var(–accent);
-color: var(–text);
-padding: 12px 24px;
-border-radius: 8px;
-font-family: ‘Orbitron’, ‘Courier New’, monospace;
-font-size: 11px;
-letter-spacing: 2px;
-z-index: 9999;
-transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-white-space: nowrap;
-box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-text-transform: uppercase;
-}
-.toast.show { transform: translateX(-50%) translateY(0); }
-
-/* ── SHINE FLASH ── */
-.shine-flash {
-position: fixed; inset: 0;
-z-index: 9998;
-pointer-events: none;
-animation: shineOut 1.2s ease-out forwards;
-}
-@keyframes shineOut {
-0% { opacity: 1; }
-100% { opacity: 0; }
-}
-
-/* RARITY COLOR UTILITY CLASSES */
-.r-common    { background: linear-gradient(135deg, #2a2a38, #1e1e2a); }
-.r-uncommon  { background: linear-gradient(135deg, #0e2a18, #1a3a28); }
-.r-rare      { background: linear-gradient(135deg, #0e1a38, #1a2a52); }
-.r-epic      { background: linear-gradient(135deg, #1e0e38, #2e1a52); }
-.r-legendary { background: linear-gradient(135deg, #281805, #3d2808); }
-.r-mythical  { background: linear-gradient(135deg, #280528, #3d0a3d); }
-.r-contraband{ background: linear-gradient(135deg, #280505, #500808); }
-
-.badge-common    { background: rgba(120,120,140,0.2); color: #8888a8; }
-.badge-uncommon  { background: rgba(64,200,112,0.15); color: var(–green); }
-.badge-rare      { background: rgba(64,128,232,0.15); color: var(–blue); }
-.badge-epic      { background: rgba(144,64,232,0.15); color: var(–purple); }
-.badge-legendary { background: rgba(200,168,75,0.15); color: var(–accent2); }
-.badge-mythical  { background: rgba(200,64,200,0.15); color: #e040e0; }
-.badge-contraband{ background: rgba(232,64,64,0.15); color: var(–red); }
-
-/* nav bar */
-.nav-bar {
-display: flex;
-border-top: 1px solid var(–border);
-flex-shrink: 0;
-background: var(–surface);
-}
-
-.nav-btn {
-flex: 1;
-padding: 14px 8px;
-background: none;
-border: none;
-color: var(–muted);
-cursor: pointer;
-display: flex;
-flex-direction: column;
-align-items: center;
-gap: 4px;
-transition: color 0.15s;
-font-family: ‘Rajdhani’, ‘Trebuchet MS’, Arial, sans-serif;
-font-weight: 700;
-font-size: 10px;
-letter-spacing: 1px;
-text-transform: uppercase;
-}
-.nav-btn.active { color: var(–accent); }
-.nav-icon { font-size: 20px; line-height: 1; }
-
-/* Particle effect */
-.particles { position: fixed; inset: 0; pointer-events: none; z-index: 9997; }
-.particle {
-position: absolute;
-border-radius: 50%;
-pointer-events: none;
-animation: particleFly 1.5s ease-out forwards;
-}
-@keyframes particleFly {
-0% { opacity: 1; transform: translate(0,0) scale(1); }
-100% { opacity: 0; transform: translate(var(–tx), var(–ty)) scale(0); }
-}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{
+  width:100%;height:100%;
+  background:#111;color:#fff;
+  font-family:'Segoe UI',system-ui,sans-serif;
+  overflow:hidden;user-select:none;-webkit-user-select:none;
+}
+#topBar{
+  position:fixed;top:0;left:0;right:0;height:44px;
+  background:#1e1e1e;border-bottom:1px solid #333;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 12px;z-index:100;
+}
+#fpsDisplay{font-size:11px;color:#666;font-weight:600;min-width:58px;}
+#topBar h1{font-size:15px;font-weight:700;letter-spacing:1px;color:#eee;}
+#clearBtn{
+  background:#2a2a2a;border:1px solid #444;color:#ccc;
+  border-radius:8px;padding:4px 12px;font-size:12px;font-weight:600;
+  cursor:pointer;display:flex;align-items:center;gap:5px;
+}
+#clearBtn:active{background:#333;}
+#simCanvas{
+  position:fixed;top:44px;left:0;
+  display:block;cursor:crosshair;touch-action:none;
+  background:#111;
+}
+#flashOverlay{
+  position:fixed;top:44px;left:0;
+  background:rgba(255,200,50,0);pointer-events:none;z-index:50;
+  transition:background 0.05s;
+}
+#flashOverlay.flash{background:rgba(255,200,50,0.22);}
+#flashOverlay.nuke{background:rgba(255,255,255,0.9);}
+#statsOverlay{
+  position:fixed;left:10px;pointer-events:none;z-index:60;
+}
+#statsOverlay .sl{font-size:8px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.3);margin-bottom:1px;}
+#statsOverlay .sv{font-size:12px;font-weight:600;color:rgba(255,255,255,0.55);margin-bottom:6px;}
+#settingsBtn{
+  position:fixed;width:40px;height:40px;border-radius:50%;
+  background:#fff;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 10px rgba(0,0,0,0.5);color:#333;z-index:60;
+}
+#settingsBtn svg{width:20px;height:20px;}
+#settingsPanel{
+  position:fixed;background:#1e1e1e;border:1px solid #333;border-radius:14px;
+  padding:12px;width:200px;display:none;
+  box-shadow:0 8px 24px rgba(0,0,0,0.7);z-index:200;
+}
+#settingsPanel.open{display:block;}
+#settingsPanel h3{font-size:12px;font-weight:700;color:#aaa;margin-bottom:10px;letter-spacing:1px;}
+.srow{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.srow label{font-size:11px;color:#888;}
+.tog{width:38px;height:20px;border-radius:10px;background:#444;border:none;cursor:pointer;position:relative;transition:background 0.2s;}
+.tog.on{background:#4CAF50;}
+.tog::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left 0.2s;}
+.tog.on::after{left:20px;}
+.sslider{width:100%;margin-top:5px;-webkit-appearance:none;height:4px;border-radius:2px;background:#444;outline:none;}
+.sslider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#fff;cursor:pointer;}
+#elemPanel{
+  position:fixed;background:#1e1e1e;z-index:80;overflow:hidden;
+}
+#panelToggle{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:7px;cursor:pointer;color:#aaa;font-size:12px;font-weight:600;
+  background:#191919;border-color:#333;border-style:solid;flex-shrink:0;
+}
+.arrow{font-size:11px;transition:transform 0.25s;}
+#panelScroll{overflow-y:auto;overflow-x:hidden;}
+#panelScroll.hidden{display:none;}
+.panel-inner{padding:8px;}
+.brush-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.brush-row label{font-size:10px;color:#666;font-weight:600;min-width:32px;}
+#brushSlider{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:#444;outline:none;}
+#brushSlider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#fff;cursor:pointer;}
+#brushVal{font-size:10px;color:#aaa;font-weight:700;min-width:16px;text-align:right;}
+.cat-label{font-size:9px;font-weight:700;letter-spacing:1.5px;color:#555;margin:6px 0 4px;text-transform:uppercase;}
+#elementGrid{display:grid;gap:4px;}
+.eb{
+  border:none;border-radius:7px;padding:7px 2px;font-size:10px;font-weight:700;
+  cursor:pointer;text-align:center;outline:none;
+  transition:transform 0.1s,box-shadow 0.1s;
+}
+.eb:active{transform:scale(0.91);}
+.eb.sel{box-shadow:0 0 0 2px #fff,0 0 0 4px rgba(255,255,255,0.2);transform:scale(1.05);z-index:1;}
+.eb.dk{color:rgba(0,0,0,0.8);}
+.eb.lt{color:rgba(255,255,255,0.92);}
+/* Tooltip */
+.tooltip{position:fixed;background:#000;color:#ccc;font-size:10px;padding:4px 8px;border-radius:6px;pointer-events:none;z-index:999;opacity:0;transition:opacity 0.15s;max-width:160px;line-height:1.4;border:1px solid #333;}
+.tooltip.show{opacity:1;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-thumb{background:#444;border-radius:3px;}
 </style>
-
 </head>
 <body>
+<div id="topBar">
+  <span id="fpsDisplay">FPS: 60</span>
+  <h1>PowderBox v3</h1>
+  <button id="clearBtn" onclick="clearCanvas()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12">
+      <polyline points="3 6 5 6 21 6"/>
+      <path d="M19 6l-1 14H6L5 6"/>
+      <path d="M10 11v6M14 11v6"/>
+      <path d="M9 6V4h6v2"/>
+    </svg>
+    Clear
+  </button>
+</div>
 
-<!-- ══════════════ MAIN MENU ══════════════ -->
+<canvas id="simCanvas"></canvas>
 
-<div class="screen active" id="screen-main">
-  <div class="main-header">
-    <div class="logo">VAULT</div>
-    <div class="balance-chip" id="balanceDisplay">0</div>
+<div id="flashOverlay"></div>
+
+<div id="statsOverlay">
+  <div class="sl">TEMP</div><div class="sv" id="tempDisplay">20°C</div>
+  <div class="sl">PRESSURE</div><div class="sv" id="pressDisplay">1.0 atm</div>
+  <div class="sl">PARTICLES</div><div class="sv" id="particleDisplay">0</div>
+</div>
+
+<button id="settingsBtn" onclick="toggleSettings()">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <circle cx="12" cy="12" r="3"/>
+    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+  </svg>
+</button>
+
+<div id="settingsPanel">
+  <h3>SETTINGS</h3>
+  <div class="srow"><label>Gravity</label><button class="tog on" id="gravityToggle" onclick="toggleSetting('gravity',this)"></button></div>
+  <div class="srow"><label>Wind</label><button class="tog" id="windToggle" onclick="toggleSetting('wind',this)"></button></div>
+  <div class="srow"><label>Temperature</label><button class="tog on" id="heatToggle" onclick="toggleSetting('heat',this)"></button></div>
+  <div class="srow"><label>Speed</label></div>
+  <input class="sslider" type="range" min="1" max="5" value="3" oninput="simSpeed=+this.value">
+</div>
+
+<div id="elemPanel">
+  <div id="panelToggle" onclick="togglePanel()">
+    <span class="arrow" id="arrowIcon">&#x2227;</span>
+    <span>Elements</span>
   </div>
-
-  <div class="main-hero">
-    <div class="hero-glow"></div>
-    <div class="hero-title">Premium</div>
-    <div class="hero-sub">CASE<br><span>OPENER</span></div>
-    <div class="hero-case-preview">
-      <div class="case-box">🎁</div>
-    </div>
-    <div class="main-stats">
-      <div class="stat">
-        <div class="stat-val" id="statOpened" style="font-family:'Rajdhani','Trebuchet MS',Arial,sans-serif;font-size:28px;font-weight:900;">0</div>
-        <div class="stat-label">Opened</div>
+  <div id="panelScroll">
+    <div class="panel-inner">
+      <div class="brush-row">
+        <label>BRUSH</label>
+        <input type="range" id="brushSlider" min="1" max="10" value="3"
+          oninput="brushSize=+this.value;document.getElementById('brushVal').textContent=this.value">
+        <span id="brushVal">3</span>
       </div>
-      <div class="stat">
-        <div class="stat-val" id="statUnique" style="font-family:'Rajdhani','Trebuchet MS',Arial,sans-serif;font-size:28px;font-weight:900;">0</div>
-        <div class="stat-label">Unique</div>
-      </div>
-      <div class="stat">
-        <div class="stat-val" id="statRarest" style="font-family:'Rajdhani','Trebuchet MS',Arial,sans-serif;font-size:18px;font-weight:900;">—</div>
-        <div class="stat-label">Best Drop</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="main-actions">
-    <button class="btn-primary" id="btnOpenCase">OPEN A CASE</button>
-    <button class="btn-secondary" id="btnViewInventory">INVENTORY</button>
-    <div style="display:flex;gap:10px;">
-      <button class="btn-ghost" style="flex:1;" id="btnCode">REDEEM CODE</button>
-      <button class="btn-ghost" style="flex:1;" id="btnReset">RESET</button>
+      <div id="elementGrid"></div>
     </div>
   </div>
 </div>
 
-<!-- ══════════════ OPENING SCREEN ══════════════ -->
-
-<div class="screen" id="screen-opening">
-  <div class="opening-header">
-    <button class="btn-back" id="btnBackOpening">← BACK</button>
-    <div class="opening-case-name" id="openingCaseName">CASE</div>
-    <div style="font-family:'Orbitron',monospace;font-size:11px;color:var(--accent);" id="openingBalance">$0</div>
-  </div>
-  <div class="opening-center" id="openingCenter"></div>
-</div>
-
-<!-- ══════════════ INVENTORY SCREEN ══════════════ -->
-
-<div class="screen" id="screen-inventory">
-  <div class="inv-header">
-    <button class="btn-back" id="btnBackInventory">← BACK</button>
-    <div class="inv-title">INVENTORY</div>
-    <div style="font-family:'Orbitron',monospace;font-size:11px;color:var(--accent);" id="invBalance">$0</div>
-  </div>
-
-  <div class="filter-row" id="filterRow">
-    <button class="filter-chip active" data-filter="all">ALL</button>
-    <button class="filter-chip" data-filter="contraband">CONTRABAND</button>
-    <button class="filter-chip" data-filter="mythical">MYTHICAL</button>
-    <button class="filter-chip" data-filter="legendary">LEGENDARY</button>
-    <button class="filter-chip" data-filter="epic">EPIC</button>
-    <button class="filter-chip" data-filter="rare">RARE</button>
-    <button class="filter-chip" data-filter="uncommon">UNCOMMON</button>
-    <button class="filter-chip" data-filter="common">COMMON</button>
-  </div>
-
-  <div class="inv-grid" id="invGrid"></div>
-</div>
-
-<!-- ══════════════ CASE SELECT MODAL ══════════════ -->
-
-<div class="modal-overlay" id="modalCases">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-head">
-      <div class="modal-title">SELECT CASE</div>
-      <button class="modal-close" id="btnCloseCases">✕</button>
-    </div>
-    <div class="modal-body" id="caseListBody"></div>
-  </div>
-</div>
-
-<!-- ══════════════ CODE MODAL ══════════════ -->
-
-<div class="modal-overlay" id="modalCode">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-head">
-      <div class="modal-title">REDEEM CODE</div>
-      <button class="modal-close" id="btnCloseCode">✕</button>
-    </div>
-    <div class="code-section">
-      <div class="code-label">Enter promo code</div>
-      <input type="text" class="code-input" id="codeInput" placeholder="TYPE CODE HERE" maxlength="20">
-      <button class="btn-redeem" id="btnRedeem">REDEEM</button>
-      <div class="code-result" id="codeResult"></div>
-      <div class="codes-hint">
-        💡 Hint — try these codes:<br>
-        <strong>VAULT100</strong> · <strong>WELCOME</strong> · <strong>FREECASE</strong> · <strong>GOLDKEY</strong>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════ ITEM DETAIL ══════════════ -->
-
-<div class="detail-overlay" id="detailOverlay">
-  <div class="detail-card" id="detailCard">
-    <button class="detail-close" id="btnCloseDetail">✕</button>
-    <div class="detail-emoji" id="detailEmoji">❓</div>
-    <div class="detail-name" id="detailName">ITEM</div>
-    <div class="detail-rarity-badge" id="detailBadge">COMMON</div>
-    <div class="detail-desc" id="detailDesc">Description</div>
-    <div class="detail-value" id="detailValue">$0</div>
-    <div class="detail-owned" id="detailOwned">×1 OWNED</div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
+<div class="tooltip" id="tooltip"></div>
 
 <script>
-// ═══════════════════════════════════════
-// DATA — ITEMS
-// ═══════════════════════════════════════
-const ITEMS = {
-  // COMMON
-  c001: { name:'Worn Wrench',    emoji:'🔧', rarity:'common',    value:10,  desc:'A basic utility tool. Found everywhere.' },
-  c002: { name:'Cracked Mug',    emoji:'☕', rarity:'common',    value:8,   desc:'Still holds coffee. Mostly.' },
-  c003: { name:'Paperclip',      emoji:'📎', rarity:'common',    value:5,   desc:'One of millions. Nothing special.' },
-  c004: { name:'Rubber Duck',    emoji:'🦆', rarity:'common',    value:12,  desc:'Debug companion. Battle-tested.' },
-  c005: { name:'Sticky Note',    emoji:'📝', rarity:'common',    value:7,   desc:'Someone left a reminder: "don\'t forget".' },
-  c006: { name:'Lost Penny',     emoji:'🪙', rarity:'common',    value:6,   desc:'From 1987. Barely worth its weight.' },
-  c007: { name:'Tape Roll',      emoji:'🧻', rarity:'common',    value:9,   desc:'Fixes everything. Eventually.' },
-  c008: { name:'Bus Ticket',     emoji:'🎫', rarity:'common',    value:11,  desc:'Expired. Route unknown.' },
+// ══════════════════════════════════════════════════════
+// ELEMENT DEFINITIONS
+// temp field = "heat" stored as 0-255 (maps 0°C = 20, fire = 220, etc.)
+// Real-life reactions guide all interactions
+// ══════════════════════════════════════════════════════
+const ELEMENTS = {
+  // ── POWDERS ──
+  SAND:      {color:[194,154,76],  density:1.5, type:'powder', flammable:false, label:'Sand',      tip:'Melts into glass at high heat. Sinks in water.'},
+  STONE:     {color:[130,130,135], density:2.8, type:'powder', flammable:false, label:'Stone',     tip:'Very dense. Melts into lava under extreme heat.'},
+  SALT:      {color:[235,235,240], density:1.4, type:'powder', flammable:false, label:'Salt',      tip:'Dissolves in water. Lowers water freezing point.'},
+  GUNPOWDER: {color:[85,80,85],    density:1.2, type:'powder', flammable:true,  label:'Powder',    tip:'Ignites near fire. Chain-explodes.'},
+  WOOD:      {color:[140,90,35],   density:2.2, type:'powder', flammable:true,  label:'Wood',      tip:'Burns slowly. Produces charcoal then ash.'},
+  COAL:      {color:[50,50,55],    density:1.6, type:'powder', flammable:true,  label:'Coal',      tip:'Burns hot and long. Turns to ash.'},
+  ASH:       {color:[160,158,155], density:0.6, type:'powder', flammable:false, label:'Ash',       tip:'Residue from burning. Floats on water.'},
+  ICE:       {color:[180,215,245], density:0.92,type:'powder', flammable:false, label:'Ice',       tip:'Melts to water in heat. Expands slightly.'},
+  GLASS:     {color:[170,215,235], density:2.5, type:'powder', flammable:false, label:'Glass',     tip:'Sand melted at 1700°C. Shatters from explosions.'},
+  TNT:       {color:[220,40,40],   density:2.0, type:'powder', flammable:false, label:'TNT',       tip:'Explodes violently from fire or shock.'},
+  PLANT:     {color:[35,165,45],   density:1.0, type:'powder', flammable:true,  label:'Plant',     tip:'Grows toward water. Burns easily. Needs water.'},
+  MAGMAROCK: {color:[110,45,15],   density:3.0, type:'powder', flammable:false, label:'Basalt',    tip:'Solidified lava. Releases lava when heated.'},
+  CRYSTAL:   {color:[180,110,255], density:2.2, type:'powder', flammable:false, label:'Crystal',   tip:'Grows slowly. Conducts electricity. Shatters in acid.'},
+  RUBBER:    {color:[50,195,80],   density:1.4, type:'powder', flammable:false, label:'Rubber',    tip:'Bounces off surfaces. Insulates electricity.'},
+  NUKE:      {color:[50,255,50],   density:3.5, type:'powder', flammable:false, label:'NUKE',      tip:'Nuclear payload. Triggered by fire or electricity.'},
+  CORAL:     {color:[255,85,105],  density:1.8, type:'powder', flammable:false, label:'Coral',     tip:'Grows in water. Dies in acid or heat.'},
+  CONCRETE:  {color:[175,170,165], density:2.4, type:'powder', flammable:false, label:'Concrete',  tip:'Hardens on contact with water. Inert when set.'},
+  SULFUR:    {color:[210,200,50],  density:2.0, type:'powder', flammable:true,  label:'Sulfur',    tip:'Burns with blue flame → sulfur dioxide gas.'},
+  IRON:      {color:[160,160,170], density:7.8, type:'powder', flammable:false, label:'Iron',      tip:'Rusts in water over time. Melts in lava.'},
+  SNOW:      {color:[230,240,255], density:0.5, type:'powder', flammable:false, label:'Snow',      tip:'Cold powder. Melts to water in heat.'},
+  ERASER:    {color:[60,60,60],    density:0,   type:'eraser', flammable:false, label:'Erase',     tip:'Remove particles.'},
 
-  // UNCOMMON
-  u001: { name:'Vintage Lighter', emoji:'🔥', rarity:'uncommon',  value:50,  desc:'Brass finish. Still sparks.' },
-  u002: { name:'Jade Earring',    emoji:'💚', rarity:'uncommon',  value:65,  desc:'One of a pair. The other is missing.' },
-  u003: { name:'Lucky Coin',      emoji:'🥇', rarity:'uncommon',  value:80,  desc:'Worn smooth from years of rubbing.' },
-  u004: { name:'Compass',         emoji:'🧭', rarity:'uncommon',  value:70,  desc:'Always finds north. Occasionally.' },
-  u005: { name:'Glass Vial',      emoji:'🧪', rarity:'uncommon',  value:55,  desc:'Empty. But it glows faintly.' },
-  u006: { name:'Pocket Watch',    emoji:'⌚', rarity:'uncommon',  value:90,  desc:'Stopped at 3:47. Nobody knows why.' },
+  // ── LIQUIDS ──
+  WATER:     {color:[60,130,220],  density:1.0, type:'liquid', flammable:false, label:'Water',     tip:'Evaporates in heat → steam. Freezes in cold.'},
+  LAVA:      {color:[210,85,15],   density:2.0, type:'liquid', flammable:false, label:'Lava',      tip:'1200°C molten rock. Solidifies on water contact.'},
+  OIL:       {color:[165,150,85],  density:0.8, type:'liquid', flammable:true,  label:'Oil',       tip:'Floats on water. Burns intensely.'},
+  ACID:      {color:[55,225,35],   density:1.2, type:'liquid', flammable:false, label:'Acid',      tip:'Dissolves most materials. Neutralized by water.'},
+  HONEY:     {color:[220,165,25],  density:1.6, type:'liquid', flammable:true,  label:'Honey',     tip:'Very viscous. Crystallizes slowly. Ferments.'},
+  MERCURY:   {color:[200,205,210], density:13.5,type:'liquid', flammable:false, label:'Mercury',   tip:'Very dense liquid metal. Vaporizes in heat.'},
+  SALTWATER: {color:[60,120,200],  density:1.03,type:'liquid', flammable:false, label:'Brine',     tip:'Salted water. Lower freezing point. Conducts better.'},
+  ALCOHOL:   {color:[200,230,255], density:0.79,type:'liquid', flammable:true,  label:'Alcohol',   tip:'Highly flammable. Evaporates quickly.'},
 
-  // RARE
-  r001: { name:'Obsidian Blade',  emoji:'🗡️', rarity:'rare',      value:250, desc:'Sharper than it looks. Ancient origin.' },
-  r002: { name:'Storm Lantern',   emoji:'🏮', rarity:'rare',      value:300, desc:'Burns without fuel. Somehow.' },
-  r003: { name:'Navigator\'s Map',emoji:'🗺️', rarity:'rare',      value:280, desc:'Shows places that shouldn\'t exist.' },
-  r004: { name:'Crystal Lens',    emoji:'🔭', rarity:'rare',      value:350, desc:'Reveals things hidden to the naked eye.' },
-  r005: { name:'Sealed Letter',   emoji:'📜', rarity:'rare',      value:220, desc:'From someone important. Unopened.' },
-  r006: { name:'Mechanical Heart',emoji:'⚙️', rarity:'rare',      value:400, desc:'Ticks on its own. No battery.' },
-
-  // EPIC
-  e001: { name:'Dragon Scale',    emoji:'🐉', rarity:'epic',      value:900, desc:'Shed willingly. Or taken. Hard to say.' },
-  e002: { name:'Void Prism',      emoji:'🔮', rarity:'epic',      value:850, desc:'Bends light in directions light doesn\'t go.' },
-  e003: { name:'Thunderstone',    emoji:'⚡', rarity:'epic',      value:1000,desc:'Crackling with contained energy.' },
-  e004: { name:'Silver Sigil',    emoji:'🌙', rarity:'epic',      value:950, desc:'Marks its owner. Can\'t be removed.' },
-
-  // LEGENDARY
-  l001: { name:'Crown Jewel',     emoji:'💎', rarity:'legendary', value:3000,desc:'One of seven. Six are unaccounted for.' },
-  l002: { name:'Phoenix Feather', emoji:'🦅', rarity:'legendary', value:2500,desc:'Still warm to the touch. Always.' },
-  l003: { name:'Temporal Key',    emoji:'🗝️', rarity:'legendary', value:4000,desc:'Opens a door that hasn\'t been built yet.' },
-
-  // MYTHICAL
-  m001: { name:'Starborn Core',   emoji:'⭐', rarity:'mythical',  value:8000,desc:'Collapsed from a dying star. Still alive.' },
-  m002: { name:'Infinity Loop',   emoji:'♾️', rarity:'mythical',  value:9500,desc:'Has no beginning. Has no end. Somehow weighs something.' },
-
-  // CONTRABAND
-  x001: { name:'The Artifact',    emoji:'🌑', rarity:'contraband',value:25000,desc:'No classification exists for this. It shouldn\'t be here.' },
+  // ── GASES ──
+  FIRE:      {color:[230,65,15],   density:0.1, type:'gas',    flammable:false, label:'Fire',      tip:'Burns flammables. Evaporates water. Rises.'},
+  STEAM:     {color:[195,205,215], density:0.2, type:'gas',    flammable:false, label:'Steam',     tip:'Condenses to water when cooled.'},
+  SMOKE:     {color:[110,108,105], density:0.25,type:'gas',    flammable:false, label:'Smoke',     tip:'Carbon particles from combustion. Disperses upward.'},
+  ELECTRIC:  {color:[255,255,60],  density:0.4, type:'gas',    flammable:false, label:'Spark',     tip:'Electrical discharge. Ignites flammables.'},
+  LIGHTNING: {color:[210,230,255], density:0.1, type:'gas',    flammable:false, label:'Bolt',      tip:'High-voltage arc. Melts sand to glass.'},
+  TORNADO:   {color:[185,185,205], density:0.3, type:'gas',    flammable:false, label:'Tornado',   tip:'Violent vortex. Picks up and flings particles.'},
+  FREEZE:    {color:[165,245,255], density:0.15,type:'gas',    flammable:false, label:'Freeze',    tip:'Cryo spray. Instantly freezes liquids and gases.'},
+  BUBBLE:    {color:[155,235,255], density:0.15,type:'gas',    flammable:false, label:'Bubble',    tip:'Air bubble in liquid. Rises and pops.'},
+  ANTIMATTER:{color:[20,10,45],    density:0.5, type:'gas',    flammable:false, label:'Antimatter',tip:'Annihilates any matter it contacts.'},
+  VOID:      {color:[5,0,15],      density:0.0, type:'gas',    flammable:false, label:'Void',      tip:'Absolute vacuum. Consumes everything nearby.'},
+  VIRUS:     {color:[185,5,225],   density:1.3, type:'gas',    flammable:false, label:'Virus',     tip:'Infects and converts nearby particles.'},
+  CO2:       {color:[100,130,150], density:0.6, type:'gas',    flammable:false, label:'CO₂',       tip:'Carbon dioxide. Extinguishes fire. Heavier than air.'},
+  METHANE:   {color:[140,200,160], density:0.35,type:'gas',    flammable:true,  label:'Methane',   tip:'Highly flammable gas. Explodes in air near flame.'},
 };
 
-const RARITY_ORDER = ['common','uncommon','rare','epic','legendary','mythical','contraband'];
-const RARITY_WEIGHT = { common:45, uncommon:25, rare:15, epic:8, legendary:4, mythical:2, contraband:0.5 };
+const CSS_COLORS = {};
+Object.entries(ELEMENTS).forEach(([k,e])=>{
+  const [r,g,b]=e.color;
+  CSS_COLORS[k]=`rgb(${r},${g},${b})`;
+});
 
-// ── CASES ──
-const CASES = [
-  {
-    id:'starter',
-    name:'STARTER CASE',
-    emoji:'📦',
-    desc:'Common & Uncommon drops only',
-    cost:0,
-    gradient:['#2a2a40','#1a1a2e'],
-    accentColor:'#8888aa',
-    tier:'FREE',
-    tierColor:'var(--green)',
-    pool: Object.entries(ITEMS).filter(([,v])=>['common','uncommon'].includes(v.rarity)).map(([k])=>k),
-    dotColors:['#8888a8','#40c870'],
-  },
-  {
-    id:'standard',
-    name:'STANDARD CASE',
-    emoji:'🎁',
-    desc:'Uncommon through Rare drops',
-    cost:100,
-    gradient:['#0e2040','#0a1828'],
-    accentColor:'var(--blue)',
-    tier:'STANDARD',
-    tierColor:'var(--blue)',
-    pool: Object.entries(ITEMS).filter(([,v])=>['uncommon','rare'].includes(v.rarity)).map(([k])=>k),
-    dotColors:['#40c870','#4080e8'],
-  },
-  {
-    id:'premium',
-    name:'PREMIUM CASE',
-    emoji:'💼',
-    desc:'Rare through Epic drops',
-    cost:350,
-    gradient:['#1e0e40','#160b30'],
-    accentColor:'var(--purple)',
-    tier:'PREMIUM',
-    tierColor:'var(--purple)',
-    pool: Object.entries(ITEMS).filter(([,v])=>['rare','epic'].includes(v.rarity)).map(([k])=>k),
-    dotColors:['#4080e8','#9040e8'],
-  },
-  {
-    id:'elite',
-    name:'ELITE CASE',
-    emoji:'👑',
-    desc:'Epic through Legendary drops',
-    cost:1000,
-    gradient:['#281800','#1e1000'],
-    accentColor:'var(--gold)',
-    tier:'ELITE',
-    tierColor:'var(--gold)',
-    pool: Object.entries(ITEMS).filter(([,v])=>['epic','legendary'].includes(v.rarity)).map(([k])=>k),
-    dotColors:['#9040e8','#c8a84b'],
-  },
-  {
-    id:'mythic',
-    name:'MYTHIC CASE',
-    emoji:'🌌',
-    desc:'Legendary through Mythical drops',
-    cost:3000,
-    gradient:['#1e0028','#130018'],
-    accentColor:'#e040e0',
-    tier:'MYTHIC',
-    tierColor:'#e040e0',
-    pool: Object.entries(ITEMS).filter(([,v])=>['legendary','mythical'].includes(v.rarity)).map(([k])=>k),
-    dotColors:['#c8a84b','#e040e0'],
-  },
-  {
-    id:'contraband',
-    name:'CONTRABAND CASE',
-    emoji:'⚠️',
-    desc:'All rarities — Contraband chance inside',
-    cost:5000,
-    gradient:['#280000','#1a0000'],
-    accentColor:'var(--red)',
-    tier:'CONTRABAND',
-    tierColor:'var(--red)',
-    pool: Object.keys(ITEMS),
-    dotColors:['#8888a8','#40c870','#4080e8','#9040e8','#c8a84b','#e040e0','#e84040'],
-  },
-];
+const DARK_TEXT = new Set(['SAND','WATER','ICE','OIL','SALT','GLASS','STEAM','BUBBLE',
+  'TORNADO','HONEY','LIGHTNING','CRYSTAL','FREEZE','RUBBER','NUKE','SNOW','CONCRETE',
+  'SULFUR','MERCURY','SALTWATER','ALCOHOL','CO2','METHANE','SMOKE','ASH']);
 
-// ── RARITY STYLES ──
-const RARITY_STYLE = {
-  common:     { bg:'r-common',    badge:'badge-common',    glow:'rgba(136,136,168,0.3)',  label:'COMMON' },
-  uncommon:   { bg:'r-uncommon',  badge:'badge-uncommon',  glow:'rgba(64,200,112,0.3)',   label:'UNCOMMON' },
-  rare:       { bg:'r-rare',      badge:'badge-rare',      glow:'rgba(64,128,232,0.3)',   label:'RARE' },
-  epic:       { bg:'r-epic',      badge:'badge-epic',      glow:'rgba(144,64,232,0.3)',   label:'EPIC' },
-  legendary:  { bg:'r-legendary', badge:'badge-legendary', glow:'rgba(200,168,75,0.3)',   label:'LEGENDARY' },
-  mythical:   { bg:'r-mythical',  badge:'badge-mythical',  glow:'rgba(200,64,200,0.35)',  label:'MYTHICAL' },
-  contraband: { bg:'r-contraband',badge:'badge-contraband',glow:'rgba(232,64,64,0.35)',   label:'CONTRABAND' },
-};
+const EKEYS = Object.keys(ELEMENTS);
+const EIDX  = {};
+EKEYS.forEach((k,i)=>EIDX[k]=i+1);
 
-// ═══════════════════════════════════════
-// CODES
-// ═══════════════════════════════════════
-const CODES_DB = {
-  'VAULT100':  { type:'coins', amount:100 },
-  'WELCOME':   { type:'coins', amount:250 },
-  'FREECASE':  { type:'coins', amount:500 },
-  'GOLDKEY':   { type:'coins', amount:1000 },
-  'MEGA2025':  { type:'coins', amount:2000 },
-};
+// ══════════════════════════════════════════════
+// CANVAS & GRID
+// ══════════════════════════════════════════════
+const canvas = document.getElementById('simCanvas');
+const ctx    = canvas.getContext('2d');
+const CELL   = 4;
+let COLS=1, ROWS=1;
+let grid, nextGrid, imageData, pixels;
 
-// ═══════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════
-let G = { coins:150, inventory:{}, casesOpened:0, region:'all' };
-let activeCaseId = null;
-const usedCodes = new Set();
+let selElem='SAND', brushSize=3, drawing=false, lx=0, ly=0;
+let simSpeed=3, fc=0, fpsT=performance.now();
+let settings = {gravity:true, wind:false, heat:true};
+let tornadoes = [];
+const rubberVel = new Map();
+// Track concrete "wet" state: key → age counter
+const concreteAge = new Map();
 
-function saveG() {
-  try { localStorage.setItem('vault_g', JSON.stringify(G)); } catch(e) {}
-}
-function loadG() {
-  try {
-    const s = localStorage.getItem('vault_g');
-    if (s) G = { ...G, ...JSON.parse(s) };
-    const c = localStorage.getItem('vault_codes');
-    if (c) JSON.parse(c).forEach(x => usedCodes.add(x));
-  } catch(e) {}
-}
-function saveCodes() {
-  try { localStorage.setItem('vault_codes', JSON.stringify([...usedCodes])); } catch(e) {}
+function gi(x,y){ return (y*COLS+x)*3; }
+function gtype(x,y){ if(x<0||x>=COLS||y<0||y>=ROWS)return -1; return grid[gi(x,y)]; }
+function gntype(g,x,y){ if(x<0||x>=COLS||y<0||y>=ROWS)return -1; return g[gi(x,y)]; }
+function sc(arr,x,y,t,temp=20,f=0){ const i=(y*COLS+x)*3; arr[i]=t; arr[i+1]=Math.min(Math.max(temp,0),255); arr[i+2]=f; }
+function cc(arr,x,y){ const i=(y*COLS+x)*3; arr[i]=0; arr[i+1]=20; arr[i+2]=0; }
+function gkey(x,y){ const t=gtype(x,y); return t>0?EKEYS[t-1]:null; }
+
+const PORTRAIT_PANEL_H  = 220;
+const LANDSCAPE_PANEL_W = 175;
+let panelOpen = true;
+
+function doResize(){
+  const isLandscape = window.innerWidth > window.innerHeight;
+  const PANEL_H = panelOpen ? PORTRAIT_PANEL_H : 34;
+  const PANEL_W = panelOpen ? LANDSCAPE_PANEL_W : 34;
+  const TOP = 44;
+  let cw, ch;
+  if(isLandscape){ cw=window.innerWidth-PANEL_W; ch=window.innerHeight-TOP; }
+  else            { cw=window.innerWidth;         ch=window.innerHeight-TOP-PANEL_H; }
+  cw=Math.max(cw,10); ch=Math.max(ch,10);
+  canvas.width=cw; canvas.height=ch;
+  canvas.style.width=cw+'px'; canvas.style.height=ch+'px';
+  canvas.style.top=TOP+'px'; canvas.style.left='0px';
+  const fo=document.getElementById('flashOverlay');
+  fo.style.top=TOP+'px'; fo.style.left='0px'; fo.style.width=cw+'px'; fo.style.height=ch+'px';
+  COLS=Math.floor(cw/CELL); ROWS=Math.floor(ch/CELL);
+  grid     = new Uint16Array(COLS*ROWS*3);
+  nextGrid = new Uint16Array(COLS*ROWS*3);
+  imageData= ctx.createImageData(cw,ch);
+  pixels   = imageData.data;
+  tornadoes= [];
+  rubberVel.clear();
+  concreteAge.clear();
+  layoutUI(isLandscape, TOP, cw, ch, PANEL_W, PANEL_H);
 }
 
-// ═══════════════════════════════════════
-// UI UTILS
-// ═══════════════════════════════════════
-function refreshBalance() {
-  const num = G.coins.toLocaleString();
-  const f = '$' + num;
-  document.getElementById('balanceDisplay').textContent = num;
-  document.getElementById('openingBalance').textContent = f;
-  document.getElementById('invBalance').textContent = f;
-}
-
-function refreshStats() {
-  const owned = Object.entries(G.inventory).filter(([,qty]) => qty > 0);
-  document.getElementById('statOpened').textContent = G.casesOpened || 0;
-  document.getElementById('statUnique').textContent = owned.length;
-
-  // Best rarity
-  let best = null;
-  owned.forEach(([k]) => {
-    const item = ITEMS[k];
-    if (!item) return;
-    if (!best || RARITY_ORDER.indexOf(item.rarity) > RARITY_ORDER.indexOf(ITEMS[best]?.rarity)) best = k;
-  });
-  const bestEl = document.getElementById('statRarest');
-  if (best) {
-    const label = RARITY_STYLE[ITEMS[best].rarity].label;
-    // Show first 4 chars to keep it short but readable
-    bestEl.textContent = label.slice(0, 4).toUpperCase();
-    bestEl.style.color = '';
+function layoutUI(landscape, TOP, cw, ch, pw, ph){
+  const ep=document.getElementById('elemPanel');
+  const ps=document.getElementById('panelScroll');
+  const arrow=document.getElementById('arrowIcon');
+  const tog=document.getElementById('panelToggle');
+  if(landscape){
+    ep.style.cssText=`top:${TOP}px;right:0;bottom:0;left:auto;width:${LANDSCAPE_PANEL_W}px;height:auto;border-top:none;border-left:1px solid #333;flex-direction:column;display:flex;`;
+    tog.style.cssText='border-bottom:1px solid #2a2a2a;border-right:none;';
+    if(panelOpen){ ps.style.overflowY='auto'; ps.style.height=(ch-34)+'px'; }
+    document.getElementById('elementGrid').style.gridTemplateColumns='repeat(2,1fr)';
+    arrow.innerHTML='&#x25B6;';
+    arrow.style.transform=panelOpen?'':'rotate(180deg)';
+    const so=document.getElementById('statsOverlay');
+    so.style.cssText='bottom:10px;top:auto;left:10px;';
+    const sb=document.getElementById('settingsBtn');
+    sb.style.cssText='bottom:10px;top:auto;right:10px;';
+    const sp=document.getElementById('settingsPanel');
+    sp.style.cssText=`bottom:60px;top:auto;right:${LANDSCAPE_PANEL_W+6}px;`;
   } else {
-    bestEl.textContent = '—';
+    ep.style.cssText=`left:0;right:0;bottom:0;top:auto;width:auto;height:${panelOpen?PORTRAIT_PANEL_H:34}px;border-left:none;border-top:1px solid #333;flex-direction:column;display:flex;`;
+    tog.style.cssText='border-bottom:1px solid #2a2a2a;';
+    if(panelOpen){ ps.style.overflowY='auto'; ps.style.height=(PORTRAIT_PANEL_H-34)+'px'; }
+    document.getElementById('elementGrid').style.gridTemplateColumns='repeat(4,1fr)';
+    arrow.innerHTML='&#x2227;';
+    arrow.style.transform=panelOpen?'':'rotate(180deg)';
+    const so=document.getElementById('statsOverlay');
+    so.style.cssText=`bottom:${panelOpen?PORTRAIT_PANEL_H+10:44}px;top:auto;left:10px;`;
+    const sb=document.getElementById('settingsBtn');
+    sb.style.cssText=`bottom:${panelOpen?PORTRAIT_PANEL_H+8:42}px;top:auto;right:10px;`;
+    const sp=document.getElementById('settingsPanel');
+    sp.style.cssText=`bottom:${panelOpen?PORTRAIT_PANEL_H+56:100}px;top:auto;right:10px;`;
   }
 }
 
-let toastTimer = null;
-function toast(msg) {
-  clearTimeout(toastTimer);
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
+// ══════════════════════════════════════════════
+// INPUT
+// ══════════════════════════════════════════════
+function gpos(e){
+  const r=canvas.getBoundingClientRect();
+  const s=e.touches?e.touches[0]:e;
+  return{x:Math.floor((s.clientX-r.left)/CELL), y:Math.floor((s.clientY-r.top)/CELL)};
 }
-
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-function openModal(id) { document.getElementById(id).classList.add('active'); }
-function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-
-// ═══════════════════════════════════════
-// CASE LIST
-// ═══════════════════════════════════════
-function buildCaseList() {
-  const body = document.getElementById('caseListBody');
-  body.innerHTML = '';
-  CASES.forEach(c => {
-    const card = document.createElement('div');
-    card.className = 'case-card';
-    card.innerHTML = `
-      <div class="tier-badge" style="background:rgba(0,0,0,0.4);color:${c.tierColor};border:1px solid ${c.tierColor};">${c.tier}</div>
-      <div class="case-card-icon" style="background:linear-gradient(135deg,${c.gradient[0]},${c.gradient[1]});border:1px solid ${c.accentColor}33;">
-        <span style="font-size:28px;">${c.emoji}</span>
-      </div>
-      <div class="case-card-info">
-        <div class="case-card-name" style="color:${c.accentColor};">${c.name}</div>
-        <div class="case-card-desc">${c.desc}</div>
-        <div class="case-card-footer">
-          <span class="${c.cost===0?'price-free':'price-coins'}" style="font-family:'Orbitron',monospace;font-size:12px;font-weight:700;">
-            ${c.cost===0?'FREE':'🔑 $'+c.cost.toLocaleString()}
-          </span>
-          <div class="rarity-dots">
-            ${c.dotColors.map(col=>`<div class="rdot" style="background:${col};"></div>`).join('')}
-          </div>
-        </div>
-      </div>
-    `;
-    card.addEventListener('click', () => {
-      closeModal('modalCases');
-      startCase(c.id);
-    });
-    body.appendChild(card);
-  });
-}
-
-// ═══════════════════════════════════════
-// WEIGHTED DRAW
-// ═══════════════════════════════════════
-function weightedDraw(pool) {
-  const entries = pool.map(k => ({ key:k, item:ITEMS[k] })).filter(x => x.item);
-  const total = entries.reduce((s,e) => s + (RARITY_WEIGHT[e.item.rarity] || 1), 0);
-  let r = Math.random() * total;
-  for (const e of entries) {
-    r -= (RARITY_WEIGHT[e.item.rarity] || 1);
-    if (r <= 0) return e.key;
+function paint(cx,cy){
+  const r=brushSize;
+  for(let dy=-r;dy<=r;dy++) for(let dx=-r;dx<=r;dx++){
+    if(dx*dx+dy*dy>r*r) continue;
+    const nx=cx+dx, ny=cy+dy;
+    if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+    if(selElem==='ERASER'){ cc(grid,nx,ny); rubberVel.delete(nx+','+ny); concreteAge.delete(nx+','+ny); continue; }
+    if(gtype(nx,ny)===0){
+      let temp=20;
+      if(selElem==='FIRE')      temp=220;
+      if(selElem==='LAVA')      temp=240;
+      if(selElem==='ELECTRIC')  temp=200;
+      if(selElem==='LIGHTNING') temp=240;
+      if(selElem==='FREEZE')    temp=200;
+      if(selElem==='NUKE')      temp=50;
+      if(selElem==='METHANE')   temp=30;
+      if(selElem==='TORNADO')   temp=180;
+      if(selElem==='COAL')      temp=30;
+      if(selElem==='SNOW')      temp=5;
+      if(selElem==='ICE')       temp=5;
+      sc(grid,nx,ny,EIDX[selElem],temp);
+      if(selElem==='TORNADO') tornadoes.push({x:nx,y:ny,life:200});
+      if(selElem==='RUBBER')  rubberVel.set(nx+','+ny,{vx:0,vy:1});
+    }
   }
-  return entries[entries.length - 1].key;
 }
-
-// Build roulette pool (45 items, result at index 35)
-function buildRoulette(pool, resultKey) {
-  const items = [];
-  for (let i = 0; i < 45; i++) {
-    items.push(weightedDraw(pool));
+function line(x0,y0,x1,y1){
+  let dx=Math.abs(x1-x0),dy=Math.abs(y1-y0),sx=x0<x1?1:-1,sy=y0<y1?1:-1,err=dx-dy;
+  while(true){
+    paint(x0,y0);
+    if(x0===x1&&y0===y1) break;
+    const e2=2*err;
+    if(e2>-dy){err-=dy;x0+=sx;}
+    if(e2<dx) {err+=dx;y0+=sy;}
   }
-  items[35] = resultKey;
-  return items;
 }
+canvas.addEventListener('mousedown',e=>{drawing=true;const p=gpos(e);lx=p.x;ly=p.y;paint(p.x,p.y);});
+canvas.addEventListener('mousemove',e=>{if(!drawing)return;const p=gpos(e);line(lx,ly,p.x,p.y);lx=p.x;ly=p.y;});
+canvas.addEventListener('mouseup',  ()=>drawing=false);
+canvas.addEventListener('mouseleave',()=>drawing=false);
+canvas.addEventListener('touchstart',e=>{e.preventDefault();drawing=true;const p=gpos(e);lx=p.x;ly=p.y;paint(p.x,p.y);},{passive:false});
+canvas.addEventListener('touchmove', e=>{e.preventDefault();if(!drawing)return;const p=gpos(e);line(lx,ly,p.x,p.y);lx=p.x;ly=p.y;},{passive:false});
+canvas.addEventListener('touchend',  e=>{e.preventDefault();drawing=false;},{passive:false});
 
-// ═══════════════════════════════════════
-// CASE OPENING
-// ═══════════════════════════════════════
-function startCase(caseId) {
-  const caseData = CASES.find(c => c.id === caseId);
-  if (!caseData) return;
-
-  if (caseData.cost > 0 && G.coins < caseData.cost) {
-    toast('⚠ NOT ENOUGH COINS');
-    return;
+// ══════════════════════════════════════════════
+// MOVEMENT
+// ══════════════════════════════════════════════
+function mv(fg,ng,fx,fy,tx,ty,type,temp){
+  if(tx<0||tx>=COLS||ty<0||ty>=ROWS) return false;
+  const tt=gntype(fg,tx,ty);
+  // Don't move into honey if we're a solid powder
+  if(tt>0&&EKEYS[tt-1]==='HONEY'&&ELEMENTS[EKEYS[type-1]].type==='powder') return false;
+  // Empty cell
+  if(tt===0){ sc(ng,tx,ty,type,temp,1); cc(ng,fx,fy); return true; }
+  // Density displacement (sinking/floating)
+  const se=ELEMENTS[EKEYS[type-1]];
+  const de=ELEMENTS[EKEYS[tt-1]];
+  if(se.density>de.density&&de.type==='liquid'&&se.type!=='gas'){
+    sc(ng,tx,ty,type,temp,1);
+    sc(ng,fx,fy,tt,fg[gi(tx,ty)+1],1);
+    return true;
   }
-  if (caseData.cost > 0) {
-    G.coins -= caseData.cost;
-    saveG();
-    refreshBalance();
+  return false;
+}
+
+// ══════════════════════════════════════════════
+// SIMULATION
+// ══════════════════════════════════════════════
+let shuf=[];
+function buildShuf(){
+  if(shuf.length!==COLS) shuf=Array.from({length:COLS},(_,i)=>i);
+  for(let i=shuf.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [shuf[i],shuf[j]]=[shuf[j],shuf[i]];
   }
-
-  activeCaseId = caseId;
-  document.getElementById('openingCaseName').textContent = caseData.name;
-  showScreen('screen-opening');
-  buildCaseReadyView(caseData);
 }
 
-function buildCaseReadyView(caseData) {
-  const center = document.getElementById('openingCenter');
-  center.innerHTML = '';
+function step(){ for(let s=0;s<simSpeed;s++) tick(); }
 
-  const caseBtn = document.createElement('button');
-  caseBtn.className = 'big-case';
-  caseBtn.innerHTML = caseData.emoji;
-  caseBtn.style.borderColor = caseData.accentColor;
-  caseBtn.style.boxShadow = `0 0 60px ${caseData.accentColor}22, inset 0 1px 0 rgba(255,255,255,0.05)`;
-
-  const hint = document.createElement('div');
-  hint.className = 'open-hint';
-  hint.textContent = 'TAP TO OPEN';
-
-  const costInfo = document.createElement('div');
-  costInfo.className = 'opening-cost';
-  costInfo.textContent = caseData.cost > 0 ? `Cost: $${caseData.cost.toLocaleString()}` : 'FREE CASE';
-
-  center.appendChild(caseBtn);
-  center.appendChild(hint);
-  center.appendChild(costInfo);
-
-  caseBtn.addEventListener('click', () => doRoulette(caseData), { once: true });
+// Helper: spread heat from hot elements to neighbors
+function heatNeighbors(ng,x,y,amount){
+  if(!settings.heat) return;
+  for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+    if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+    const i=gi(nx,ny);
+    if(ng[i]) ng[i+1]=Math.min(255,ng[i+1]+amount);
+  }
 }
 
-function doRoulette(caseData) {
-  const resultKey = weightedDraw(caseData.pool);
-  const resultItem = ITEMS[resultKey];
-  if (!resultItem) return;
+function tick(){
+  nextGrid.set(grid);
+  buildShuf();
 
-  const rouletteKeys = buildRoulette(caseData.pool, resultKey);
-
-  const center = document.getElementById('openingCenter');
-  center.innerHTML = '';
-
-  const ITEM_W = 110; // item width
-  const ITEM_GAP = 8;
-  const CELL = ITEM_W + ITEM_GAP; // 118px per cell
-  const WIN_IDX = 35;
-
-  // ── Build DOM ──
-  const wrapper = document.createElement('div');
-  wrapper.style.cssText = `
-    width: 100%;
-    position: relative;
-    flex-shrink: 0;
-  `;
-
-  // Top arrow
-  const arrowTop = document.createElement('div');
-  arrowTop.style.cssText = `
-    position: absolute;
-    left: 50%; top: -4px;
-    transform: translateX(-50%);
-    width: 0; height: 0;
-    border-left: 18px solid transparent;
-    border-right: 18px solid transparent;
-    border-top: 24px solid #c8a84b;
-    filter: drop-shadow(0 0 8px #c8a84b);
-    z-index: 10;
-    pointer-events: none;
-  `;
-
-  // Bottom arrow
-  const arrowBottom = document.createElement('div');
-  arrowBottom.style.cssText = `
-    position: absolute;
-    left: 50%; bottom: -4px;
-    transform: translateX(-50%);
-    width: 0; height: 0;
-    border-left: 18px solid transparent;
-    border-right: 18px solid transparent;
-    border-bottom: 24px solid #c8a84b;
-    filter: drop-shadow(0 0 8px #c8a84b);
-    z-index: 10;
-    pointer-events: none;
-  `;
-
-  // Outer clip container
-  const outer = document.createElement('div');
-  outer.style.cssText = `
-    width: 100%;
-    overflow: hidden;
-    position: relative;
-    height: 150px;
-  `;
-
-  // Gold side lines at center
-  const lineLeft = document.createElement('div');
-  lineLeft.style.cssText = `
-    position: absolute;
-    left: calc(50% - ${ITEM_W/2 + 2}px);
-    top: 0; bottom: 0; width: 3px;
-    background: #c8a84b;
-    box-shadow: 0 0 12px #c8a84b;
-    z-index: 5; pointer-events: none;
-  `;
-  const lineRight = document.createElement('div');
-  lineRight.style.cssText = `
-    position: absolute;
-    left: calc(50% + ${ITEM_W/2 - 1}px);
-    top: 0; bottom: 0; width: 3px;
-    background: #c8a84b;
-    box-shadow: 0 0 12px #c8a84b;
-    z-index: 5; pointer-events: none;
-  `;
-
-  // Fade edges
-  const fadeLeft = document.createElement('div');
-  fadeLeft.style.cssText = `position:absolute;left:0;top:0;bottom:0;width:90px;background:linear-gradient(90deg,#0a0a0f,transparent);z-index:4;pointer-events:none;`;
-  const fadeRight = document.createElement('div');
-  fadeRight.style.cssText = `position:absolute;right:0;top:0;bottom:0;width:90px;background:linear-gradient(-90deg,#0a0a0f,transparent);z-index:4;pointer-events:none;`;
-
-  // Track
-  const track = document.createElement('div');
-  track.style.cssText = `
-    display: flex;
-    gap: ${ITEM_GAP}px;
-    padding: 10px 0;
-    will-change: transform;
-    position: relative;
-  `;
-
-  rouletteKeys.forEach(k => {
-    const item = ITEMS[k];
-    if (!item) return;
-    const rs = RARITY_STYLE[item.rarity] || RARITY_STYLE.common;
-    const el = document.createElement('div');
-    el.className = 'roulette-item ' + rs.bg;
-    el.style.width = ITEM_W + 'px';
-    el.innerHTML = `
-      <div class="ri-emoji">${item.emoji}</div>
-      <div class="ri-name">${item.name}</div>
-      <div class="ri-rarity ${rs.badge}">${rs.label}</div>
-    `;
-    track.appendChild(el);
+  // Update tornado positions
+  tornadoes=tornadoes.filter(t=>{
+    t.life--;
+    t.x+=Math.floor((Math.random()-0.5)*3);
+    t.x=Math.max(0,Math.min(COLS-1,t.x));
+    return t.life>0;
   });
 
-  outer.appendChild(fadeLeft);
-  outer.appendChild(fadeRight);
-  outer.appendChild(lineLeft);
-  outer.appendChild(lineRight);
-  outer.appendChild(track);
+  for(let y=ROWS-1;y>=0;y--){
+    const dir=Math.random()<0.5?1:-1;
+    for(let xi=0;xi<COLS;xi++){
+      const x=shuf[xi];
+      const ii=gi(x,y);
+      const type=grid[ii];
+      if(!type) continue;
+      const temp=grid[ii+1];
+      if(grid[ii+2]&1) continue; // already moved
+      const key=EKEYS[type-1];
+      const elem=ELEMENTS[key];
 
-  wrapper.appendChild(arrowTop);
-  wrapper.appendChild(outer);
-  wrapper.appendChild(arrowBottom);
-  center.appendChild(wrapper);
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // FIRE — real combustion physics
+      // Burns O2 → CO2 + heat; ignites flammables
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='FIRE'){
+        const nl=temp-3;
+        if(nl<=0){
+          sc(nextGrid,x,y,EIDX.SMOKE,60,1); // fire → smoke when dying
+          continue;
+        }
+        sc(nextGrid,x,y,type,nl,1);
+        heatNeighbors(nextGrid,x,y,8);
 
-  // ── Centering math ──
-  // After layout, get the actual container width
-  requestAnimationFrame(() => {
-    const containerW = outer.getBoundingClientRect().width || window.innerWidth;
-    const screenCenter = containerW / 2;
+        // Rise naturally
+        if(y>0&&gtype(x,y-1)===0&&Math.random()<0.5){
+          sc(nextGrid,x,y-1,EIDX.FIRE,nl-15,1); cc(nextGrid,x,y); continue;
+        }
 
-    // Center of winning item within track
-    // Track starts at translateX offset, item[WIN_IDX] left edge = WIN_IDX * CELL
-    // Item center = WIN_IDX * CELL + ITEM_W/2
-    const itemCenter = WIN_IDX * CELL + ITEM_W / 2;
-
-    // We want itemCenter to land at screenCenter
-    // translateX = screenCenter - itemCenter  (but we scroll negatively)
-    const finalX = screenCenter - itemCenter;
-
-    // Start further right so it spins left visually
-    const startX = finalX + CELL * 18;
-
-    track.style.transition = 'none';
-    track.style.transform = `translateX(${startX}px)`;
-
-    // Force reflow
-    track.getBoundingClientRect();
-
-    // Spin!
-    track.style.transition = 'transform 7s cubic-bezier(0.02, 0.8, 0.2, 1)';
-    track.style.transform = `translateX(${finalX}px)`;
-
-    // Highlight winner
-    setTimeout(() => {
-      const items = track.querySelectorAll('.roulette-item');
-      if (items[WIN_IDX]) {
-        items[WIN_IDX].classList.add('winner');
-        // Flash arrows gold
-        arrowTop.style.filter = 'drop-shadow(0 0 16px #e8c96a) brightness(1.4)';
-        arrowBottom.style.filter = 'drop-shadow(0 0 16px #e8c96a) brightness(1.4)';
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nt=gtype(nx,ny); if(!nt) continue;
+          const nk=EKEYS[nt-1];
+          // Ignite flammables
+          if(ELEMENTS[nk].flammable&&Math.random()<0.06)       sc(nextGrid,nx,ny,EIDX.FIRE,220,0);
+          // Water → steam (boiling)
+          if(nk==='WATER'&&Math.random()<0.08)                  sc(nextGrid,nx,ny,EIDX.STEAM,140,0);
+          // Saltwater → steam too
+          if(nk==='SALTWATER'&&Math.random()<0.06)              sc(nextGrid,nx,ny,EIDX.STEAM,140,0);
+          // Ice → water (melting, endothermic)
+          if(nk==='ICE'&&Math.random()<0.12)                    sc(nextGrid,nx,ny,EIDX.WATER,20,0);
+          // Snow → water
+          if(nk==='SNOW'&&Math.random()<0.18)                   sc(nextGrid,nx,ny,EIDX.WATER,20,0);
+          // Gunpowder → explosion
+          if(nk==='GUNPOWDER'&&Math.random()<0.35)              explode(nx,ny,5,true);
+          // TNT → big explosion
+          if(nk==='TNT'&&Math.random()<0.18)                    bigExplode(nx,ny);
+          // Bubble: air bubbles pop near fire
+          if(nk==='BUBBLE'&&Math.random()<0.25)                 cc(nextGrid,nx,ny);
+          // Crystal → shatters
+          if(nk==='CRYSTAL'&&Math.random()<0.04)                cc(nextGrid,nx,ny);
+          // Honey caramelizes/burns
+          if(nk==='HONEY'&&Math.random()<0.07)                  sc(nextGrid,nx,ny,EIDX.FIRE,200,0);
+          // Coral bleaches/dies
+          if(nk==='CORAL'&&Math.random()<0.09)                  cc(nextGrid,nx,ny);
+          // Rubber melts in intense heat
+          if(nk==='RUBBER'&&Math.random()<0.05)                 cc(nextGrid,nx,ny);
+          // NUKE detonates
+          if(nk==='NUKE'&&Math.random()<0.06)                   nukeExplode(nx,ny);
+          // Freeze cloud extinguished by fire
+          if(nk==='FREEZE'&&Math.random()<0.4)                  cc(nextGrid,nx,ny);
+          // Sand → glass at 1700°C (fire approximated)
+          if(nk==='SAND'&&Math.random()<0.008)                  sc(nextGrid,nx,ny,EIDX.GLASS,20,0);
+          // Methane ignites explosively
+          if(nk==='METHANE'&&Math.random()<0.25)                explode(nx,ny,6,false);
+          // Alcohol ignites easily
+          if(nk==='ALCOHOL'&&Math.random()<0.15)                sc(nextGrid,nx,ny,EIDX.FIRE,210,0);
+          // Mercury vaporizes (toxic)
+          if(nk==='MERCURY'&&Math.random()<0.04)                cc(nextGrid,nx,ny);
+          // Sulfur ignites → blue flame + SO2 (CO2 proxy)
+          if(nk==='SULFUR'&&Math.random()<0.08)                 sc(nextGrid,nx,ny,EIDX.FIRE,200,0);
+          // Concrete stays solid in fire
+          // Iron turns red-hot but stays
+          if(nk==='IRON'&&Math.random()<0.001)                  sc(nextGrid,nx,ny,EIDX.LAVA,240,0);
+          // Stone melts to lava at extreme temp
+          if(nk==='STONE'&&Math.random()<0.002)                 sc(nextGrid,nx,ny,EIDX.LAVA,240,0);
+          // CO2 extinguishes fire
+          if(nk==='CO2'){
+            cc(nextGrid,x,y); // fire dies in CO2 atmosphere
+            break;
+          }
+        }
+        continue;
       }
-    }, 7050);
 
-    setTimeout(() => {
-      showResult(resultItem, resultKey, caseData);
-    }, 7600);
-  });
-}
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // SMOKE — carbon aerosol, rises, disperses
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='SMOKE'){
+        const nl=temp-2;
+        if(nl<=0){ cc(nextGrid,x,y); continue; }
+        sc(nextGrid,x,y,type,nl,1);
+        const r2=Math.random();
+        if(y>0&&gtype(x,y-1)===0&&r2<0.55){ sc(nextGrid,x,y-1,type,nl,1); cc(nextGrid,x,y); continue; }
+        const d=Math.random()<0.5?-1:1;
+        if(y>0&&x+d>=0&&x+d<COLS&&gtype(x+d,y-1)===0&&Math.random()<0.4){ sc(nextGrid,x+d,y-1,type,nl,1); cc(nextGrid,x,y); continue; }
+        // drift sideways
+        if(x+d>=0&&x+d<COLS&&gtype(x+d,y)===0&&Math.random()<0.3){ sc(nextGrid,x+d,y,type,nl,1); cc(nextGrid,x,y); continue; }
+        sc(nextGrid,x,y,type,nl,1);
+        continue;
+      }
 
-function showResult(item, itemKey, caseData) {
-  const rs = RARITY_STYLE[item.rarity] || RARITY_STYLE.common;
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // STEAM — water vapor, condenses when cool
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='STEAM'){
+        const nl=temp>0?temp-2:0;
+        if(nl<=0){
+          // Condense back to water (realistic: steam → water at 100°C)
+          Math.random()<0.06?sc(nextGrid,x,y,EIDX.WATER,20,1):cc(nextGrid,x,y);
+          continue;
+        }
+        sc(nextGrid,x,y,type,nl,1);
+        if(y>0&&gtype(x,y-1)===0){ sc(nextGrid,x,y-1,type,nl,1); cc(nextGrid,x,y); continue; }
+        const d=Math.random()<0.5?-1:1;
+        if(y>0&&x+d>=0&&x+d<COLS&&gtype(x+d,y-1)===0){ sc(nextGrid,x+d,y-1,type,nl,1); cc(nextGrid,x,y); continue; }
+        if(x+d>=0&&x+d<COLS&&gtype(x+d,y)===0&&Math.random()<0.4){ sc(nextGrid,x+d,y,type,nl,1); cc(nextGrid,x,y); continue; }
+        sc(nextGrid,x,y,type,nl,1);
+        continue;
+      }
 
-  // Track ownership
-  G.inventory[itemKey] = (G.inventory[itemKey] || 0) + 1;
-  G.casesOpened = (G.casesOpened || 0) + 1;
-  G.coins += Math.floor(item.value * 0.05); // small sell value reward
-  saveG();
-  refreshBalance();
-  refreshStats();
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // WATER — universal solvent, phase changes
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='WATER'){
+        // Freeze in cold → ice
+        if(settings.heat&&temp<8&&Math.random()<0.03){ sc(nextGrid,x,y,EIDX.ICE,5,1); continue; }
 
-  // Special effects for rare+
-  if (['legendary','mythical','contraband'].includes(item.rarity)) {
-    spawnFlash(rs.glow);
-    spawnParticles();
+        let reacted=false;
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny);
+          if(!nk) continue;
+
+          // Lava → obsidian/stone + steam
+          if(nk==='LAVA'&&Math.random()<0.1){
+            sc(nextGrid,nx,ny,EIDX.STONE,20,0);
+            sc(nextGrid,x,y,EIDX.STEAM,140,1); reacted=true; break;
+          }
+          // Salt dissolves in water → saltwater
+          if(nk==='SALT'&&Math.random()<0.015){
+            sc(nextGrid,nx,ny,EIDX.SALTWATER,20,0);
+            cc(nextGrid,x,y); reacted=true; break;
+          }
+          // Iron rusts slowly in water
+          if(nk==='IRON'&&Math.random()<0.0005){
+            sc(nextGrid,nx,ny,EIDX.STONE,20,0); // rust → iron oxide (approximate as stone color)
+          }
+          // Concrete + water → hardens over time
+          if(nk==='CONCRETE'&&!concreteAge.has(nx+','+ny)){
+            concreteAge.set(nx+','+ny, 0);
+          }
+          // Fire → steam
+          if(nk==='FIRE'&&Math.random()<0.1){
+            sc(nextGrid,x,y,EIDX.STEAM,140,1); reacted=true; break;
+          }
+          // Plant absorbs water
+          if(nk==='PLANT'&&Math.random()<0.008){ cc(nextGrid,x,y); reacted=true; break; }
+          // Snow absorbs water → water
+          if(nk==='SNOW'&&Math.random()<0.02){ sc(nextGrid,nx,ny,EIDX.WATER,20,0); }
+        }
+        if(reacted) continue;
+        // Flow like liquid
+        if(!mv(grid,nextGrid,x,y,x,y+1,type,temp)){
+          if(!mv(grid,nextGrid,x,y,x+dir,y,type,temp)){
+            if(!mv(grid,nextGrid,x,y,x-dir,y,type,temp)){
+              if(!mv(grid,nextGrid,x,y,x+dir,y+1,type,temp)){
+                if(!mv(grid,nextGrid,x,y,x-dir,y+1,type,temp)){
+                  sc(nextGrid,x,y,type,temp,1);
+                }
+              }
+            }
+          }
+        }
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // LAVA — molten rock, ~1200°C
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='LAVA'){
+        heatNeighbors(nextGrid,x,y,12);
+        if(Math.random()<0.05){
+          const fx2=x+(Math.random()<0.5?-1:1);
+          if(fx2>=0&&fx2<COLS&&y-1>=0&&gtype(fx2,y-1)===0) sc(nextGrid,fx2,y-1,EIDX.FIRE,220,0);
+        }
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          // Water → basalt/stone + steam (realistic!)
+          if(nk==='WATER'&&Math.random()<0.1){
+            sc(nextGrid,x,y,EIDX.STONE,20,1); // lava quenches
+            sc(nextGrid,nx,ny,EIDX.STEAM,160,0);
+            break;
+          }
+          // Saltwater → same
+          if(nk==='SALTWATER'&&Math.random()<0.08){
+            sc(nextGrid,x,y,EIDX.STONE,20,1);
+            sc(nextGrid,nx,ny,EIDX.STEAM,160,0); break;
+          }
+          // Ice → water then steam
+          if(nk==='ICE'&&Math.random()<0.12)      sc(nextGrid,nx,ny,EIDX.WATER,80,0);
+          // Snow → water
+          if(nk==='SNOW'&&Math.random()<0.2)       sc(nextGrid,nx,ny,EIDX.WATER,80,0);
+          // Crystal melts to lava
+          if(nk==='CRYSTAL'&&Math.random()<0.05)   sc(nextGrid,nx,ny,EIDX.LAVA,240,0);
+          // Wood ignites
+          if(nk==='WOOD'&&Math.random()<0.04)      sc(nextGrid,nx,ny,EIDX.FIRE,220,0);
+          // Coal ignites
+          if(nk==='COAL'&&Math.random()<0.05)      sc(nextGrid,nx,ny,EIDX.FIRE,240,0);
+          // Coral → stone
+          if(nk==='CORAL'&&Math.random()<0.06)     sc(nextGrid,nx,ny,EIDX.STONE,20,0);
+          // Freeze cloud neutralized
+          if(nk==='FREEZE'&&Math.random()<0.35)    cc(nextGrid,nx,ny);
+          // Iron melts
+          if(nk==='IRON'&&Math.random()<0.02)      sc(nextGrid,nx,ny,EIDX.LAVA,240,0);
+          // Rubber melts/burns
+          if(nk==='RUBBER'&&Math.random()<0.08)    cc(nextGrid,nx,ny);
+          // NUKE
+          if(nk==='NUKE'&&Math.random()<0.03)      nukeExplode(nx,ny);
+          // Sand → glass
+          if(nk==='SAND'&&Math.random()<0.04)      sc(nextGrid,nx,ny,EIDX.GLASS,20,0);
+          // Concrete stays solid
+        }
+        // Lava flows like liquid
+        if(!mv(grid,nextGrid,x,y,x,y+1,type,temp)){
+          if(!mv(grid,nextGrid,x,y,x+dir,y,type,temp)){
+            if(!mv(grid,nextGrid,x,y,x-dir,y,type,temp)){
+              sc(nextGrid,x,y,type,temp,1);
+            }
+          }
+        }
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // ACID — sulfuric/hydrochloric; corrodes metals, stone, organic
+      // Neutralized by water (dilution). Produces CO2 with carbonates.
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='ACID'){
+        let consumed=false;
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nt=gtype(nx,ny); if(!nt) continue;
+          const nk=EKEYS[nt-1];
+          if(nk==='ACID'||nk==='VOID'||nk==='NUKE'||nk==='ANTIMATTER') continue;
+
+          // Water dilutes acid (realistic: exothermic neutralization)
+          if(nk==='WATER'&&Math.random()<0.008){
+            cc(nextGrid,nx,ny); // water consumed
+            if(Math.random()<0.35) cc(nextGrid,x,y); // acid also weakened
+            consumed=true; break;
+          }
+          // Stone/concrete reacts with acid → CO2 (carbonate reaction: CaCO3 + HCl)
+          if((nk==='STONE'||nk==='CONCRETE')&&Math.random()<0.025){
+            cc(nextGrid,nx,ny);
+            sc(nextGrid,nx,ny,EIDX.CO2,80,0);
+            if(Math.random()<0.25){ cc(nextGrid,x,y); consumed=true; break; }
+          }
+          // Metal dissolves vigorously
+          if(nk==='IRON'&&Math.random()<0.04){
+            cc(nextGrid,nx,ny); // iron dissolves
+            if(Math.random()<0.2){ cc(nextGrid,x,y); consumed=true; break; }
+          }
+          // Sand: acid etching (slow)
+          if(nk==='SAND'&&Math.random()<0.01){ cc(nextGrid,nx,ny); }
+          // Glass: acid dissolves glass (HF)
+          if(nk==='GLASS'&&Math.random()<0.015){ cc(nextGrid,nx,ny); }
+          // Coral dissolves readily (aragonite + acid)
+          if(nk==='CORAL'&&Math.random()<0.18){ cc(nextGrid,nx,ny); }
+          // Crystal dissolves
+          if(nk==='CRYSTAL'&&Math.random()<0.09){ cc(nextGrid,nx,ny); if(Math.random()<0.2){cc(nextGrid,x,y);consumed=true;break;} }
+          // Wood/plant dissolves
+          if((nk==='WOOD'||nk==='PLANT')&&Math.random()<0.02){ cc(nextGrid,nx,ny); }
+          // Rubber: resistant but slow
+          if(nk==='RUBBER'&&Math.random()<0.003){ cc(nextGrid,nx,ny); }
+          // Honey dissolves
+          if(nk==='HONEY'&&Math.random()<0.015){ cc(nextGrid,nx,ny); }
+          // Ice melts fast in acid
+          if(nk==='ICE'&&Math.random()<0.04){ sc(nextGrid,nx,ny,EIDX.WATER,20,0); }
+          // NUKE + acid = detonation
+          if(nk==='NUKE'&&Math.random()<0.008){ nukeExplode(nx,ny); }
+          // Generic organic stuff
+          if(!consumed&&Math.random()<0.015){ cc(nextGrid,nx,ny); if(Math.random()<0.3){cc(nextGrid,x,y);consumed=true;break;} }
+        }
+        if(consumed) continue;
+        // Flow
+        if(!mv(grid,nextGrid,x,y,x,y+1,type,temp)){
+          if(!mv(grid,nextGrid,x,y,x+dir,y,type,temp)){
+            if(!mv(grid,nextGrid,x,y,x-dir,y,type,temp)){
+              if(!mv(grid,nextGrid,x,y,x+dir,y+1,type,temp)){
+                if(!mv(grid,nextGrid,x,y,x-dir,y+1,type,temp)){
+                  sc(nextGrid,x,y,type,temp,1);
+                }
+              }
+            }
+          }
+        }
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // OIL — hydrophobic, floats on water, burns
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='OIL'){
+        // Oil + water: oil naturally floats (lower density handled by mv)
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          // Fire ignites oil
+          if((nk==='FIRE'||nk==='LAVA')&&Math.random()<0.08){
+            sc(nextGrid,x,y,EIDX.FIRE,220,1); continue;
+          }
+          // Electric ignites oil
+          if(nk==='ELECTRIC'&&Math.random()<0.1){ sc(nextGrid,x,y,EIDX.FIRE,220,1); continue; }
+          // Acid dissolves oil slowly
+          if(nk==='ACID'&&Math.random()<0.006){ cc(nextGrid,x,y); break; }
+        }
+        if(!mv(grid,nextGrid,x,y,x,y+1,type,temp)){
+          if(!mv(grid,nextGrid,x,y,x+dir,y,type,temp)){
+            if(!mv(grid,nextGrid,x,y,x-dir,y,type,temp)){
+              if(!mv(grid,nextGrid,x,y,x+dir,y+1,type,temp)){
+                if(!mv(grid,nextGrid,x,y,x-dir,y+1,type,temp)){
+                  sc(nextGrid,x,y,type,temp,1);
+                }
+              }
+            }
+          }
+        }
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // SALTWATER — dissolved NaCl solution
+      // Lower freeze point (~-21°C), conducts electricity
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='SALTWATER'){
+        if(settings.heat&&temp<4&&Math.random()<0.02){ sc(nextGrid,x,y,EIDX.ICE,5,1); continue; } // lower freeze point
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if(nk==='FIRE'&&Math.random()<0.06) sc(nextGrid,x,y,EIDX.STEAM,140,1);
+          if(nk==='LAVA'&&Math.random()<0.08){ sc(nextGrid,nx,ny,EIDX.STONE,20,0); sc(nextGrid,x,y,EIDX.STEAM,160,1); break; }
+          // Saltwater conducts electricity
+          if(nk==='ELECTRIC'&&Math.random()<0.15){ sc(nextGrid,x,y,EIDX.ELECTRIC,180,1); break; }
+          if(nk==='IRON'&&Math.random()<0.001) sc(nextGrid,nx,ny,EIDX.STONE,20,0); // accelerated corrosion
+        }
+        if(!mv(grid,nextGrid,x,y,x,y+1,type,temp)){
+          if(!mv(grid,nextGrid,x,y,x+dir,y,type,temp)){
+            if(!mv(grid,nextGrid,x,y,x-dir,y,type,temp)){
+              sc(nextGrid,x,y,type,temp,1);
+            }
+          }
+        }
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // ALCOHOL — ethanol; very flammable, evaporates fast
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='ALCOHOL'){
+        const nl=temp-1;
+        // Fast evaporation
+        if(nl<=0||Math.random()<0.004){ cc(nextGrid,x,y); continue; }
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if((nk==='FIRE'||nk==='LAVA'||nk==='ELECTRIC')&&Math.random()<0.2){
+            explode(x,y,3,false); break;
+          }
+          if(nk==='ACID'&&Math.random()<0.01){ cc(nextGrid,x,y); break; }
+        }
+        if(!mv(grid,nextGrid,x,y,x,y+1,type,temp)){
+          if(!mv(grid,nextGrid,x,y,x+dir,y,type,temp)){
+            if(!mv(grid,nextGrid,x,y,x-dir,y,type,temp)){
+              sc(nextGrid,x,y,type,nl,1);
+            }
+          }
+        }
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // MERCURY — liquid metal; very dense, toxic vapor in heat
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='MERCURY'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          // Vaporizes in extreme heat (toxic, destroys nearby particles as proxy)
+          if((nk==='FIRE'||nk==='LAVA')&&Math.random()<0.02){ cc(nextGrid,x,y); break; }
+          // Mercury amalgamates gold/metals (no gold, skip)
+          // Electric: mercury arcing
+          if(nk==='ELECTRIC'&&Math.random()<0.05){ sc(nextGrid,x,y,EIDX.ELECTRIC,160,1); break; }
+          // Freeze: mercury freezes at −39°C (treated as solid)
+          if(nk==='FREEZE'&&Math.random()<0.12){ sc(nextGrid,x,y,EIDX.STONE,20,1); break; }
+        }
+        if(!mv(grid,nextGrid,x,y,x,y+1,type,temp)){
+          if(!mv(grid,nextGrid,x,y,x+dir,y,type,temp)){
+            if(!mv(grid,nextGrid,x,y,x-dir,y,type,temp)){
+              sc(nextGrid,x,y,type,temp,1);
+            }
+          }
+        }
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // ICE — solid water, 0°C
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='ICE'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if((nk==='FIRE'||nk==='LAVA'||nk==='ELECTRIC'||nk==='LIGHTNING')&&Math.random()<0.08){
+            sc(nextGrid,x,y,EIDX.WATER,20,1); break;
+          }
+          if(nk==='ACID'&&Math.random()<0.05){ sc(nextGrid,x,y,EIDX.WATER,20,1); break; }
+          // Warm water melts ice too
+          if(nk==='WATER'&&grid[gi(nx,ny)+1]>25&&Math.random()<0.005){ sc(nextGrid,x,y,EIDX.WATER,20,1); break; }
+          // Ice grows near other ice when cold
+          if(nk==='WATER'&&grid[gi(nx,ny)+1]<8&&Math.random()<0.015){ sc(nextGrid,nx,ny,EIDX.ICE,5,0); }
+        }
+        // Ice powder falls but is dense
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // SNOW — loose ice crystals
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='SNOW'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if((nk==='FIRE'||nk==='LAVA')&&Math.random()<0.2){ sc(nextGrid,x,y,EIDX.WATER,20,1); break; }
+          if(nk==='WATER'&&grid[gi(nx,ny)+1]>22&&Math.random()<0.008){ sc(nextGrid,x,y,EIDX.WATER,20,1); break; }
+          // Snow compresses to ice under weight (not simulated perfectly, but adjacent snow → ice)
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // SAND — silicon dioxide powder
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='SAND'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          // Sand melts in extreme heat → glass
+          if((nk==='FIRE'||nk==='LAVA')&&Math.random()<0.006){ sc(nextGrid,x,y,EIDX.GLASS,20,1); break; }
+          if(nk==='ELECTRIC'&&Math.random()<0.004){ sc(nextGrid,x,y,EIDX.GLASS,20,1); break; }
+          if(nk==='LIGHTNING'&&Math.random()<0.15){ sc(nextGrid,x,y,EIDX.GLASS,20,1); break; }
+          // Acid etches sand
+          if(nk==='ACID'&&Math.random()<0.01){ cc(nextGrid,x,y); break; }
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // STONE — dense mineral
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='STONE'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          // Extreme heat melts stone → lava
+          if(nk==='LAVA'&&Math.random()<0.003){ sc(nextGrid,x,y,EIDX.LAVA,240,1); break; }
+          if(nk==='FIRE'&&Math.random()<0.001){ sc(nextGrid,x,y,EIDX.LAVA,240,1); break; }
+          // Acid → CO2 (carbonate minerals)
+          if(nk==='ACID'&&Math.random()<0.025){ cc(nextGrid,x,y); sc(nextGrid,x,y,EIDX.CO2,80,0); break; }
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // SALT — sodium chloride
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='SALT'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          // Dissolves in water → saltwater
+          if((nk==='WATER'||nk==='SALTWATER')&&Math.random()<0.015){
+            cc(nextGrid,x,y);
+            sc(nextGrid,nx,ny,EIDX.SALTWATER,grid[gi(nx,ny)+1],0);
+            break;
+          }
+          // Ice + salt → melts ice (deicing!)
+          if(nk==='ICE'&&Math.random()<0.03){
+            cc(nextGrid,x,y);
+            sc(nextGrid,nx,ny,EIDX.WATER,15,0); // slightly above freeze
+            break;
+          }
+          // Snow + salt → water
+          if(nk==='SNOW'&&Math.random()<0.04){
+            cc(nextGrid,x,y);
+            sc(nextGrid,nx,ny,EIDX.WATER,15,0); break;
+          }
+          // Fire → salt melts but stays (NaCl melts at 801°C)
+          if(nk==='LAVA'&&Math.random()<0.05){ cc(nextGrid,x,y); break; }
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // WOOD — cellulose; burns, chars, then ash
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='WOOD'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if((nk==='FIRE'||nk==='LAVA')&&Math.random()<0.04){ sc(nextGrid,x,y,EIDX.FIRE,200,1); break; }
+          if(nk==='ELECTRIC'&&Math.random()<0.06){ sc(nextGrid,x,y,EIDX.FIRE,200,1); break; }
+          if(nk==='LIGHTNING'&&Math.random()<0.2){ sc(nextGrid,x,y,EIDX.FIRE,200,1); break; }
+          if(nk==='ACID'&&Math.random()<0.012){ cc(nextGrid,x,y); break; }
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // COAL — carbon; burns hotter/longer than wood
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='COAL'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if((nk==='FIRE'||nk==='LAVA')&&Math.random()<0.02){ sc(nextGrid,x,y,EIDX.FIRE,240,1); break; } // hotter fire
+          if(nk==='ELECTRIC'&&Math.random()<0.04){ sc(nextGrid,x,y,EIDX.FIRE,240,1); break; }
+          if(nk==='LIGHTNING'&&Math.random()<0.15){ sc(nextGrid,x,y,EIDX.FIRE,240,1); break; }
+          if(nk==='WATER'&&Math.random()<0.002){ cc(nextGrid,x,y); break; } // quenched
+          if(nk==='ACID'&&Math.random()<0.02){ cc(nextGrid,x,y); break; }
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // ASH — combustion residue
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='ASH'){
+        // Floats on water (very light)
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if((nk==='WATER'||nk==='ACID')&&Math.random()<0.008){ cc(nextGrid,x,y); break; }
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // GLASS — fused silica; inert, acid-resistant
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='GLASS'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          // Glass dissolves in HF acid (represented by acid)
+          if(nk==='ACID'&&Math.random()<0.012){ cc(nextGrid,x,y); break; }
+          // Glass melts back to lava/sand in extreme heat
+          if(nk==='LAVA'&&Math.random()<0.01){ sc(nextGrid,x,y,EIDX.LAVA,240,1); break; }
+          // Explosion shatters glass → sand
+          // (handled in explode function)
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // SULFUR — burns with blue flame → SO₂
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='SULFUR'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if((nk==='FIRE'||nk==='LAVA')&&Math.random()<0.06){
+            sc(nextGrid,x,y,EIDX.FIRE,220,1);
+            // Sulfur fire produces SO2 (proxied as CO2)
+            if(y>0&&gtype(x,y-1)===0) sc(nextGrid,x,y-1,EIDX.CO2,60,0);
+            break;
+          }
+          if(nk==='ELECTRIC'&&Math.random()<0.05){ sc(nextGrid,x,y,EIDX.FIRE,220,1); break; }
+          // Sulfur + water = weak sulfurous acid (proxied: acid created)
+          if(nk==='WATER'&&Math.random()<0.002){ sc(nextGrid,nx,ny,EIDX.ACID,20,0); cc(nextGrid,x,y); break; }
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // IRON — heavy metal; rusts in water, melts in lava
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='IRON'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          // Iron melts in lava (1538°C)
+          if(nk==='LAVA'&&Math.random()<0.02){ sc(nextGrid,x,y,EIDX.LAVA,240,1); break; }
+          // Rusts in water/saltwater
+          if((nk==='WATER'||nk==='SALTWATER')&&Math.random()<0.0004){ sc(nextGrid,x,y,EIDX.STONE,20,1); break; }
+          // Acid dissolves rapidly
+          if(nk==='ACID'&&Math.random()<0.04){ cc(nextGrid,x,y); break; }
+          // Conductive: electric can pass through
+          if(nk==='ELECTRIC'&&Math.random()<0.1){ sc(nextGrid,x,y,EIDX.ELECTRIC,150,1); break; }
+          // Lightning heats iron
+          if(nk==='LIGHTNING'&&Math.random()<0.08){ sc(nextGrid,x,y,EIDX.FIRE,180,1); break; }
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // CONCRETE — hardens with water; strong once set
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='CONCRETE'){
+        const ckey=x+','+y;
+        if(concreteAge.has(ckey)){
+          const age=concreteAge.get(ckey)+1;
+          if(age>300){
+            // Fully hardened → becomes stone (inert)
+            sc(nextGrid,x,y,EIDX.STONE,20,1);
+            concreteAge.delete(ckey);
+            continue;
+          }
+          concreteAge.set(ckey,age);
+        }
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          // Water triggers hardening
+          if((nk==='WATER'||nk==='SALTWATER')&&!concreteAge.has(ckey)){
+            concreteAge.set(ckey,0);
+          }
+          if(nk==='ACID'&&Math.random()<0.02){ cc(nextGrid,x,y); concreteAge.delete(ckey); break; }
+        }
+        if(!concreteAge.has(ckey)&&settings.gravity){
+          // Unhardened concrete flows slowly
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // PLANT — cellulose organism; grows near water
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='PLANT'){
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        // Grow near water
+        if(Math.random()<0.004){
+          for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+            if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&gtype(nx,ny)===0&&Math.random()<0.3){
+              sc(nextGrid,nx,ny,EIDX.PLANT,20,0); break;
+            }
+          }
+        }
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS){
+            const nk=gkey(nx,ny); if(!nk) continue;
+            if((nk==='WATER'||nk==='SALTWATER')&&Math.random()<0.012) cc(nextGrid,nx,ny); // absorb water
+            if((nk==='FIRE'||nk==='LAVA')&&Math.random()<0.06){ sc(nextGrid,x,y,EIDX.FIRE,200,1); break; }
+            if(nk==='ACID'&&Math.random()<0.03){ cc(nextGrid,x,y); break; }
+            // Plant → ash after burning nearby fire burns it
+            if(nk==='FREEZE'&&Math.random()<0.04){ sc(nextGrid,x,y,EIDX.ICE,5,1); break; }
+          }
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // GUNPOWDER — KNO₃ + carbon + sulfur
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='GUNPOWDER'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if((nk==='FIRE'||nk==='LAVA'||nk==='ELECTRIC'||nk==='LIGHTNING')&&Math.random()<0.35){
+            explode(x,y,4,true); break;
+          }
+          // Water wets gunpowder → won't explode
+          if(nk==='WATER'&&Math.random()<0.3){ cc(nextGrid,x,y); break; } // gunpowder dissolves/ruins
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // METHANE — CH₄; lighter than air, explosive
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='METHANE'){
+        const nl=temp-1;
+        if(nl<=0){ cc(nextGrid,x,y); continue; }
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          // Methane + fire = explosion + CO2
+          if((nk==='FIRE'||nk==='ELECTRIC'||nk==='LIGHTNING')&&Math.random()<0.3){
+            explode(x,y,5,false);
+            sc(nextGrid,x,y,EIDX.CO2,80,0);
+            break;
+          }
+          // Methane + lava = ignites
+          if(nk==='LAVA'&&Math.random()<0.2){ sc(nextGrid,x,y,EIDX.FIRE,220,1); break; }
+        }
+        sc(nextGrid,x,y,type,nl,1);
+        // Rise (lighter than air)
+        if(y>0&&gtype(x,y-1)===0){ sc(nextGrid,x,y-1,type,nl,1); cc(nextGrid,x,y); continue; }
+        const d=Math.random()<0.5?-1:1;
+        if(y>0&&x+d>=0&&x+d<COLS&&gtype(x+d,y-1)===0){ sc(nextGrid,x+d,y-1,type,nl,1); cc(nextGrid,x,y); continue; }
+        // drift sideways
+        if(x+d>=0&&x+d<COLS&&gtype(x+d,y)===0&&Math.random()<0.4){ sc(nextGrid,x+d,y,type,nl,1); cc(nextGrid,x,y); continue; }
+        sc(nextGrid,x,y,type,nl,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // CO₂ — carbon dioxide; extinguishes fire, sinks
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='CO2'){
+        const nl=temp-1;
+        if(nl<=0){ cc(nextGrid,x,y); continue; }
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          // CO2 puts out fire!
+          if(nk==='FIRE'&&Math.random()<0.25){ cc(nextGrid,nx,ny); }
+          // CO2 + water → carbonic acid (weak, no change for simplicity)
+          // Plants absorb CO2 (photosynthesis)
+          if(nk==='PLANT'&&Math.random()<0.01){ cc(nextGrid,x,y); break; }
+        }
+        sc(nextGrid,x,y,type,nl,1);
+        // CO2 is heavier than air — sinks or stays
+        if(y<ROWS-1&&gtype(x,y+1)===0&&Math.random()<0.3){ sc(nextGrid,x,y+1,type,nl,1); cc(nextGrid,x,y); continue; }
+        const d=Math.random()<0.5?-1:1;
+        if(x+d>=0&&x+d<COLS&&gtype(x+d,y)===0&&Math.random()<0.3){ sc(nextGrid,x+d,y,type,nl,1); cc(nextGrid,x,y); continue; }
+        sc(nextGrid,x,y,type,nl,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // TNT — trinitrotoluene explosive
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='TNT'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if((nk==='FIRE'||nk==='LAVA'||nk==='ELECTRIC'||nk==='LIGHTNING')&&Math.random()<0.06) bigExplode(x,y);
+          if(nk==='GUNPOWDER'&&Math.random()<0.08) bigExplode(x,y);
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // CRYSTAL — piezoelectric mineral; grows, conducts electricity
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='CRYSTAL'){
+        // Slow crystal growth
+        if(Math.random()<0.003){
+          const dirs=[[x-1,y],[x+1,y],[x,y-1],[x,y+1],[x-1,y-1],[x+1,y+1],[x-1,y+1],[x+1,y-1]];
+          for(const[nx,ny]of dirs){
+            if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+            if(gtype(nx,ny)===0&&Math.random()<0.4){ sc(nextGrid,nx,ny,EIDX.CRYSTAL,30,0); break; }
+          }
+        }
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if((nk==='FIRE'||nk==='LAVA')&&Math.random()<0.025){ cc(nextGrid,x,y); break; }
+          // Crystal + water → slow dissolution
+          if(nk==='WATER'&&Math.random()<0.005) sc(nextGrid,nx,ny,EIDX.ICE,5,0); // crystallization of water
+          // Piezoelectric effect: electric → lightning
+          if(nk==='ELECTRIC'&&Math.random()<0.06) sc(nextGrid,nx,ny,EIDX.LIGHTNING,220,0);
+          // Acid dissolves
+          if(nk==='ACID'&&Math.random()<0.09){ cc(nextGrid,x,y); break; }
+          // Freeze promotes growth
+          if(nk==='FREEZE'&&Math.random()<0.025) sc(nextGrid,nx,ny,EIDX.CRYSTAL,30,0);
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // MAGMAROCK / BASALT — slow lava release
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='MAGMAROCK'){
+        if(Math.random()<0.006){
+          for(const[nx,ny]of[[x,y-1],[x-1,y],[x+1,y]]){
+            if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&gtype(nx,ny)===0&&Math.random()<0.4){
+              sc(nextGrid,nx,ny,EIDX.LAVA,220,0); break;
+            }
+          }
+        }
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if(nk==='WATER'&&Math.random()<0.05){ cc(nextGrid,nx,ny); } // water touching basalt warms
+          if(nk==='ICE'&&Math.random()<0.08) sc(nextGrid,nx,ny,EIDX.WATER,20,0);
+          if(nk==='ACID'&&Math.random()<0.02){ cc(nextGrid,x,y); break; }
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // HONEY — viscous sugar solution
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='HONEY'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if((nk==='FIRE'||nk==='LAVA')&&Math.random()<0.06){ sc(nextGrid,x,y,EIDX.FIRE,200,1); continue; }
+          // Water dilutes honey
+          if(nk==='WATER'&&Math.random()<0.003){ cc(nextGrid,nx,ny); }
+          // Freeze crystallizes honey
+          if(nk==='FREEZE'&&Math.random()<0.06){ sc(nextGrid,x,y,EIDX.CRYSTAL,30,1); break; }
+          // Acid dissolves
+          if(nk==='ACID'&&Math.random()<0.012){ cc(nextGrid,x,y); break; }
+          // Honey + heat → caramelizes (becomes coal-like dark material)
+          if(nk==='FIRE'&&Math.random()<0.002){ sc(nextGrid,x,y,EIDX.COAL,20,1); break; }
+        }
+        // Very slow flow (viscous)
+        if(settings.gravity&&Math.random()<0.09){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          if(Math.random()<0.3){
+            if(mv(grid,nextGrid,x,y,x+dir,y,type,temp)) continue;
+            if(mv(grid,nextGrid,x,y,x-dir,y,type,temp)) continue;
+          }
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // RUBBER — elastomer; bounces, insulates
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='RUBBER'){
+        const vkey=x+','+y;
+        let vel=rubberVel.get(vkey)||{vx:0,vy:0};
+        rubberVel.delete(vkey);
+        let destroyed=false;
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if((nk==='FIRE'||nk==='LAVA')&&Math.random()<0.05){ cc(nextGrid,x,y); destroyed=true; break; }
+          if(nk==='ACID'&&Math.random()<0.015){ cc(nextGrid,x,y); destroyed=true; break; }
+          if(nk==='VOID'&&Math.random()<0.3){ cc(nextGrid,x,y); destroyed=true; break; }
+          if(nk==='LIGHTNING'&&Math.random()<0.08){ cc(nextGrid,x,y); destroyed=true; break; }
+          // Rubber insulates electricity — absorbs sparks
+          if(nk==='ELECTRIC'&&Math.random()<0.6){ cc(nextGrid,nx,ny); } // rubber kills the spark
+        }
+        if(destroyed) continue;
+        if(settings.gravity) vel.vy+=1;
+        vel.vx=Math.max(-4,Math.min(4,vel.vx));
+        vel.vy=Math.max(-6,Math.min(6,vel.vy));
+        const txf=x+Math.sign(vel.vx);
+        const tyf=y+Math.sign(vel.vy);
+        const canX=txf>=0&&txf<COLS&&gtype(txf,y)===0;
+        const canY=tyf>=0&&tyf<ROWS&&gtype(x,tyf)===0;
+        let nx2=x,ny2=y;
+        if(canX&&canY){ nx2=txf; ny2=tyf; }
+        else if(canY){ vel.vx=-vel.vx*0.75; nx2=x; ny2=tyf; }
+        else if(canX){ vel.vy=-vel.vy*0.88; vel.vx*=0.9; nx2=txf; ny2=y; }
+        else{ vel.vx=-vel.vx*0.65; vel.vy=-vel.vy*0.78; }
+        vel.vx*=0.97; vel.vy*=0.98;
+        if(Math.abs(vel.vx)<0.1) vel.vx=0;
+        if(Math.abs(vel.vy)<0.05) vel.vy=0;
+        if(nx2!==x||ny2!==y){
+          sc(nextGrid,nx2,ny2,type,temp,1); cc(nextGrid,x,y);
+          rubberVel.set(nx2+','+ny2,vel);
+        } else {
+          sc(nextGrid,x,y,type,temp,1);
+          rubberVel.set(x+','+y,vel);
+        }
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // CORAL — calcium carbonate organism
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='CORAL'){
+        let hasWater=false, killed=false;
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if(nk==='WATER'||nk==='SALTWATER') hasWater=true;
+          if(nk==='ACID'&&Math.random()<0.15){ cc(nextGrid,x,y); killed=true; break; }
+          if(nk==='FIRE'&&Math.random()<0.09){ cc(nextGrid,x,y); killed=true; break; }
+          if(nk==='LAVA'&&Math.random()<0.06){ sc(nextGrid,x,y,EIDX.STONE,20,1); killed=true; break; }
+          if(nk==='FREEZE'&&Math.random()<0.09){ sc(nextGrid,x,y,EIDX.ICE,5,1); killed=true; break; }
+        }
+        if(killed) continue;
+        // Grows in saltwater (preferred) or regular water
+        const growRate=hasWater?0.005:0.0001;
+        if(hasWater&&Math.random()<growRate){
+          const dirs=[[x-1,y],[x+1,y],[x,y-1],[x,y+1]];
+          for(const[nx,ny]of dirs){
+            if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+            if(gtype(nx,ny)===0&&Math.random()<0.4){ sc(nextGrid,nx,ny,EIDX.CORAL,20,0); break; }
+          }
+        }
+        // Dies without water
+        if(!hasWater&&Math.random()<0.0003){ sc(nextGrid,x,y,EIDX.STONE,20,1); continue; }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // VIRUS — self-replicating agent
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='VIRUS'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1],[x-1,y-1],[x+1,y-1],[x-1,y+1],[x+1,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nt=gtype(nx,ny); if(!nt) continue;
+          const nk=EKEYS[nt-1];
+          const immune=new Set(['VIRUS','ANTIMATTER','ELECTRIC','VOID','LIGHTNING','NUKE','FIRE','LAVA','ACID','FREEZE','CO2']);
+          if(!immune.has(nk)&&Math.random()<0.012) sc(nextGrid,nx,ny,EIDX.VIRUS,20,0);
+          // Cured by fire, UV (electric proxy), acid, freeze
+          if(nk==='FIRE'&&Math.random()<0.3){ cc(nextGrid,x,y); break; }
+          if(nk==='ACID'&&Math.random()<0.2){ cc(nextGrid,x,y); break; }
+          if(nk==='FREEZE'&&Math.random()<0.15){ cc(nextGrid,x,y); break; }
+          if(nk==='ELECTRIC'&&Math.random()<0.35){ cc(nextGrid,x,y); break; }
+          if(nk==='UV'&&Math.random()<0.4){ cc(nextGrid,x,y); break; }
+        }
+        // Floats/settles
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // ELECTRIC / SPARK — electrical discharge
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='ELECTRIC'){
+        const nl=temp-4;
+        if(nl<=0){ cc(nextGrid,x,y); continue; }
+        sc(nextGrid,x,y,type,nl,1);
+
+        const conductors=['WATER','SALTWATER','IRON','STONE','COAL','MERCURY'];
+        const insulators=['RUBBER','GLASS','OIL','WOOD'];
+
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1],[x-1,y-1],[x+1,y-1],[x-1,y+1],[x+1,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nt=gtype(nx,ny); if(!nt) continue;
+          const nk=EKEYS[nt-1];
+
+          // Conductors spread electricity
+          if(conductors.includes(nk)&&Math.random()<0.09){
+            sc(nextGrid,nx,ny,EIDX.ELECTRIC,nl-10,0);
+            if(nk==='WATER'&&Math.random()<0.12)     sc(nextGrid,nx,ny,EIDX.STEAM,120,0);
+            if(nk==='SALTWATER'&&Math.random()<0.18) sc(nextGrid,nx,ny,EIDX.STEAM,130,0);
+            if(nk==='IRON'&&Math.random()<0.02)      sc(nextGrid,nx,ny,EIDX.FIRE,160,0);
+            if(nk==='MERCURY'&&Math.random()<0.06)   cc(nextGrid,nx,ny); // vaporize
+          }
+          // Insulators block electricity (rubber especially)
+          if(insulators.includes(nk)){
+            if(nk==='RUBBER') continue; // rubber fully blocks
+            if(Math.random()<0.02) sc(nextGrid,nx,ny,EIDX.FIRE,180,0); // can catch fire
+          }
+          // Flammables ignite
+          if(ELEMENTS[nk]?.flammable&&Math.random()<0.1)     sc(nextGrid,nx,ny,EIDX.FIRE,200,0);
+          if(nk==='TNT'&&Math.random()<0.2)                    bigExplode(nx,ny);
+          if(nk==='GUNPOWDER'&&Math.random()<0.4)             explode(nx,ny,4,false);
+          if(nk==='VIRUS'&&Math.random()<0.3)                  cc(nextGrid,nx,ny);
+          if(nk==='CRYSTAL'&&Math.random()<0.04)               sc(nextGrid,nx,ny,EIDX.LIGHTNING,220,0);
+          if(nk==='NUKE'&&Math.random()<0.1)                   nukeExplode(nx,ny);
+          if(nk==='METHANE'&&Math.random()<0.3)                explode(nx,ny,6,false);
+          if(nk==='ALCOHOL'&&Math.random()<0.2)                sc(nextGrid,nx,ny,EIDX.FIRE,210,0);
+          if(nk==='SAND'&&Math.random()<0.04)                  sc(nextGrid,nx,ny,EIDX.GLASS,20,0);
+          if(nk==='ICE'&&Math.random()<0.15)                   sc(nextGrid,nx,ny,EIDX.WATER,20,0);
+        }
+
+        // Spread electric arc to empty space
+        if(Math.random()<0.3){
+          const ad=[[x-1,y],[x+1,y],[x,y-1],[x,y+1]][0|Math.random()*4];
+          if(ad[0]>=0&&ad[0]<COLS&&ad[1]>=0&&ad[1]<ROWS&&gtype(ad[0],ad[1])===0)
+            sc(nextGrid,ad[0],ad[1],EIDX.ELECTRIC,nl-20,1);
+        }
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // LIGHTNING — high-voltage arc discharge
+      // Travels down (like real lightning), melts sand, ignites
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='LIGHTNING'){
+        const nl=temp-10;
+        if(nl<=0){ cc(nextGrid,x,y); continue; }
+        sc(nextGrid,x,y,type,nl,1);
+        // Lightning prefers to travel DOWN and sideways
+        const preferred=[[x,y+1],[x+1,y],[x-1,y],[x+1,y+1],[x-1,y+1],[x,y-1]];
+        for(const[nx,ny]of preferred){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nt=gtype(nx,ny);
+          if(nt===0||Math.random()<0.75){
+            const nk=nt>0?EKEYS[nt-1]:null;
+            if(nk==='RUBBER'||nk==='GLASS') break; // insulators stop lightning
+            if(nk){
+              if(ELEMENTS[nk]?.flammable)          sc(nextGrid,nx,ny,EIDX.FIRE,220,0);
+              else if(nk==='WATER')                  sc(nextGrid,nx,ny,EIDX.STEAM,160,0);
+              else if(nk==='SALTWATER')              sc(nextGrid,nx,ny,EIDX.STEAM,170,0);
+              else if(nk==='ICE')                    sc(nextGrid,nx,ny,EIDX.WATER,50,0);
+              else if(nk==='SNOW')                   sc(nextGrid,nx,ny,EIDX.WATER,30,0);
+              else if(nk==='TNT')                    bigExplode(nx,ny);
+              else if(nk==='GUNPOWDER')              explode(nx,ny,4,false);
+              else if(nk==='SAND')                   sc(nextGrid,nx,ny,EIDX.GLASS,20,0); // fulgurite!
+              else if(nk==='CRYSTAL')                sc(nextGrid,nx,ny,EIDX.ELECTRIC,200,0);
+              else if(nk==='VIRUS')                  cc(nextGrid,nx,ny);
+              else if(nk==='NUKE')                   nukeExplode(nx,ny);
+              else if(nk==='IRON')                   sc(nextGrid,nx,ny,EIDX.FIRE,180,0);
+              else if(nk==='METHANE')                explode(nx,ny,6,false);
+              else                                   cc(nextGrid,nx,ny);
+            }
+            if(nt===0){ sc(nextGrid,nx,ny,EIDX.LIGHTNING,nl,1); }
+            cc(nextGrid,x,y); break;
+          }
+        }
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // TORNADO — low-pressure vortex
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='TORNADO'){
+        const nl=temp-1;
+        if(nl<=0){ cc(nextGrid,x,y); continue; }
+        sc(nextGrid,x,y,type,nl,1);
+
+        // Swirl nearby particles
+        for(let dy2=-8;dy2<=8;dy2++) for(let dx2=-8;dx2<=8;dx2++){
+          const nx=x+dx2, ny=y+dy2;
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          if(Math.abs(dx2)+Math.abs(dy2)<2) continue;
+          const nt=gtype(nx,ny); if(!nt) continue;
+          const nk=EKEYS[nt-1];
+          if(nk==='TORNADO') continue;
+          if(Math.random()<0.06){
+            const ang=Math.atan2(dy2,dx2)+Math.PI/4;
+            const tx=nx-Math.round(Math.cos(ang)), ty=ny-Math.round(Math.sin(ang));
+            if(tx>=0&&tx<COLS&&ty>=0&&ty<ROWS&&gtype(tx,ty)===0){
+              sc(nextGrid,tx,ty,nt,grid[gi(nx,ny)+1],0); cc(nextGrid,nx,ny);
+            }
+          }
+        }
+        // Tornado wanders
+        if(Math.random()<0.1){
+          const d=Math.random()<0.5?-1:1;
+          if(x+d>=0&&x+d<COLS&&gtype(x+d,y)===0){ sc(nextGrid,x+d,y,type,nl,1); cc(nextGrid,x,y); }
+        }
+        // Water near tornado → waterspout (makes steam/mist)
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          if(gkey(nx,ny)==='WATER'&&Math.random()<0.05) sc(nextGrid,nx,ny,EIDX.STEAM,100,0);
+        }
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // FREEZE — cryogenic spray (liquid N₂ proxy)
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='FREEZE'){
+        const nl=temp-2;
+        if(nl<=0){ cc(nextGrid,x,y); continue; }
+        sc(nextGrid,x,y,type,nl,1);
+
+        let froze=false;
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nt=gtype(nx,ny); if(!nt) continue;
+          const nk=EKEYS[nt-1];
+          if(nk==='FREEZE') continue;
+
+          let acted=false;
+          if(nk==='WATER'&&Math.random()<0.25)        { sc(nextGrid,nx,ny,EIDX.ICE,5,0); acted=true; }
+          else if(nk==='SALTWATER'&&Math.random()<0.15){ sc(nextGrid,nx,ny,EIDX.ICE,5,0); acted=true; } // lower freeze point
+          else if(nk==='STEAM'&&Math.random()<0.18)    { sc(nextGrid,nx,ny,EIDX.WATER,20,0); acted=true; }
+          else if(nk==='FIRE'&&Math.random()<0.45)     { cc(nextGrid,nx,ny); acted=true; }
+          else if(nk==='LAVA'&&Math.random()<0.12)     { sc(nextGrid,nx,ny,EIDX.STONE,20,0); acted=true; }
+          else if(nk==='OIL'&&Math.random()<0.12)      { sc(nextGrid,nx,ny,EIDX.STONE,20,0); acted=true; } // frozen oil→solid
+          else if(nk==='ACID'&&Math.random()<0.08)     { sc(nextGrid,nx,ny,EIDX.ICE,5,0); acted=true; }
+          else if(nk==='HONEY'&&Math.random()<0.08)    { sc(nextGrid,nx,ny,EIDX.CRYSTAL,30,0); acted=true; } // crystallized honey
+          else if(nk==='BUBBLE'&&Math.random()<0.15)   { cc(nextGrid,nx,ny); acted=true; }
+          else if(nk==='PLANT'&&Math.random()<0.06)    { sc(nextGrid,nx,ny,EIDX.ICE,5,0); acted=true; }
+          else if(nk==='CORAL'&&Math.random()<0.1)     { sc(nextGrid,nx,ny,EIDX.ICE,5,0); acted=true; }
+          else if(nk==='VIRUS'&&Math.random()<0.1)     { cc(nextGrid,nx,ny); acted=true; }
+          else if(nk==='ELECTRIC'&&Math.random()<0.12) { cc(nextGrid,nx,ny); acted=true; }
+          else if(nk==='MERCURY'&&Math.random()<0.15)  { sc(nextGrid,nx,ny,EIDX.STONE,20,0); acted=true; }
+          else if(nk==='ALCOHOL'&&Math.random()<0.08)  { cc(nextGrid,nx,ny); acted=true; } // alcohol evaporates before freezing
+          else if(nk==='METHANE'&&Math.random()<0.1)   { cc(nextGrid,nx,ny); acted=true; } // methane liquefies (disappear proxy)
+          else if(nk==='SAND'&&Math.random()<0.02)     { sc(nextGrid,nx,ny,EIDX.STONE,20,0); acted=true; } // permafrost
+
+          if(acted&&Math.random()<0.4){ cc(nextGrid,x,y); froze=true; break; }
+        }
+
+        if(!froze){
+          // Drift randomly
+          const dirs=[[x-1,y],[x+1,y],[x,y-1],[x,y+1]];
+          for(let i=3;i>0;i--){ const j=0|Math.random()*(i+1); [dirs[i],dirs[j]]=[dirs[j],dirs[i]]; }
+          let moved=false;
+          for(const[nx,ny]of dirs){
+            if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+            if(gtype(nx,ny)===0&&Math.random()<0.55){ sc(nextGrid,nx,ny,type,nl,1); cc(nextGrid,x,y); moved=true; break; }
+          }
+          if(!moved) sc(nextGrid,x,y,type,nl,1);
+        }
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // BUBBLE — air pocket in liquid
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='BUBBLE'){
+        const nl=temp-1;
+        if(nl<=0){ cc(nextGrid,x,y); continue; }
+        const above=y>0?gtype(x,y-1):-1;
+        if(above===0){ sc(nextGrid,x,y-1,type,nl,1); cc(nextGrid,x,y); }
+        else if(above>0&&EKEYS[above-1]==='WATER'){ sc(nextGrid,x,y-1,type,nl,1); sc(nextGrid,x,y,EIDX.WATER,20,1); }
+        else if(above>0&&EKEYS[above-1]==='SALTWATER'){ sc(nextGrid,x,y-1,type,nl,1); sc(nextGrid,x,y,EIDX.SALTWATER,20,1); }
+        else{
+          const d=Math.random()<0.5?-1:1;
+          if(y>0&&x+d>=0&&x+d<COLS&&gtype(x+d,y-1)===0){ sc(nextGrid,x+d,y-1,type,nl,1); cc(nextGrid,x,y); }
+          else sc(nextGrid,x,y,type,nl,1);
+        }
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if(nk==='FIRE'&&Math.random()<0.3){ cc(nextGrid,x,y); break; }
+          if(nk==='ACID'&&Math.random()<0.1){ cc(nextGrid,x,y); break; }
+        }
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // ANTIMATTER — annihilates matter
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='ANTIMATTER'){
+        let dead=false;
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nt=gtype(nx,ny); if(!nt) continue;
+          const nk=EKEYS[nt-1];
+          if(nk!=='ANTIMATTER'){
+            cc(nextGrid,nx,ny);
+            // Annihilation creates gamma flash (fire proxy)
+            if(Math.random()<0.3) sc(nextGrid,nx,ny,EIDX.FIRE,220,0);
+            if(Math.random()<0.15){ cc(nextGrid,x,y); dead=true; break; }
+          }
+        }
+        if(dead) continue;
+        if(y>0&&gtype(x,y-1)===0&&Math.random()<0.2){ sc(nextGrid,x,y-1,type,temp,1); cc(nextGrid,x,y); continue; }
+        const d=Math.random()<0.5?-1:1;
+        if(y>0&&x+d>=0&&x+d<COLS&&gtype(x+d,y-1)===0&&Math.random()<0.3){ sc(nextGrid,x+d,y-1,type,temp,1); cc(nextGrid,x,y); continue; }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // VOID — absolute vacuum; destroys everything
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='VOID'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nt=gtype(nx,ny); if(!nt) continue;
+          const nk=EKEYS[nt-1];
+          if(nk==='ANTIMATTER'){ cc(nextGrid,x,y); break; }
+          if(nk!=='VOID'&&Math.random()<0.12) cc(nextGrid,nx,ny);
+        }
+        if(Math.random()<0.05){
+          const ad=[[x-1,y],[x+1,y],[x,y-1],[x,y+1]][0|Math.random()*4];
+          if(ad[0]>=0&&ad[0]<COLS&&ad[1]>=0&&ad[1]<ROWS&&gtype(ad[0],ad[1])===0){
+            sc(nextGrid,ad[0],ad[1],type,temp,1); cc(nextGrid,x,y); continue;
+          }
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // NUKE — nuclear device
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='NUKE'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if((nk==='FIRE'||nk==='LAVA'||nk==='LIGHTNING'||nk==='ELECTRIC')&&Math.random()<0.05) nukeExplode(x,y);
+          if(nk==='TNT'&&Math.random()<0.1) nukeExplode(x,y);
+          if(nk==='ACID'&&Math.random()<0.008) nukeExplode(x,y);
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ── Generic powder/liquid/gas fallback ──
+      if(elem.type==='powder'){
+        if(!settings.gravity){ sc(nextGrid,x,y,type,temp,1); continue; }
+        if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+        const d=Math.random()<0.5?-1:1;
+        if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+        if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+      if(elem.type==='liquid'){
+        if(!settings.gravity){ sc(nextGrid,x,y,type,temp,1); continue; }
+        if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+        if(mv(grid,nextGrid,x,y,x+dir,y,type,temp)) continue;
+        if(mv(grid,nextGrid,x,y,x-dir,y,type,temp)) continue;
+        if(mv(grid,nextGrid,x,y,x+dir,y+1,type,temp)) continue;
+        if(mv(grid,nextGrid,x,y,x-dir,y+1,type,temp)) continue;
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+      if(elem.type==='gas'){
+        const nl=temp>0?temp-1:0;
+        if(y>0&&gtype(x,y-1)===0){ sc(nextGrid,x,y-1,type,nl,1); cc(nextGrid,x,y); continue; }
+        const d=Math.random()<0.5?-1:1;
+        if(y>0&&x+d>=0&&x+d<COLS&&gtype(x+d,y-1)===0){ sc(nextGrid,x+d,y-1,type,nl,1); cc(nextGrid,x,y); continue; }
+        sc(nextGrid,x,y,type,nl,1);
+        continue;
+      }
+    }
   }
 
-  const center = document.getElementById('openingCenter');
-  center.innerHTML = '';
-
-  // Result card
-  const card = document.createElement('div');
-  card.className = 'result-card ' + rs.bg;
-  card.style.boxShadow = `0 0 60px ${rs.glow}, 0 20px 40px rgba(0,0,0,0.5)`;
-
-  card.innerHTML = `
-    <div class="result-emoji">${item.emoji}</div>
-    <div class="result-name">${item.name}</div>
-    <div class="result-rarity-badge ${rs.badge}">${rs.label}</div>
-    <div class="result-desc">${item.desc}</div>
-    <div class="result-value">$${item.value.toLocaleString()}</div>
-    <div class="result-coins-earned">+$${Math.floor(item.value * 0.05)} BONUS</div>
-  `;
-
-  card.addEventListener('click', () => showItemDetail(item, itemKey));
-  center.appendChild(card);
-
-  const actions = document.createElement('div');
-  actions.className = 'result-actions';
-
-  const btnAgain = document.createElement('button');
-  btnAgain.className = 'btn-again';
-  btnAgain.textContent = 'OPEN AGAIN';
-  btnAgain.addEventListener('click', () => {
-    if (caseData.cost > 0 && G.coins < caseData.cost) {
-      toast('⚠ NOT ENOUGH COINS');
-      return;
+  // Wind
+  if(settings.wind){
+    for(let y=0;y<ROWS;y++){
+      if(Math.random()<0.01){
+        for(let x=0;x<COLS-1;x++){
+          const t=grid[gi(x,y)];
+          if(t&&!grid[gi(x+1,y)]&&ELEMENTS[EKEYS[t-1]].type==='powder'&&Math.random()<0.3){
+            sc(nextGrid,x+1,y,t,grid[gi(x,y)+1],0); cc(nextGrid,x,y);
+          }
+        }
+      }
     }
-    if (caseData.cost > 0) {
-      G.coins -= caseData.cost;
-      saveG();
-      refreshBalance();
-    }
-    buildCaseReadyView(caseData);
-  });
-
-  const btnMenu = document.createElement('button');
-  btnMenu.className = 'btn-menu';
-  btnMenu.textContent = 'MENU';
-  btnMenu.addEventListener('click', () => showScreen('screen-main'));
-
-  actions.appendChild(btnAgain);
-  actions.appendChild(btnMenu);
-  center.appendChild(actions);
-}
-
-// ═══════════════════════════════════════
-// EFFECTS
-// ═══════════════════════════════════════
-function spawnFlash(color) {
-  const f = document.createElement('div');
-  f.className = 'shine-flash';
-  f.style.background = `radial-gradient(ellipse at center, ${color} 0%, transparent 70%)`;
-  document.body.appendChild(f);
-  setTimeout(() => { try { document.body.removeChild(f); } catch(e){} }, 1200);
-}
-
-function spawnParticles() {
-  const container = document.createElement('div');
-  container.className = 'particles';
-  document.body.appendChild(container);
-
-  const colors = ['#c8a84b','#e8c96a','#ffffff','#e040e0','#4080e8'];
-  for (let i = 0; i < 30; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    const size = 4 + Math.random() * 6;
-    const angle = Math.random() * Math.PI * 2;
-    const dist = 100 + Math.random() * 200;
-    p.style.cssText = `
-      width:${size}px;height:${size}px;
-      left:50%;top:50%;
-      background:${colors[Math.floor(Math.random()*colors.length)]};
-      --tx:${Math.cos(angle)*dist}px;
-      --ty:${Math.sin(angle)*dist}px;
-      animation-delay:${Math.random()*0.3}s;
-      animation-duration:${1+Math.random()*0.5}s;
-    `;
-    container.appendChild(p);
   }
-  setTimeout(() => { try { document.body.removeChild(container); } catch(e){} }, 2000);
+
+  grid.set(nextGrid);
+  for(let i=2;i<grid.length;i+=3) grid[i]=0;
+
+  // Wood burning: FIRE particle that's done → ASH
+  // (handled by fire turning to smoke → ash is implicit)
 }
 
-// ═══════════════════════════════════════
-// INVENTORY
-// ═══════════════════════════════════════
-let currentFilter = 'all';
+// ══════════════════════════════════════════════
+// EXPLOSIONS
+// ══════════════════════════════════════════════
+function explode(cx,cy,r,chain=true){
+  flash('normal');
+  for(let dy=-r;dy<=r;dy++) for(let dx=-r;dx<=r;dx++){
+    if(dx*dx+dy*dy>r*r) continue;
+    const nx=cx+dx, ny=cy+dy;
+    if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+    const nt=gtype(nx,ny);
+    if(nt>0&&chain){
+      const nk=EKEYS[nt-1];
+      if(nk==='TNT')       setTimeout(()=>bigExplode(nx,ny),100+Math.random()*200);
+      if(nk==='GUNPOWDER') explode(nx,ny,3,false);
+      if(nk==='METHANE')   explode(nx,ny,5,false);
+      if(nk==='NUKE')      setTimeout(()=>nukeExplode(nx,ny),200+Math.random()*300);
+      if(nk==='GLASS')     sc(nextGrid,nx,ny,EIDX.SAND,20,0); // glass shatters → sand
+    }
+    cc(nextGrid,nx,ny);
+    const p=Math.random();
+    if(p<0.4)      sc(nextGrid,nx,ny,EIDX.FIRE,220,0);
+    else if(p<0.55) sc(nextGrid,nx,ny,EIDX.SMOKE,80,0);
+  }
+}
 
-function renderInventory() {
-  const grid = document.getElementById('invGrid');
-  grid.innerHTML = '';
+function bigExplode(cx,cy){
+  explode(cx,cy,12,true);
+  for(let dy=-18;dy<=18;dy++) for(let dx=-18;dx<=18;dx++){
+    const d=dx*dx+dy*dy;
+    if(d>=120&&d<=324){
+      const nx=cx+dx, ny=cy+dy;
+      if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS){
+        const nt=gtype(nx,ny);
+        if(nt>0&&EKEYS[nt-1]==='GLASS') sc(nextGrid,nx,ny,EIDX.SAND,20,0); // shatter
+        if(gtype(nx,ny)===0&&Math.random()<0.3) sc(nextGrid,nx,ny,EIDX.FIRE,180,0);
+        if(gtype(nx,ny)===0&&Math.random()<0.2) sc(nextGrid,nx,ny,EIDX.SMOKE,80,0);
+      }
+    }
+  }
+}
 
-  const owned = Object.entries(G.inventory)
-    .filter(([k, qty]) => qty > 0 && ITEMS[k])
-    .filter(([k]) => currentFilter === 'all' || ITEMS[k].rarity === currentFilter)
-    .sort(([ak],[bk]) => {
-      const ai = RARITY_ORDER.indexOf(ITEMS[ak]?.rarity);
-      const bi = RARITY_ORDER.indexOf(ITEMS[bk]?.rarity);
-      return bi - ai;
+function nukeExplode(cx,cy){
+  flash('nuke');
+  const R=Math.min(Math.floor(Math.min(COLS,ROWS)*0.45),80);
+  for(let dy=-R;dy<=R;dy++) for(let dx=-R;dx<=R;dx++){
+    const dist2=dx*dx+dy*dy;
+    if(dist2>R*R) continue;
+    const nx=cx+dx, ny=cy+dy;
+    if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+    // Shatter glass in blast
+    if(gtype(nx,ny)>0&&EKEYS[gtype(nx,ny)-1]==='GLASS') sc(nextGrid,nx,ny,EIDX.SAND,20,0);
+    cc(nextGrid,nx,ny);
+    const dist=Math.sqrt(dist2);
+    if(dist<R*0.3&&Math.random()<0.95)       sc(nextGrid,nx,ny,EIDX.FIRE,240,0);
+    else if(dist<R*0.55&&Math.random()<0.8)  sc(nextGrid,nx,ny,EIDX.FIRE,200,0);
+    else if(dist<R*0.75&&Math.random()<0.55) {
+      Math.random()<0.6 ? sc(nextGrid,nx,ny,EIDX.FIRE,150,0) : sc(nextGrid,nx,ny,EIDX.SMOKE,100,0);
+    }
+    else if(Math.random()<0.25)              sc(nextGrid,nx,ny,EIDX.VIRUS,30,0); // fallout radiation
+  }
+}
+
+function flash(type='normal'){
+  const f=document.getElementById('flashOverlay');
+  if(type==='nuke'){
+    f.classList.add('nuke');
+    setTimeout(()=>f.classList.remove('nuke'),350);
+  } else {
+    f.classList.add('flash');
+    setTimeout(()=>f.classList.remove('flash'),80);
+  }
+}
+
+// ══════════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════════
+let tick2=0;
+function render(){
+  tick2++;
+  const w=canvas.width, h=canvas.height;
+  for(let i=0;i<pixels.length;i+=4){ pixels[i]=17; pixels[i+1]=17; pixels[i+2]=17; pixels[i+3]=255; }
+
+  for(let y=0;y<ROWS;y++) for(let x=0;x<COLS;x++){
+    const type=grid[gi(x,y)]; if(!type) continue;
+    const key=EKEYS[type-1];
+    const ct=grid[gi(x,y)+1];
+    let [r,g,b]=ELEMENTS[key].color;
+    const v=(Math.random()-0.5)*10;
+    r=Math.max(0,Math.min(255,r+v));
+    g=Math.max(0,Math.min(255,g+v));
+    b=Math.max(0,Math.min(255,b+v));
+
+    // Custom rendering per element
+    if(key==='FIRE'){
+      const t=ct/220;
+      r=255; g=Math.floor(t*160+Math.random()*20); b=Math.floor(t*10);
+    }
+    if(key==='SMOKE'){
+      const bright=100+ct*0.6+Math.random()*20;
+      r=g=b=bright;
+    }
+    if(key==='LAVA'){
+      const pulse=Math.sin(tick2*0.06+x*0.4+y*0.2)*0.5+0.5;
+      r=Math.floor(200+pulse*55+Math.random()*15);
+      g=Math.floor(50+pulse*45+Math.random()*20);
+      b=Math.floor(Math.random()*10);
+    }
+    if(key==='WATER'){
+      const wave=Math.sin(tick2*0.03+x*0.4)*5;
+      r=Math.floor(50+wave+Math.random()*8);
+      g=Math.floor(115+wave+Math.random()*8);
+      b=Math.floor(210+wave*0.3+Math.random()*10);
+    }
+    if(key==='SALTWATER'){
+      const wave=Math.sin(tick2*0.03+x*0.3)*5;
+      r=Math.floor(50+wave+Math.random()*8);
+      g=Math.floor(110+wave+Math.random()*8);
+      b=Math.floor(195+wave*0.3+Math.random()*10);
+    }
+    if(key==='ELECTRIC'){
+      const f=Math.random()<0.55;
+      r=f?255:180; g=f?255:210; b=f?60:0;
+    }
+    if(key==='LIGHTNING'){
+      const f=Math.random()<0.65;
+      r=f?255:180; g=f?255:200; b=255;
+    }
+    if(key==='VIRUS'){
+      r=140+Math.random()*90; g=0; b=180+Math.random()*75;
+    }
+    if(key==='ANTIMATTER'){
+      r=Math.random()*30; g=0; b=Math.random()*60;
+    }
+    if(key==='TORNADO'){
+      const f=Math.random()<0.3;
+      r=f?225:175; g=f?225:175; b=f?245:205;
+    }
+    if(key==='MAGMAROCK'){
+      const glow=Math.sin(tick2*0.04+x*0.3)*0.5+0.5;
+      r=Math.floor(90+glow*35+Math.random()*20);
+      g=Math.floor(35+glow*15+Math.random()*12);
+      b=Math.floor(5+Math.random()*8);
+    }
+    if(key==='BUBBLE'){
+      const a=Math.sin(tick2*0.12+x*0.5)*25;
+      r=Math.max(0,Math.min(255,110+a)); g=Math.max(0,Math.min(255,205+a)); b=240;
+    }
+    if(key==='TNT'){
+      const f=Math.random()<0.06;
+      r=f?255:200; g=f?200:25; b=f?50:25;
+    }
+    if(key==='STEAM'){
+      const br=175+ct*0.25+Math.random()*20;
+      r=Math.floor(br); g=Math.floor(br+5); b=Math.floor(br+15);
+    }
+    if(key==='CRYSTAL'){
+      const ph=Math.sin(tick2*0.05+x*0.3+y*0.2)*0.5+0.5;
+      const ph2=Math.sin(tick2*0.08+x*0.2-y*0.3)*0.5+0.5;
+      r=Math.floor(110+ph*130+Math.random()*15);
+      g=Math.floor(50+ph2*85+Math.random()*15);
+      b=Math.floor(195+ph*60+Math.random()*10);
+    }
+    if(key==='HONEY'){
+      const wv=Math.sin(tick2*0.03+x*0.4)*8;
+      r=Math.floor(215+wv+Math.random()*10);
+      g=Math.floor(150+wv*0.5+Math.random()*10);
+      b=Math.floor(15+Math.random()*8);
+    }
+    if(key==='VOID'){
+      r=Math.random()<0.04?Math.floor(Math.random()*40):0;
+      g=0; b=Math.random()<0.04?Math.floor(Math.random()*30):0;
+    }
+    if(key==='CORAL'){
+      const wave=Math.sin(tick2*0.04+x*0.5+y*0.3)*15;
+      r=Math.floor(235+wave+Math.random()*15);
+      g=Math.floor(65+wave*0.3+Math.random()*22);
+      b=Math.floor(85+wave*0.5+Math.random()*18);
+    }
+    if(key==='FREEZE'){
+      const sparkle=Math.random()<0.08;
+      if(sparkle){ r=255; g=255; b=255; }
+      else{
+        const pulse=Math.sin(tick2*0.08+x*0.4+y*0.3)*0.5+0.5;
+        r=Math.floor(70+pulse*80+Math.random()*20);
+        g=Math.floor(195+pulse*50+Math.random()*15);
+        b=Math.floor(235+pulse*20+Math.random()*10);
+      }
+    }
+    if(key==='RUBBER'){
+      const vel=rubberVel.get(x+','+y);
+      const speed=vel?Math.abs(vel.vx)+Math.abs(vel.vy):0;
+      const eg=Math.min(speed*15,80);
+      r=Math.floor(25+eg*0.4+Math.random()*12);
+      g=Math.floor(175+eg*0.3+Math.random()*22);
+      b=Math.floor(55+eg*0.2+Math.random()*12);
+    }
+    if(key==='NUKE'){
+      const pulse=Math.sin(tick2*0.15+x*0.5+y*0.5)*0.5+0.5;
+      if(Math.random()<0.07){ r=255; g=255; b=120; }
+      else{ r=Math.floor(15+pulse*28+Math.random()*15); g=Math.floor(195+pulse*60+Math.random()*20); b=Math.floor(10+pulse*18+Math.random()*10); }
+    }
+    if(key==='METHANE'){
+      r=Math.floor(110+Math.random()*20); g=Math.floor(195+Math.random()*20); b=Math.floor(140+Math.random()*20);
+    }
+    if(key==='CO2'){
+      const br=90+Math.random()*25;
+      r=Math.floor(br); g=Math.floor(br+20); b=Math.floor(br+40);
+    }
+    if(key==='ALCOHOL'){
+      r=Math.floor(185+Math.random()*20); g=Math.floor(215+Math.random()*20); b=255;
+    }
+    if(key==='MERCURY'){
+      const shine=Math.random()<0.2;
+      if(shine){ r=g=b=240; }
+      else{ r=g=Math.floor(185+Math.random()*20); b=Math.floor(195+Math.random()*20); }
+    }
+    if(key==='IRON'){
+      const rust=Math.random()<0.05;
+      r=rust?Math.floor(160+Math.random()*30):Math.floor(150+Math.random()*20);
+      g=rust?Math.floor(80+Math.random()*20):Math.floor(150+Math.random()*20);
+      b=rust?Math.floor(40+Math.random()*15):Math.floor(160+Math.random()*20);
+    }
+    if(key==='SNOW'){
+      const br=Math.floor(225+Math.random()*30);
+      r=br; g=br; b=255;
+    }
+    if(key==='ASH'){
+      const br=Math.floor(148+Math.random()*20);
+      r=br; g=br-2; b=br-4;
+    }
+    if(key==='COAL'){
+      r=Math.floor(40+Math.random()*15); g=Math.floor(40+Math.random()*15); b=Math.floor(45+Math.random()*15);
+    }
+    if(key==='SULFUR'){
+      const pulse=Math.sin(tick2*0.04+x*0.3)*0.5+0.5;
+      r=Math.floor(195+pulse*25+Math.random()*12);
+      g=Math.floor(188+pulse*15+Math.random()*12);
+      b=Math.floor(35+Math.random()*15);
+    }
+    if(key==='CONCRETE'){
+      const wet=concreteAge.has(x+','+y);
+      r=wet?Math.floor(130+Math.random()*15):Math.floor(165+Math.random()*15);
+      g=wet?Math.floor(128+Math.random()*15):Math.floor(162+Math.random()*15);
+      b=wet?Math.floor(135+Math.random()*15):Math.floor(158+Math.random()*15);
+    }
+
+    for(let py=0;py<CELL;py++) for(let px=0;px<CELL;px++){
+      const sx=x*CELL+px, sy=y*CELL+py;
+      if(sx>=w||sy>=h) continue;
+      const pi=(sy*w+sx)*4;
+      pixels[pi]=r; pixels[pi+1]=g; pixels[pi+2]=b; pixels[pi+3]=255;
+    }
+  }
+
+  ctx.putImageData(imageData,0,0);
+
+  // Tornado glow
+  for(const t of tornadoes){
+    ctx.save(); ctx.globalAlpha=0.08;
+    const gr=ctx.createRadialGradient(t.x*CELL,t.y*CELL,0,t.x*CELL,t.y*CELL,9*CELL);
+    gr.addColorStop(0,'rgba(200,200,230,1)');
+    gr.addColorStop(1,'rgba(200,200,230,0)');
+    ctx.fillStyle=gr;
+    ctx.beginPath(); ctx.arc(t.x*CELL,t.y*CELL,9*CELL,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+
+  fc++;
+  const now=performance.now();
+  if(now-fpsT>=500){
+    document.getElementById('fpsDisplay').textContent='FPS: '+Math.round(fc/((now-fpsT)/1000));
+    fc=0; fpsT=now; updateStats();
+  }
+}
+
+function updateStats(){
+  let cnt=0, tot=0;
+  for(let i=0;i<grid.length;i+=3){ if(grid[i]){ cnt++; tot+=grid[i+1]; } }
+  const avgT=cnt>0?tot/cnt:20;
+  // Map internal temp (0-255) roughly to Celsius
+  const celsius=Math.round((avgT-20)*5);
+  document.getElementById('tempDisplay').textContent=celsius+'°C';
+  document.getElementById('pressDisplay').textContent=(1+cnt/5000).toFixed(2)+' atm';
+  document.getElementById('particleDisplay').textContent=cnt.toLocaleString();
+}
+
+// ══════════════════════════════════════════════
+// UI
+// ══════════════════════════════════════════════
+function buildGrid(){
+  const grid2=document.getElementById('elementGrid');
+  grid2.innerHTML='';
+  EKEYS.forEach(k=>{
+    const e=ELEMENTS[k];
+    const btn=document.createElement('button');
+    btn.className=`eb ${DARK_TEXT.has(k)?'dk':'lt'} ${k===selElem?'sel':''}`;
+    btn.style.background=CSS_COLORS[k];
+    btn.id='eb-'+k;
+    btn.textContent=e.label;
+    btn.onclick=()=>pick(k);
+    // Tooltip
+    btn.addEventListener('mouseenter',ev=>{
+      const tt=document.getElementById('tooltip');
+      tt.textContent=`${e.label}: ${e.tip}`;
+      tt.classList.add('show');
+      const r=btn.getBoundingClientRect();
+      tt.style.left=r.left+'px';
+      tt.style.top=(r.top-40)+'px';
     });
-
-  if (owned.length === 0) {
-    grid.innerHTML = `
-      <div class="inv-empty">
-        <div class="inv-empty-icon">📦</div>
-        <div class="inv-empty-text">Nothing here yet</div>
-      </div>
-    `;
-    return;
-  }
-
-  owned.forEach(([key, qty]) => {
-    const item = ITEMS[key];
-    const rs = RARITY_STYLE[item.rarity] || RARITY_STYLE.common;
-    const card = document.createElement('div');
-    card.className = 'inv-item ' + rs.bg;
-    card.style.boxShadow = `0 2px 12px ${rs.glow}`;
-    card.innerHTML = `
-      <div class="inv-emoji">${item.emoji}</div>
-      <div class="inv-name">${item.name}</div>
-      <div class="inv-count">×${qty}</div>
-    `;
-    card.addEventListener('click', () => showItemDetail(item, key));
-    grid.appendChild(card);
+    btn.addEventListener('mouseleave',()=>document.getElementById('tooltip').classList.remove('show'));
+    grid2.appendChild(btn);
   });
 }
 
-// ═══════════════════════════════════════
-// ITEM DETAIL
-// ═══════════════════════════════════════
-function showItemDetail(item, key) {
-  const rs = RARITY_STYLE[item.rarity] || RARITY_STYLE.common;
-  const card = document.getElementById('detailCard');
-  card.className = 'detail-card ' + rs.bg;
-  card.style.boxShadow = `0 0 60px ${rs.glow}, 0 20px 40px rgba(0,0,0,0.6)`;
-
-  document.getElementById('detailEmoji').textContent = item.emoji;
-  document.getElementById('detailName').textContent = item.name;
-  document.getElementById('detailBadge').className = 'detail-rarity-badge ' + rs.badge;
-  document.getElementById('detailBadge').textContent = rs.label;
-  document.getElementById('detailDesc').textContent = item.desc;
-  document.getElementById('detailValue').textContent = '$' + item.value.toLocaleString();
-  const qty = G.inventory[key] || 0;
-  document.getElementById('detailOwned').textContent = qty > 0 ? `×${qty} OWNED` : 'NOT OWNED';
-
-  document.getElementById('detailOverlay').classList.add('active');
+function pick(k){
+  document.getElementById('eb-'+selElem)?.classList.remove('sel');
+  selElem=k;
+  document.getElementById('eb-'+k)?.classList.add('sel');
+}
+function togglePanel(){
+  panelOpen=!panelOpen;
+  document.getElementById('panelScroll').classList.toggle('hidden',!panelOpen);
+  doResize();
+}
+function toggleSettings(){
+  document.getElementById('settingsPanel').classList.toggle('open');
+}
+function toggleSetting(k,b){
+  settings[k]=!settings[k];
+  b.classList.toggle('on',settings[k]);
+}
+function clearCanvas(){
+  grid.fill(0);
+  for(let i=1;i<grid.length;i+=3) grid[i]=20;
+  tornadoes=[]; rubberVel.clear(); concreteAge.clear();
 }
 
-// ═══════════════════════════════════════
-// CODE REDEMPTION
-// ═══════════════════════════════════════
-function redeemCode() {
-  const inp = document.getElementById('codeInput');
-  const res = document.getElementById('codeResult');
-  const code = inp.value.trim().toUpperCase();
-  res.className = 'code-result';
-
-  if (!code) return;
-  if (usedCodes.has(code)) {
-    res.className = 'code-result error';
-    res.textContent = '⚠ CODE ALREADY USED';
-    return;
-  }
-  const data = CODES_DB[code];
-  if (!data) {
-    res.className = 'code-result error';
-    res.textContent = '⚠ INVALID CODE';
-    return;
-  }
-  usedCodes.add(code);
-  saveCodes();
-  if (data.type === 'coins') {
-    G.coins += data.amount;
-    saveG();
-    refreshBalance();
-    res.className = 'code-result success';
-    res.textContent = `✓ +$${data.amount.toLocaleString()} COINS ADDED`;
-  }
-  inp.value = '';
-}
-
-// ═══════════════════════════════════════
-// RESET
-// ═══════════════════════════════════════
-function resetGame() {
-  if (!confirm('Reset all progress? This cannot be undone.')) return;
-  G = { coins:150, inventory:{}, casesOpened:0, region:'all' };
-  saveG();
-  usedCodes.clear();
-  saveCodes();
-  refreshBalance();
-  refreshStats();
-  toast('GAME RESET');
-}
-
-// ═══════════════════════════════════════
-// EVENT LISTENERS
-// ═══════════════════════════════════════
-document.getElementById('btnOpenCase').addEventListener('click', () => {
-  buildCaseList();
-  openModal('modalCases');
+document.addEventListener('click',e=>{
+  const p=document.getElementById('settingsPanel');
+  if(p.classList.contains('open')&&!p.contains(e.target)&&!e.target.closest('#settingsBtn'))
+    p.classList.remove('open');
 });
 
-document.getElementById('btnViewInventory').addEventListener('click', () => {
-  renderInventory();
-  showScreen('screen-inventory');
-});
+// ══════════════════════════════════════════════
+// RESIZE
+// ══════════════════════════════════════════════
+let resizeTO=null;
+function scheduleResize(){ clearTimeout(resizeTO); resizeTO=setTimeout(doResize,200); }
+window.addEventListener('resize',scheduleResize);
+window.addEventListener('orientationchange',()=>setTimeout(scheduleResize,300));
+if(screen.orientation) screen.orientation.addEventListener('change',()=>setTimeout(scheduleResize,300));
 
-document.getElementById('btnCode').addEventListener('click', () => {
-  document.getElementById('codeResult').className = 'code-result';
-  document.getElementById('codeInput').value = '';
-  openModal('modalCode');
-});
-
-document.getElementById('btnReset').addEventListener('click', resetGame);
-
-document.getElementById('btnBackOpening').addEventListener('click', () => showScreen('screen-main'));
-document.getElementById('btnBackInventory').addEventListener('click', () => {
-  refreshStats();
-  showScreen('screen-main');
-});
-
-document.getElementById('btnCloseCases').addEventListener('click', () => closeModal('modalCases'));
-document.getElementById('btnCloseCode').addEventListener('click', () => closeModal('modalCode'));
-document.getElementById('btnCloseDetail').addEventListener('click', () => closeModal('detailOverlay'));
-
-document.getElementById('detailOverlay').addEventListener('click', e => {
-  if (e.target === document.getElementById('detailOverlay')) closeModal('detailOverlay');
-});
-
-document.querySelectorAll('.modal-overlay').forEach(o => {
-  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('active'); });
-});
-
-document.getElementById('btnRedeem').addEventListener('click', redeemCode);
-document.getElementById('codeInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') redeemCode();
-});
-
-// Inventory filters
-document.getElementById('filterRow').addEventListener('click', e => {
-  const chip = e.target.closest('.filter-chip');
-  if (!chip) return;
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-  chip.classList.add('active');
-  currentFilter = chip.dataset.filter;
-  renderInventory();
-});
-
-// ═══════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════
-loadG();
-refreshBalance();
-refreshStats();
+// ══════════════════════════════════════════════
+// MAIN LOOP
+// ══════════════════════════════════════════════
+function loop(){ step(); render(); requestAnimationFrame(loop); }
+doResize();
+buildGrid();
+loop();
 </script>
 
 </body>
